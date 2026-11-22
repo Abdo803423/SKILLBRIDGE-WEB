@@ -790,10 +790,19 @@ async function startServer() {
       try {
         const result = await vite.transformRequest('/@vite/client');
         if (!result) return next();
-        const patched = result.code.replace(
-          'transport.connect(createHMRHandler(handleMessage));',
-          '/* HMR disabled: skip WebSocket connection */ void 0;',
-        );
+        const patched = result.code
+          .replace(
+            'transport.connect(createHMRHandler(handleMessage));',
+            '/* HMR disabled: skip WebSocket connection */ void 0;',
+          )
+          .replace(
+            'else throw new Error("send was called before connect");',
+            'else return;',
+          )
+          .replace(
+            'else throw new Error("invoke was called before connect");',
+            'else return;',
+          );
         res.setHeader('Content-Type', 'application/javascript');
         res.send(patched);
       } catch (err) {

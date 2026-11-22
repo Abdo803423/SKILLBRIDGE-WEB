@@ -1,19 +1,27 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut } from 'firebase/auth';
-import { getFirestore, initializeFirestore, doc, getDocFromServer, type Firestore } from 'firebase/firestore';
+import {
+  getFirestore,
+  initializeFirestore,
+  doc,
+  getDocFromServer,
+  type Firestore,
+  type FirestoreSettings,
+} from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 // CRITICAL: Pass the named firestoreDatabaseId from firebase-applet-config.json
-// Use force long-polling so WebChannel streams never hang for 10s behind Cloud Run / iframe proxies.
+// Use XHR long-polling (useFetchStreams: false + experimentalForceLongPolling: true) so
+// WebChannel requests never hang for 10s on Fetch ReadableStreams inside Cloud Run / iframe proxies.
 export const db: Firestore = (() => {
   try {
-    return initializeFirestore(
-      app,
-      { experimentalForceLongPolling: true },
-      firebaseConfig.firestoreDatabaseId,
-    );
+    const settings: FirestoreSettings & { useFetchStreams?: boolean } = {
+      experimentalForceLongPolling: true,
+      useFetchStreams: false,
+    };
+    return initializeFirestore(app, settings, firebaseConfig.firestoreDatabaseId);
   } catch {
     return getFirestore(app, firebaseConfig.firestoreDatabaseId);
   }
