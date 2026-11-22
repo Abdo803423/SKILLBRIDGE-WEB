@@ -13,7 +13,7 @@ export const PWAInstallButton: React.FC<{ variant?: 'compact' | 'primary'; onOpe
 
   if (isInstalled) {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-400 whitespace-nowrap shrink-0">
+      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#008CAE] dark:text-[#7EE8F5] whitespace-nowrap shrink-0">
         <CheckCircle2 className="w-3.5 h-3.5" />
         {isArabic ? 'التطبيق مثبّت' : 'App Installed'}
       </span>
@@ -32,8 +32,8 @@ export const PWAInstallButton: React.FC<{ variant?: 'compact' | 'primary'; onOpe
         }}
         className={
           variant === 'primary'
-            ? 'inline-flex items-center gap-2 rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2.5 text-sm font-semibold text-white transition whitespace-nowrap shrink-0'
-            : 'inline-flex items-center gap-1.5 rounded-lg border border-[#00B4DB]/40 bg-[#00B4DB]/10 hover:bg-[#00B4DB]/20 px-3 py-1.5 text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5] transition whitespace-nowrap shrink-0'
+            ? 'sb-btn-interactive inline-flex items-center gap-2 rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2.5 text-sm font-semibold text-white transition whitespace-nowrap shrink-0'
+            : 'sb-btn-interactive inline-flex items-center gap-1.5 rounded-lg border border-[#00B4DB]/40 bg-[#00B4DB]/10 hover:bg-[#00B4DB]/20 px-3 py-1.5 text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5] transition whitespace-nowrap shrink-0'
         }
       >
         <Download className="w-4 h-4" />
@@ -50,8 +50,8 @@ export const PWAInstallButton: React.FC<{ variant?: 'compact' | 'primary'; onOpe
           onClick={() => setShowIOSGuide(true)}
           className={
             variant === 'primary'
-              ? 'inline-flex items-center gap-2 rounded-xl bg-[#0B1F38] dark:bg-[#00B4DB] px-4 py-2.5 text-sm font-semibold text-white transition whitespace-nowrap shrink-0'
-              : 'inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap shrink-0'
+              ? 'sb-btn-interactive inline-flex items-center gap-2 rounded-xl bg-[#0B1F38] dark:bg-[#00B4DB] px-4 py-2.5 text-sm font-semibold text-white dark:text-[#061120] transition whitespace-nowrap shrink-0'
+              : 'sb-btn-interactive inline-flex items-center gap-1.5 rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] px-3 py-1.5 text-xs font-medium text-[#0B1F38] dark:text-[#F1F7FC] hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] transition whitespace-nowrap shrink-0'
           }
         >
           <Smartphone className="w-4 h-4" />
@@ -59,22 +59,22 @@ export const PWAInstallButton: React.FC<{ variant?: 'compact' | 'primary'; onOpe
         </button>
 
         {showIOSGuide && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="w-full max-w-sm rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-xs p-4">
+            <div className="sb-route-enter w-full max-w-sm rounded-2xl bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-[#0B1F38] dark:text-white">
+                <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                   {isArabic ? 'التثبيت على iPhone / iPad' : 'Install on iPhone / iPad'}
                 </h3>
                 <button
                   type="button"
                   onClick={() => setShowIOSGuide(false)}
-                  className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="p-1.5 rounded-lg text-[#4C637C] dark:text-[#93ADC8] hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F]"
                   aria-label="Close"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              <ol className="text-sm text-slate-600 dark:text-slate-300 space-y-2 list-decimal list-inside">
+              <ol className="text-sm text-[#4C637C] dark:text-[#93ADC8] space-y-2 list-decimal list-inside">
                 <li>{isArabic ? 'اضغط زر المشاركة (Share) في شريط Safari.' : 'Tap the Share button in Safari.'}</li>
                 <li>{isArabic ? 'مرّر للأسفل واختر "إضافة إلى الشاشة الرئيسية".' : 'Scroll down and tap "Add to Home Screen".'}</li>
                 <li>{isArabic ? 'افتح SkillBridge كتطبيق مستقل متزامن لحظيًا.' : 'Launch SkillBridge as a standalone synced app.'}</li>
@@ -82,7 +82,7 @@ export const PWAInstallButton: React.FC<{ variant?: 'compact' | 'primary'; onOpe
               <button
                 type="button"
                 onClick={() => setShowIOSGuide(false)}
-                className="w-full rounded-xl bg-[#00B4DB] py-2.5 text-sm font-semibold text-white hover:bg-[#008CAE] transition"
+                className="sb-btn-interactive w-full rounded-xl bg-[#00B4DB] py-2.5 text-sm font-semibold text-white hover:bg-[#008CAE] transition"
               >
                 {strings.closeLabel}
               </button>
@@ -98,9 +98,13 @@ export const PWAInstallButton: React.FC<{ variant?: 'compact' | 'primary'; onOpe
       <button
         type="button"
         onClick={onOpenDownloadCenter}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap shrink-0"
+        className={
+          variant === 'primary'
+            ? 'sb-btn-interactive inline-flex items-center gap-2 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] px-4 py-2 text-xs font-semibold text-[#0B1F38] dark:text-[#F1F7FC] hover:border-[#00B4DB] dark:hover:border-[#7EE8F5] transition whitespace-nowrap shrink-0'
+            : 'sb-btn-interactive inline-flex items-center gap-1.5 rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] px-3 py-1.5 text-xs font-medium text-[#0B1F38] dark:text-[#F1F7FC] hover:border-[#00B4DB] transition whitespace-nowrap shrink-0'
+        }
       >
-        <Laptop className="w-3.5 h-3.5" />
+        <Laptop className="w-3.5 h-3.5 text-[#00B4DB] dark:text-[#7EE8F5]" />
         {isArabic ? 'تثبيت المنصات' : 'Apps'}
       </button>
     );

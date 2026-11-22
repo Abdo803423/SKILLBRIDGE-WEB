@@ -111,7 +111,6 @@ export const AiAgentDrawer: React.FC = () => {
         controller.signal,
       );
 
-      // Offer structured action confirmation if recommending a skill addition
       if (aiAgentMode === 'SKILL_ADVISOR' && profile.targetSkills.length < 6 && !profile.targetSkills.includes('System Design')) {
         setAiMessages((prev) =>
           prev.map((m) =>
@@ -164,10 +163,10 @@ export const AiAgentDrawer: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-[1px]">
-      <div className="w-full max-w-md h-full bg-white dark:bg-slate-900 border-s border-[#D5E0EC] dark:border-slate-800 flex flex-col">
+    <div className="fixed inset-0 z-50 flex justify-end bg-black/45 backdrop-blur-[2px]">
+      <div className="sb-route-enter w-full max-w-md h-full bg-white dark:bg-[#09182D] border-s border-[#D5E0EC] dark:border-[#1C395E] flex flex-col">
         {/* Header */}
-        <div className="px-4 py-3 border-b border-[#D5E0EC] dark:border-slate-800 flex items-center justify-between gap-2 bg-[#0B1F38] text-white">
+        <div className="px-4 py-3 border-b border-[#1C395E] flex items-center justify-between gap-2 bg-[#0B1F38] text-white">
           <div className="flex items-center gap-2.5 min-w-0">
             <img
               src="/assets/images/img_coach_orbit_1794605869758.jpg"
@@ -175,7 +174,7 @@ export const AiAgentDrawer: React.FC = () => {
               className="w-8 h-8 rounded-lg object-cover border border-[#00B4DB]/50 shrink-0"
             />
             <div className="min-w-0">
-              <h3 className="text-sm font-bold truncate">{strings.aiAgentTitle}</h3>
+              <h3 className="font-display text-sm font-bold truncate">{strings.aiAgentTitle}</h3>
               <p className="text-[11px] text-[#7EE8F5] truncate">
                 {AGENT_MODES.find((m) => m.id === aiAgentMode)?.[isArabic ? 'ar' : 'en']}
               </p>
@@ -187,7 +186,7 @@ export const AiAgentDrawer: React.FC = () => {
               abortRef.current?.abort();
               setAiDrawerOpen(false);
             }}
-            className="p-1.5 rounded-lg hover:bg-white/10 text-slate-200"
+            className="p-1.5 rounded-lg hover:bg-white/10 text-[#93ADC8] hover:text-white transition"
             aria-label={strings.closeLabel}
           >
             <X className="w-4 h-4" />
@@ -195,7 +194,7 @@ export const AiAgentDrawer: React.FC = () => {
         </div>
 
         {/* Mode Switcher */}
-        <div className="px-3 py-2 border-b border-[#D5E0EC] dark:border-slate-800 flex gap-1.5 overflow-x-auto bg-slate-50 dark:bg-slate-950/60">
+        <div className="px-3 py-2 border-b border-[#D5E0EC] dark:border-[#1C395E] flex gap-1.5 overflow-x-auto bg-[#F7FAFC] dark:bg-[#061120]">
           {AGENT_MODES.map((m) => {
             const active = m.id === aiAgentMode;
             return (
@@ -203,10 +202,10 @@ export const AiAgentDrawer: React.FC = () => {
                 key={m.id}
                 type="button"
                 onClick={() => setAiAgentMode(m.id)}
-                className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap shrink-0 transition ${
+                className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap shrink-0 transition active:scale-95 ${
                   active
-                    ? 'bg-[#00B4DB] text-white'
-                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    ? 'bg-[#00B4DB] text-white shadow-[0_4px_12px_-4px_rgba(0,180,219,0.5)]'
+                    : 'bg-white dark:bg-[#0D1E36] text-[#4C637C] dark:text-[#93ADC8] border border-[#D5E0EC] dark:border-[#1C395E] hover:border-[#00B4DB]'
                 }`}
               >
                 {isArabic ? m.ar : m.en}
@@ -216,9 +215,9 @@ export const AiAgentDrawer: React.FC = () => {
         </div>
 
         {/* Transparency & Boundaries Card */}
-        <div className="mx-3 mt-3 rounded-xl border border-[#00B4DB]/30 bg-[#E0F9FD]/50 dark:bg-slate-800/70 px-3 py-2 text-[11px] text-slate-700 dark:text-slate-300 space-y-1">
+        <div className="mx-3 mt-3 rounded-xl border border-[#00B4DB]/35 bg-[#E0F9FD]/55 dark:bg-[#0A223D] px-3 py-2 text-[11px] text-[#4C637C] dark:text-[#93ADC8] space-y-1">
           <div className="flex items-center gap-1.5 font-semibold text-[#0B1F38] dark:text-[#7EE8F5]">
-            <Shield className="w-3.5 h-3.5" />
+            <Shield className="w-3.5 h-3.5 text-[#00B4DB]" />
             <span>{isArabic ? 'الشفافية وضوابط المساعد' : 'Transparency & Safe Guardrails'}</span>
           </div>
           <p className="text-[11px] leading-relaxed">
@@ -231,9 +230,9 @@ export const AiAgentDrawer: React.FC = () => {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-3 space-y-3">
           {aiMessages.length === 0 && (
-            <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 p-4 text-center space-y-2">
+            <div className="rounded-xl border border-dashed border-[#D5E0EC] dark:border-[#1C395E] bg-[#F7FAFC] dark:bg-[#0D1E36] p-4 text-center space-y-2">
               <Bot className="w-6 h-6 mx-auto text-[#00B4DB]" />
-              <p className="text-xs font-medium text-slate-600 dark:text-slate-300">
+              <p className="text-xs font-medium text-[#4C637C] dark:text-[#93ADC8]">
                 {isArabic
                   ? 'اسأل المساعد عن فجوات المهارات، خطة أسبوعية، أو مراجعة تقرير الهندسة العكسية.'
                   : 'Ask for next learning steps, rubric readiness tips, or architecture trade-offs.'}
@@ -247,7 +246,7 @@ export const AiAgentDrawer: React.FC = () => {
                     key={q}
                     type="button"
                     onClick={() => handleSend(q)}
-                    className="rounded-lg border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-[11px] font-medium text-[#0B1F38] dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    className="rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] px-2.5 py-1 text-[11px] font-medium text-[#0B1F38] dark:text-[#F1F7FC] hover:border-[#00B4DB] transition"
                   >
                     {q}
                   </button>
@@ -264,8 +263,8 @@ export const AiAgentDrawer: React.FC = () => {
               <div
                 className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed whitespace-pre-wrap ${
                   msg.sender === 'USER'
-                    ? 'bg-[#0B1F38] text-white'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700'
+                    ? 'bg-[#0B1F38] dark:bg-[#00B4DB] text-white dark:text-[#061120]'
+                    : 'bg-[#F0F6FA] dark:bg-[#0D1E36] text-[#0B1F38] dark:text-[#F1F7FC] border border-[#D5E0EC] dark:border-[#1C395E]'
                 }`}
               >
                 {msg.content || (streaming ? '...' : '')}
@@ -277,14 +276,14 @@ export const AiAgentDrawer: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setConfirmAction(msg.pendingAction!)}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-[#00B4DB]/15 border border-[#00B4DB]/40 px-2.5 py-1 text-[11px] font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:bg-[#00B4DB]/25"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-[#E0F9FD] dark:bg-[#0A223D] border border-[#00B4DB]/45 px-2.5 py-1 text-[11px] font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:opacity-90"
                     >
                       <Sparkles className="w-3 h-3" />
                       {msg.pendingAction.description[isArabic ? 'ar' : 'en']}
                     </button>
                   )}
 
-                  <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                  <div className="flex items-center gap-2 text-[11px] text-[#4C637C] dark:text-[#93ADC8]">
                     <button
                       type="button"
                       onClick={() =>
@@ -292,8 +291,8 @@ export const AiAgentDrawer: React.FC = () => {
                           prev.map((m) => (m.id === msg.id ? { ...m, feedbackPositive: true } : m)),
                         )
                       }
-                      className={`p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 ${
-                        msg.feedbackPositive === true ? 'text-emerald-600' : ''
+                      className={`p-1 rounded hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] ${
+                        msg.feedbackPositive === true ? 'text-[#008CAE] dark:text-[#7EE8F5]' : ''
                       }`}
                       aria-label="Helpful"
                     >
@@ -306,7 +305,7 @@ export const AiAgentDrawer: React.FC = () => {
                           prev.map((m) => (m.id === msg.id ? { ...m, feedbackPositive: false } : m)),
                         )
                       }
-                      className={`p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 ${
+                      className={`p-1 rounded hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] ${
                         msg.feedbackPositive === false ? 'text-rose-600' : ''
                       }`}
                       aria-label="Not helpful"
@@ -326,14 +325,14 @@ export const AiAgentDrawer: React.FC = () => {
                             showToast(isArabic ? 'تم تسجيل البلاغ للمراجعة.' : 'Response flagged for safety review.');
                           }
                         }}
-                        className="inline-flex items-center gap-1 hover:text-rose-600"
+                        className="inline-flex items-center gap-1 hover:text-rose-600 dark:hover:text-rose-400"
                       >
                         <Flag className="w-3 h-3" />
                         {strings.aiAgentReportLabel}
                       </button>
                     )}
                     {msg.isReported && (
-                      <span className="inline-flex items-center gap-1 text-emerald-600">
+                      <span className="inline-flex items-center gap-1 text-[#008CAE] dark:text-[#7EE8F5]">
                         <Check className="w-3 h-3" /> {isArabic ? 'مُبلّغ' : 'Flagged'}
                       </span>
                     )}
@@ -346,26 +345,26 @@ export const AiAgentDrawer: React.FC = () => {
 
         {/* Confirm Action Modal inside drawer */}
         {confirmAction && (
-          <div className="mx-3 mb-2 rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/50 p-3 space-y-2">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-[#0B1F38] dark:text-white">
+          <div className="mx-3 mb-2 rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 p-3 space-y-2">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
               <AlertCircle className="w-4 h-4 text-amber-600" />
               {strings.aiAgentConfirmActionTitle}
             </div>
-            <p className="text-xs text-slate-700 dark:text-slate-300">
+            <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">
               {confirmAction.description[isArabic ? 'ar' : 'en']}
             </p>
             <div className="flex gap-2 justify-end">
               <button
                 type="button"
                 onClick={() => setConfirmAction(null)}
-                className="rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-1 text-xs font-medium"
+                className="rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] px-3 py-1 text-xs font-medium"
               >
                 {strings.cancelLabel}
               </button>
               <button
                 type="button"
                 onClick={handleConfirmPendingAction}
-                className="rounded-lg bg-[#00B4DB] px-3 py-1 text-xs font-semibold text-white"
+                className="sb-btn-interactive rounded-lg bg-[#00B4DB] px-3 py-1 text-xs font-semibold text-white"
               >
                 {strings.confirmLabel}
               </button>
@@ -379,7 +378,7 @@ export const AiAgentDrawer: React.FC = () => {
             e.preventDefault();
             handleSend();
           }}
-          className="p-3 border-t border-[#D5E0EC] dark:border-slate-800 flex items-center gap-2"
+          className="p-3 border-t border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#09182D] flex items-center gap-2"
         >
           <input
             type="text"
@@ -387,12 +386,12 @@ export const AiAgentDrawer: React.FC = () => {
             onChange={(e) => setPromptInput(e.target.value)}
             placeholder={strings.aiAgentAskHint}
             disabled={streaming}
-            className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs text-[#0B1F38] dark:text-white focus:outline-none focus:border-[#00B4DB]"
+            className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F7FAFC] dark:bg-[#061120] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
           />
           <button
             type="submit"
             disabled={streaming || !promptInput.trim()}
-            className="rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] disabled:opacity-50 p-2.5 text-white transition shrink-0"
+            className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] disabled:opacity-50 p-2.5 text-white transition shrink-0"
             aria-label="Send"
           >
             <Send className="w-4 h-4" />

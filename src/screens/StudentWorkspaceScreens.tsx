@@ -13,6 +13,7 @@ import {
   Target,
   TrendingUp,
 } from 'lucide-react';
+import { AnimatedNumber, MotionReveal, SpatialCard } from '../components/InteractiveMotion';
 import {
   ReadinessRing,
   SectionHeader,
@@ -67,106 +68,114 @@ export const StudentHomeScreen: React.FC = () => {
     <StateWrapper>
       <div className="space-y-6">
         {/* Hero Readiness + Profile KPI Row */}
-        <section className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="space-y-3 min-w-0">
-              <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5]">
-                <span>{localizedDomain(profile.domain, isArabic ? 'AR' : 'EN')}</span>
-                <span>·</span>
-                <span>{localizedCareerLevel(computedLevel, isArabic ? 'AR' : 'EN')}</span>
-                <span>·</span>
-                <span className="text-slate-500 dark:text-slate-400">{profile.country}</span>
-              </div>
-              <h2 className="font-display text-2xl font-bold text-[#0B1F38] dark:text-white">
-                {isArabic ? `مرحبًا، ${profile.displayName}` : `Welcome back, ${profile.displayName}`}
-              </h2>
-              <p className="text-xs text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
-                {activeGoal?.executiveSummary || profile.goalsSummary}
-              </p>
-
-              <div className="flex flex-wrap gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => setRoute('analysis')}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white transition"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  {strings.aiGapAnalyzer}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRoute('briefs')}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-[#D5E0EC] dark:border-slate-700 px-4 py-2 text-xs font-bold text-[#0B1F38] dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition"
-                >
-                  <Briefcase className="w-4 h-4 text-[#008CAE]" />
-                  {isArabic ? 'مشاريع الشركات المفتوحة' : 'Company Briefs'} ({publicBriefs.length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAiAgentMode('SKILL_ADVISOR');
-                    setAiDrawerOpen(true);
-                  }}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-[#D5E0EC] dark:border-slate-700 px-4 py-2 text-xs font-bold text-[#0B1F38] dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition"
-                >
-                  <Bot className="w-4 h-4 text-[#008CAE]" />
-                  {strings.aiAgentTitle}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 shrink-0">
-              <ReadinessRing score={readiness} label={strings.yourSkillMatch} />
-              <div className="grid grid-cols-2 sm:grid-cols-1 gap-2.5">
-                <div className="rounded-xl border border-slate-200 dark:border-slate-800 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/40">
-                  <p className="text-[11px] text-slate-500">{strings.pointsLabel}</p>
-                  <p className="font-display text-lg font-bold text-[#0B1F38] dark:text-white tabular-nums">
-                    {profile.points}
-                  </p>
+        <MotionReveal immediate>
+          <SpatialCard
+            tiltStrength={2.5}
+            highlight
+            className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 sm:p-6"
+          >
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="space-y-3 min-w-0">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5]">
+                  <span>{localizedDomain(profile.domain, isArabic ? 'AR' : 'EN')}</span>
+                  <span>·</span>
+                  <span>{localizedCareerLevel(computedLevel, isArabic ? 'AR' : 'EN')}</span>
+                  <span>·</span>
+                  <span className="text-[#4C637C] dark:text-[#93ADC8]">{profile.country}</span>
                 </div>
-                <div className="rounded-xl border border-slate-200 dark:border-slate-800 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/40">
-                  <p className="text-[11px] text-slate-500">{strings.streakLabel}</p>
-                  <p className="font-display text-lg font-bold text-[#008CAE] dark:text-[#7EE8F5] flex items-center gap-1 tabular-nums">
-                    <Flame className="w-4 h-4 text-amber-500" />
-                    {profile.streakDays}
-                  </p>
+                <h2 className="font-display text-2xl font-bold tracking-tight text-[#0B1F38] dark:text-[#F1F7FC] [text-wrap:balance]">
+                  {isArabic ? `مرحبًا، ${profile.displayName}` : `Welcome back, ${profile.displayName}`}
+                </h2>
+                <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] max-w-2xl leading-relaxed">
+                  {activeGoal?.executiveSummary || profile.goalsSummary}
+                </p>
+
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setRoute('analysis')}
+                    className="sb-btn-interactive inline-flex items-center gap-1.5 rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white transition whitespace-nowrap"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    {strings.aiGapAnalyzer}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRoute('briefs')}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] px-4 py-2 text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] hover:border-[#00B4DB] active:scale-[0.98] transition whitespace-nowrap"
+                  >
+                    <Briefcase className="w-4 h-4 text-[#00B4DB] dark:text-[#7EE8F5]" />
+                    {isArabic ? 'مشاريع الشركات المفتوحة' : 'Company Briefs'} ({publicBriefs.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAiAgentMode('SKILL_ADVISOR');
+                      setAiDrawerOpen(true);
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] px-4 py-2 text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] hover:border-[#00B4DB] active:scale-[0.98] transition whitespace-nowrap"
+                  >
+                    <Bot className="w-4 h-4 text-[#00B4DB] dark:text-[#7EE8F5]" />
+                    {strings.aiAgentTitle}
+                  </button>
                 </div>
               </div>
+
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 shrink-0">
+                <ReadinessRing score={readiness} label={strings.yourSkillMatch} />
+                <div className="grid grid-cols-2 sm:grid-cols-1 gap-2.5">
+                  <div className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] px-3.5 py-2.5 bg-[#F0F6FA] dark:bg-[#09172B]">
+                    <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{strings.pointsLabel}</p>
+                    <p className="font-display text-lg font-bold text-[#0B1F38] dark:text-[#F1F7FC] tabular-nums">
+                      <AnimatedNumber value={profile.points} />
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] px-3.5 py-2.5 bg-[#F0F6FA] dark:bg-[#09172B]">
+                    <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{strings.streakLabel}</p>
+                    <p className="font-display text-lg font-bold text-[#008CAE] dark:text-[#7EE8F5] flex items-center gap-1 tabular-nums">
+                      <Flame className="w-4 h-4 text-amber-500" />
+                      <AnimatedNumber value={profile.streakDays} />
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
+          </SpatialCard>
+        </MotionReveal>
 
         {/* 6-Step Verified Career Loop */}
-        <section className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-3">
-          <SectionHeader
-            title={strings.loopTitle}
-            subtitle={strings.levelDisclaimer}
-          />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-            {strings.loopSteps.map((step, idx) => (
-              <div
-                key={step}
-                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 px-3 py-2.5"
-              >
-                <span className="text-[10px] font-bold text-[#008CAE] dark:text-[#7EE8F5] tabular-nums">
-                  0{idx + 1}
-                </span>
-                <p className="text-xs font-bold text-[#0B1F38] dark:text-white mt-0.5">{step}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        <MotionReveal delayMs={60}>
+          <section className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4 sm:p-5 space-y-3">
+            <SectionHeader
+              title={strings.loopTitle}
+              subtitle={strings.levelDisclaimer}
+            />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+              {strings.loopSteps.map((step, idx) => (
+                <div
+                  key={step}
+                  className="group rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] hover:border-[#00B4DB] hover:-translate-y-0.5 transition-all duration-200 px-3 py-2.5"
+                >
+                  <span className="font-mono text-[10px] font-bold text-[#008CAE] dark:text-[#7EE8F5] tabular-nums">
+                    0{idx + 1}
+                  </span>
+                  <p className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] mt-0.5">{step}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </MotionReveal>
 
         {/* Analytics & Next Recommended Step */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <div className="lg:col-span-7 rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+          <div className="lg:col-span-7 rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
             <SectionHeader
               title={strings.skillOverview}
               action={
                 <button
                   type="button"
                   onClick={() => setRoute('analysis')}
-                  className="text-xs font-semibold text-[#008CAE] hover:underline"
+                  className="text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:underline"
                 >
                   {strings.appealOrAdjust}
                 </button>
@@ -175,24 +184,27 @@ export const StudentHomeScreen: React.FC = () => {
             <SkillBarsChart data={skillBars} />
           </div>
 
-          <div className="lg:col-span-5 rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex flex-col justify-between gap-4">
+          <SpatialCard
+            tiltStrength={3.5}
+            className="lg:col-span-5 rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 flex flex-col justify-between gap-4"
+          >
             <div className="space-y-3">
               <SectionHeader title={strings.recommendedNextStep} />
               {nextMilestone ? (
-                <div className="rounded-xl border border-[#00B4DB]/30 bg-[#E0F9FD]/40 dark:bg-slate-800/70 p-4 space-y-1.5">
+                <div className="rounded-xl border border-[#00B4DB]/40 dark:border-[#1C4E78] bg-[#E0F9FD]/60 dark:bg-[#08243B] p-4 space-y-1.5">
                   <span className="text-[11px] font-bold text-[#008CAE] dark:text-[#7EE8F5]">
                     {isArabic ? `المرحلة ${nextMilestone.phaseOrder}` : `Phase ${nextMilestone.phaseOrder}`} ·{' '}
                     {nextMilestone.estimatedHours}h
                   </span>
-                  <h3 className="text-sm font-bold text-[#0B1F38] dark:text-white">{nextMilestone.title}</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{nextMilestone.description}</p>
+                  <h3 className="text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{nextMilestone.title}</h3>
+                  <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] leading-relaxed">{nextMilestone.description}</p>
                 </div>
               ) : (
-                <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-1.5">
-                  <p className="text-sm font-bold text-[#0B1F38] dark:text-white">
+                <div className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-4 space-y-1.5">
+                  <p className="text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                     {gaps[0]?.skillName ?? (isArabic ? 'تشغيل محلل الفجوات الذكي' : 'Run AI Skill Gap Analyzer')}
                   </p>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">
                     {isArabic
                       ? 'حدّد وظيفتك المستهدفة لبناء خارطة مهام مخصصة والبدء بأقرب مشروع شركة.'
                       : 'Define your target engineering role to unlock a tailored roadmap & matching company briefs.'}
@@ -204,17 +216,17 @@ export const StudentHomeScreen: React.FC = () => {
             <button
               type="button"
               onClick={() => setRoute('analysis')}
-              className="w-full rounded-xl bg-[#0B1F38] dark:bg-[#00B4DB] text-white dark:text-slate-950 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 hover:opacity-90"
+              className="sb-btn-interactive w-full rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] text-white py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition"
             >
               {strings.proveThisSkill}
               <ArrowRight className="w-4 h-4" />
             </button>
-          </div>
+          </SpatialCard>
         </div>
 
         {/* Synchronized Company Brief Milestone Tasks */}
         {studentTasks.length > 0 && (
-          <section className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+          <section className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
             <SectionHeader
               title={isArabic ? 'مهام مشاريع الشركات المتزامنة' : 'Synced Company Brief Tasks'}
               subtitle={
@@ -223,15 +235,15 @@ export const StudentHomeScreen: React.FC = () => {
                   : 'Task status changes synchronize instantly with your Company Director'
               }
             />
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="divide-y divide-[#D5E0EC]/80 dark:divide-[#1C395E]">
               {studentTasks.map((task) => (
                 <div key={task.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-semibold text-[#0B1F38] dark:text-white">{task.title}</span>
+                      <span className="text-sm font-semibold text-[#0B1F38] dark:text-[#F1F7FC]">{task.title}</span>
                       <StatusLabel status={task.status} />
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5">
+                    <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] mt-0.5 flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5" />
                       {task.dueDateLabel}
                     </p>
@@ -243,10 +255,10 @@ export const StudentHomeScreen: React.FC = () => {
                         type="button"
                         disabled={actionBusy || task.status === st}
                         onClick={() => updateStudentTaskStatus(task.id, st, task.updatedAtEpochMs)}
-                        className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold border transition ${
+                        className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold border transition active:scale-95 whitespace-nowrap ${
                           task.status === st
-                            ? 'bg-[#0B1F38] text-white border-[#0B1F38] dark:bg-[#00B4DB] dark:text-slate-950'
-                            : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                            ? 'bg-[#0B1F38] text-white border-[#0B1F38] dark:bg-[#00B4DB] dark:text-white dark:border-[#00B4DB]'
+                            : 'border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8] hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F]'
                         }`}
                       >
                         {st.replace('_', ' ')}
@@ -267,7 +279,7 @@ export const StudentHomeScreen: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setRoute('discover')}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-[#008CAE] hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:underline"
               >
                 <Compass className="w-3.5 h-3.5" />
                 {strings.navDiscover}
@@ -275,34 +287,36 @@ export const StudentHomeScreen: React.FC = () => {
             }
           />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {CHALLENGES_CATALOG.slice(0, 3).map((ch) => (
-              <div
-                key={ch.id}
-                className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-4 flex flex-col justify-between gap-3"
-              >
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-2 text-[11px] text-slate-500">
-                    <span className="font-semibold text-[#008CAE] dark:text-[#7EE8F5]">{ch.companyName}</span>
-                    <span>{ch.rewardLabel}</span>
-                  </div>
-                  <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-white">
-                    {lText(ch.title, isArabic ? 'AR' : 'EN')}
-                  </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2">
-                    {lText(ch.summary, isArabic ? 'AR' : 'EN')}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedChallengeId(ch.id);
-                    setRoute('challengeDetail');
-                  }}
-                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 py-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800"
+            {CHALLENGES_CATALOG.slice(0, 3).map((ch, idx) => (
+              <MotionReveal key={ch.id} delayMs={idx * 65}>
+                <SpatialCard
+                  tiltStrength={5}
+                  className="h-full rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4 flex flex-col justify-between gap-3"
                 >
-                  {strings.projectDetails}
-                </button>
-              </div>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2 text-[11px] text-[#4C637C] dark:text-[#93ADC8]">
+                      <span className="font-semibold text-[#008CAE] dark:text-[#7EE8F5]">{ch.companyName}</span>
+                      <span>{ch.rewardLabel}</span>
+                    </div>
+                    <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
+                      {lText(ch.title, isArabic ? 'AR' : 'EN')}
+                    </h3>
+                    <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] line-clamp-2">
+                      {lText(ch.summary, isArabic ? 'AR' : 'EN')}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedChallengeId(ch.id);
+                      setRoute('challengeDetail');
+                    }}
+                    className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] py-2 text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] hover:border-[#00B4DB] active:scale-[0.98] transition"
+                  >
+                    {strings.projectDetails}
+                  </button>
+                </SpatialCard>
+              </MotionReveal>
             ))}
           </div>
         </section>
@@ -400,7 +414,7 @@ export const SkillAnalysisScreen: React.FC = () => {
 
         <form
           onSubmit={handleAnalyze}
-          className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4"
+          className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-4"
         >
           {aiError && (
             <div className="rounded-xl border border-rose-300 bg-rose-50 dark:bg-rose-950/30 px-3 py-2 text-xs text-rose-700 dark:text-rose-300">
@@ -415,7 +429,7 @@ export const SkillAnalysisScreen: React.FC = () => {
                 required
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-sm text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
             </div>
             <div>
@@ -426,7 +440,7 @@ export const SkillAnalysisScreen: React.FC = () => {
                 max={60}
                 value={weeklyHours}
                 onChange={(e) => setWeeklyHours(Number(e.target.value) || 10)}
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-sm text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
             </div>
           </div>
@@ -441,10 +455,10 @@ export const SkillAnalysisScreen: React.FC = () => {
                     key={sk}
                     type="button"
                     onClick={() => toggleSkill(sk)}
-                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition ${
+                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition active:scale-95 ${
                       active
-                        ? 'bg-[#0B1F38] text-white border-[#0B1F38] dark:bg-[#00B4DB] dark:text-slate-950'
-                        : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                        ? 'bg-[#00B4DB] text-white border-[#00B4DB] shadow-[0_6px_16px_-8px_rgba(0,180,219,0.65)]'
+                        : 'border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8] hover:border-[#00B4DB]'
                     }`}
                   >
                     {sk}
@@ -460,7 +474,7 @@ export const SkillAnalysisScreen: React.FC = () => {
               <select
                 value={expLevel}
                 onChange={(e) => setExpLevel(e.target.value)}
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-sm text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               >
                 <option value="Junior">Junior</option>
                 <option value="Mid-level">Mid-level</option>
@@ -473,7 +487,7 @@ export const SkillAnalysisScreen: React.FC = () => {
                 type="text"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-sm text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
             </div>
           </div>
@@ -482,7 +496,7 @@ export const SkillAnalysisScreen: React.FC = () => {
             <button
               type="submit"
               disabled={analyzing}
-              className="rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] disabled:opacity-60 px-5 py-2.5 text-xs font-bold text-white flex items-center gap-2"
+              className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] disabled:opacity-60 px-5 py-2.5 text-xs font-bold text-white flex items-center gap-2 whitespace-nowrap"
             >
               <Target className="w-4 h-4" />
               {analyzing
@@ -500,37 +514,37 @@ export const SkillAnalysisScreen: React.FC = () => {
         {activeGoal && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
             <div className="lg:col-span-5 space-y-4">
-              <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+              <SpatialCard tiltStrength={3.5} className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
                 <ReadinessRing score={activeGoal.readinessScore} label={activeGoal.targetRole} />
-                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] leading-relaxed">
                   {activeGoal.executiveSummary}
                 </p>
-              </div>
+              </SpatialCard>
 
-              <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+              <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
                 <SectionHeader title={isArabic ? 'فجوات المهارات ذات الأولوية' : 'Prioritized Skill Gaps'} />
                 <div className="space-y-2.5">
                   {gaps.map((gap) => (
-                    <div key={gap.id} className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 space-y-1">
+                    <div key={gap.id} className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-3 space-y-1 hover:border-[#00B4DB] transition">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#0B1F38] dark:text-white">{gap.skillName}</span>
+                        <span className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{gap.skillName}</span>
                         <StatusLabel status={gap.priority} />
                       </div>
-                      <p className="text-[11px] text-slate-500">
+                      <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">
                         {gap.currentLevel} → {gap.targetLevel}
                       </p>
-                      <p className="text-xs text-slate-600 dark:text-slate-300">{gap.whyItMatters}</p>
+                      <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{gap.whyItMatters}</p>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-7 rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+            <div className="lg:col-span-7 rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
               <SectionHeader title={isArabic ? 'معالم خارطة الطريق' : 'Execution Milestones'} />
               <div className="space-y-3">
                 {milestones.map((ms) => (
-                  <div key={ms.id} className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-2">
+                  <div key={ms.id} className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-4 space-y-2 hover:border-[#00B4DB]/70 transition">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-2.5">
                         <input
@@ -540,10 +554,10 @@ export const SkillAnalysisScreen: React.FC = () => {
                           className="mt-1 h-4 w-4 rounded accent-[#00B4DB]"
                         />
                         <div>
-                          <p className="text-xs font-bold text-[#0B1F38] dark:text-white">
+                          <p className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                             {isArabic ? `المرحلة ${ms.phaseOrder}` : `Phase ${ms.phaseOrder}`}: {ms.title}
                           </p>
-                          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">{ms.description}</p>
+                          <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] mt-1">{ms.description}</p>
                           <p className="text-[11px] text-[#008CAE] dark:text-[#7EE8F5] mt-1">
                             {isArabic ? 'التطبيق العملي:' : 'Practice:'} {ms.practiceProject} · {ms.estimatedHours}h
                           </p>
@@ -552,7 +566,7 @@ export const SkillAnalysisScreen: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => openMilestoneTutor(ms.title, ms.description, ms.practiceProject)}
-                        className="rounded-lg border border-[#00B4DB]/40 px-2.5 py-1 text-[11px] font-semibold text-[#008CAE] dark:text-[#7EE8F5] shrink-0"
+                        className="rounded-lg border border-[#00B4DB]/45 dark:border-[#1C4E78] bg-[#E0F9FD]/60 dark:bg-[#08243B] px-2.5 py-1 text-[11px] font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:border-[#00B4DB] active:scale-95 transition shrink-0 whitespace-nowrap"
                       >
                         {isArabic ? 'شرح ذكي' : 'Micro-Tutor'}
                       </button>
@@ -566,20 +580,20 @@ export const SkillAnalysisScreen: React.FC = () => {
 
         {/* Micro-Sprint Tutor Drawer/Card */}
         {tutorTitle && (
-          <div className="rounded-2xl border border-[#00B4DB] bg-white dark:bg-slate-900 p-5 space-y-2">
+          <div className="sb-route-enter rounded-2xl border border-[#00B4DB] bg-white dark:bg-[#0D1E36] p-5 space-y-2 shadow-[0_14px_34px_-18px_rgba(0,180,219,0.45)]">
             <div className="flex items-center justify-between">
-              <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-white">
+              <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                 {isArabic ? 'الدرس المكثف:' : 'AI Micro-Sprint Tutor:'} {tutorTitle}
               </h3>
               <button
                 type="button"
                 onClick={() => setTutorTitle(null)}
-                className="text-xs text-slate-500 hover:text-slate-800"
+                className="text-xs text-[#4C637C] dark:text-[#93ADC8] hover:text-[#0B1F38] dark:hover:text-[#F1F7FC]"
               >
                 {strings.closeLabel}
               </button>
             </div>
-            <div className="text-xs leading-relaxed text-slate-700 dark:text-slate-200 whitespace-pre-wrap">
+            <div className="text-xs leading-relaxed text-[#0B1F38] dark:text-[#F1F7FC] whitespace-pre-wrap">
               {tutorOutput || (tutorStreaming ? '...' : '')}
             </div>
           </div>
@@ -659,7 +673,7 @@ export const StudentBriefsScreen: React.FC = () => {
             value={briefSearch}
             onChange={(e) => setBriefSearch(e.target.value)}
             placeholder={isArabic ? 'ابحث في مشاريع الشركات...' : 'Filter by title, company, skill...'}
-            className="w-full sm:w-64 rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs"
+            className="w-full sm:w-64 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] px-3 py-1.5 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
           />
         </div>
 
@@ -675,10 +689,10 @@ export const StudentBriefsScreen: React.FC = () => {
               key={tab.id}
               type="button"
               onClick={() => setFilterTab(tab.id)}
-              className={`rounded-xl px-3 py-1.5 text-xs font-bold border whitespace-nowrap ${
+              className={`rounded-xl px-3 py-1.5 text-xs font-bold border whitespace-nowrap active:scale-95 transition ${
                 filterTab === tab.id
-                  ? 'bg-[#0B1F38] text-white border-[#0B1F38] dark:bg-[#00B4DB] dark:text-slate-950'
-                  : 'border-[#D5E0EC] dark:border-slate-700 bg-white dark:bg-slate-900'
+                  ? 'bg-[#0B1F38] text-white border-[#0B1F38] dark:bg-[#00B4DB] dark:text-white dark:border-[#00B4DB]'
+                  : 'border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] text-[#4C637C] dark:text-[#93ADC8] hover:border-[#00B4DB]'
               }`}
             >
               {tab.label}
@@ -687,125 +701,128 @@ export const StudentBriefsScreen: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredBriefs.map((brief) => {
+          {filteredBriefs.map((brief, idx) => {
             const myApp = myAppsMap.get(brief.id);
             const briefTasks = allTasks.filter((t) => t.briefId === brief.id);
             const expanded = expandedBriefId === brief.id;
             return (
-              <div
-                key={brief.id}
-                className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex flex-col justify-between gap-4"
-              >
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5]">
-                      {brief.companyName} · {brief.domain}
-                    </span>
-                    <StatusLabel status={myApp ? myApp.status : brief.approvalStatus} />
-                  </div>
-                  <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-white">{brief.title}</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{brief.summary}</p>
-                  <div className="text-[11px] text-slate-500 flex flex-wrap gap-3 tabular-nums">
-                    <span>{brief.level}</span>
-                    <span>·</span>
-                    <span className="font-semibold text-[#0B1F38] dark:text-slate-200">{brief.prizePool}</span>
-                    <span>·</span>
-                    <span>+{brief.pointsReward} {strings.pointsLabel}</span>
-                    <span>·</span>
-                    <span>{brief.deadline}</span>
-                  </div>
-                  <div className="text-[11px] text-slate-600 dark:text-slate-400">
-                    <span className="font-semibold">{isArabic ? 'المهارات:' : 'Skills:'}</span> {brief.skillsCsv}
-                  </div>
+              <MotionReveal key={brief.id} delayMs={Math.min(idx, 5) * 55}>
+                <SpatialCard
+                  tiltStrength={4}
+                  highlight={myApp?.status === 'ACCEPTED'}
+                  className="h-full rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 flex flex-col justify-between gap-4"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5]">
+                        {brief.companyName} · {brief.domain}
+                      </span>
+                      <StatusLabel status={myApp ? myApp.status : brief.approvalStatus} />
+                    </div>
+                    <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{brief.title}</h3>
+                    <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] leading-relaxed">{brief.summary}</p>
+                    <div className="text-[11px] text-[#4C637C] dark:text-[#93ADC8] flex flex-wrap gap-3 tabular-nums">
+                      <span>{brief.level}</span>
+                      <span>·</span>
+                      <span className="font-semibold text-[#0B1F38] dark:text-[#F1F7FC]">{brief.prizePool}</span>
+                      <span>·</span>
+                      <span>+{brief.pointsReward} {strings.pointsLabel}</span>
+                      <span>·</span>
+                      <span>{brief.deadline}</span>
+                    </div>
+                    <div className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">
+                      <span className="font-semibold">{isArabic ? 'المهارات:' : 'Skills:'}</span> {brief.skillsCsv}
+                    </div>
 
-                  {expanded && (
-                    <div className="rounded-xl bg-slate-50 dark:bg-slate-800/70 p-3 text-[11px] space-y-1">
-                      <p>
-                        <span className="font-semibold">{strings.rubricBeforeStart}:</span> {brief.rubricCsv}
-                      </p>
-                      <p>
-                        <span className="font-semibold">Deliverables:</span> {brief.deliverablesCsv}
-                      </p>
-                      {brief.assignedDirectorName && (
+                    {expanded && (
+                      <div className="rounded-xl bg-[#F0F6FA] dark:bg-[#09172B] p-3 text-[11px] space-y-1 text-[#0B1F38] dark:text-[#F1F7FC]">
                         <p>
-                          <span className="font-semibold">Supervising Director:</span> {brief.assignedDirectorName}
+                          <span className="font-semibold">{strings.rubricBeforeStart}:</span> {brief.rubricCsv}
                         </p>
-                      )}
-                    </div>
-                  )}
+                        <p>
+                          <span className="font-semibold">Deliverables:</span> {brief.deliverablesCsv}
+                        </p>
+                        {brief.assignedDirectorName && (
+                          <p>
+                            <span className="font-semibold">Supervising Director:</span> {brief.assignedDirectorName}
+                          </p>
+                        )}
+                      </div>
+                    )}
 
-                  {myApp?.status === 'ACCEPTED' && briefTasks.length > 0 && (
-                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 space-y-2">
-                      <p className="text-[11px] font-bold text-[#008CAE]">
-                        {isArabic ? 'مهام التنفيذ المسندة:' : 'Assigned Sprint Tasks:'}
-                      </p>
-                      {briefTasks.map((t) => (
-                        <div key={t.id} className="flex items-center justify-between gap-2 text-[11px]">
-                          <span className="truncate font-medium">{t.title}</span>
-                          <select
-                            value={t.status}
-                            disabled={actionBusy}
-                            onChange={(e) =>
-                              updateStudentTaskStatus(
-                                t.id,
-                                e.target.value as 'TODO' | 'IN_PROGRESS' | 'DONE',
-                                t.updatedAtEpochMs,
-                              )
-                            }
-                            className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-0.5 text-[11px]"
-                          >
-                            <option value="TODO">TODO</option>
-                            <option value="IN_PROGRESS">IN PROGRESS</option>
-                            <option value="DONE">DONE</option>
-                          </select>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                    {myApp?.status === 'ACCEPTED' && briefTasks.length > 0 && (
+                      <div className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-3 space-y-2">
+                        <p className="text-[11px] font-bold text-[#008CAE] dark:text-[#7EE8F5]">
+                          {isArabic ? 'مهام التنفيذ المسندة:' : 'Assigned Sprint Tasks:'}
+                        </p>
+                        {briefTasks.map((t) => (
+                          <div key={t.id} className="flex items-center justify-between gap-2 text-[11px]">
+                            <span className="truncate font-medium text-[#0B1F38] dark:text-[#F1F7FC]">{t.title}</span>
+                            <select
+                              value={t.status}
+                              disabled={actionBusy}
+                              onChange={(e) =>
+                                updateStudentTaskStatus(
+                                  t.id,
+                                  e.target.value as 'TODO' | 'IN_PROGRESS' | 'DONE',
+                                  t.updatedAtEpochMs,
+                                )
+                              }
+                              className="rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] px-2 py-0.5 text-[11px] text-[#0B1F38] dark:text-[#F1F7FC]"
+                            >
+                              <option value="TODO">TODO</option>
+                              <option value="IN_PROGRESS">IN PROGRESS</option>
+                              <option value="DONE">DONE</option>
+                            </select>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
-                <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <button
-                    type="button"
-                    onClick={() => setExpandedBriefId(expanded ? null : brief.id)}
-                    className="rounded-xl border border-[#D5E0EC] dark:border-slate-700 px-3 py-2 text-xs font-semibold"
-                  >
-                    {expanded ? strings.closeLabel : strings.projectDetails}
-                  </button>
-                  {!myApp && (
+                  <div className="flex flex-wrap gap-2 pt-2 border-t border-[#D5E0EC]/80 dark:border-[#1C395E]">
                     <button
                       type="button"
-                      onClick={() => {
-                        if (!session) {
-                          showToast(strings.guestLockedReason);
-                          return;
-                        }
-                        setApplyTargetId(brief.id);
-                      }}
-                      className="rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white"
+                      onClick={() => setExpandedBriefId(expanded ? null : brief.id)}
+                      className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] px-3 py-2 text-xs font-semibold text-[#0B1F38] dark:text-[#F1F7FC] hover:border-[#00B4DB] active:scale-95 transition whitespace-nowrap"
                     >
-                      {strings.applyNow}
+                      {expanded ? strings.closeLabel : strings.projectDetails}
                     </button>
-                  )}
-                  {myApp?.status === 'ACCEPTED' && (
-                    <button
-                      type="button"
-                      onClick={() => setSubmitTargetId(brief.id)}
-                      className="rounded-xl bg-[#0B1F38] dark:bg-[#00B4DB] text-white dark:text-slate-950 px-4 py-2 text-xs font-bold flex items-center gap-1.5"
-                    >
-                      <CheckCircle2 className="w-4 h-4" />
-                      {strings.submitSolution}
-                    </button>
-                  )}
-                </div>
-              </div>
+                    {!myApp && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!session) {
+                            showToast(strings.guestLockedReason);
+                            return;
+                          }
+                          setApplyTargetId(brief.id);
+                        }}
+                        className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white whitespace-nowrap"
+                      >
+                        {strings.applyNow}
+                      </button>
+                    )}
+                    {myApp?.status === 'ACCEPTED' && (
+                      <button
+                        type="button"
+                        onClick={() => setSubmitTargetId(brief.id)}
+                        className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] text-white px-4 py-2 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                        {strings.submitSolution}
+                      </button>
+                    )}
+                  </div>
+                </SpatialCard>
+              </MotionReveal>
             );
           })}
         </div>
 
         {/* Apply Modal */}
         {applyTargetId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#061120]/65 backdrop-blur-sm p-4">
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -813,9 +830,9 @@ export const StudentBriefsScreen: React.FC = () => {
                 setApplyTargetId(null);
                 setCoverNote('');
               }}
-              className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-[#D5E0EC] dark:border-slate-800 p-5 space-y-3"
+              className="sb-route-enter w-full max-w-md rounded-2xl bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] p-5 space-y-3 shadow-2xl"
             >
-              <h3 className="font-display text-base font-bold">{strings.applyNow}</h3>
+              <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{strings.applyNow}</h3>
               <div>
                 <label className="block text-xs font-semibold mb-1">{isArabic ? 'الدور المقترح' : 'Requested Role'}</label>
                 <input
@@ -823,7 +840,7 @@ export const StudentBriefsScreen: React.FC = () => {
                   required
                   value={roleRequested}
                   onChange={(e) => setRoleRequested(e.target.value)}
-                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs focus:outline-none focus:border-[#00B4DB]"
                 />
               </div>
               <div>
@@ -834,17 +851,17 @@ export const StudentBriefsScreen: React.FC = () => {
                   value={coverNote}
                   onChange={(e) => setCoverNote(e.target.value)}
                   placeholder="Highlight verified skills or prior systems you built..."
-                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs focus:outline-none focus:border-[#00B4DB]"
                 />
               </div>
               <div className="flex justify-end gap-2">
-                <button type="button" onClick={() => setApplyTargetId(null)} className="px-3 py-1.5 text-xs font-semibold">
+                <button type="button" onClick={() => setApplyTargetId(null)} className="px-3 py-1.5 text-xs font-semibold text-[#4C637C] dark:text-[#93ADC8]">
                   {strings.cancelLabel}
                 </button>
                 <button
                   type="submit"
                   disabled={actionBusy}
-                  className="rounded-xl bg-[#00B4DB] px-4 py-2 text-xs font-bold text-white"
+                  className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white"
                 >
                   {strings.confirmLabel}
                 </button>
@@ -855,7 +872,7 @@ export const StudentBriefsScreen: React.FC = () => {
 
         {/* Submit Deliverable Modal */}
         {submitTargetId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#061120]/65 backdrop-blur-sm p-4">
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -873,9 +890,9 @@ export const StudentBriefsScreen: React.FC = () => {
                 setRepoUrl('');
                 setUnderstanding('');
               }}
-              className="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-[#D5E0EC] dark:border-slate-800 p-5 space-y-3"
+              className="sb-route-enter w-full max-w-lg rounded-2xl bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] p-5 space-y-3 shadow-2xl"
             >
-              <h3 className="font-display text-base font-bold">{strings.submitSolution}</h3>
+              <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{strings.submitSolution}</h3>
               <div>
                 <label className="block text-xs font-semibold mb-1">Repository / Demo URL</label>
                 <input
@@ -884,7 +901,7 @@ export const StudentBriefsScreen: React.FC = () => {
                   value={repoUrl}
                   onChange={(e) => setRepoUrl(e.target.value)}
                   placeholder="https://github.com/..."
-                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs focus:outline-none focus:border-[#00B4DB]"
                 />
               </div>
               <div>
@@ -895,7 +912,7 @@ export const StudentBriefsScreen: React.FC = () => {
                   value={understanding}
                   onChange={(e) => setUnderstanding(e.target.value)}
                   placeholder="Describe architecture choices, test proof, edge cases..."
-                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs focus:outline-none focus:border-[#00B4DB]"
                 />
               </div>
               <div>
@@ -904,17 +921,17 @@ export const StudentBriefsScreen: React.FC = () => {
                   type="text"
                   value={skillsInput}
                   onChange={(e) => setSkillsInput(e.target.value)}
-                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                  className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs focus:outline-none focus:border-[#00B4DB]"
                 />
               </div>
               <div className="flex justify-end gap-2">
-                <button type="button" onClick={() => setSubmitTargetId(null)} className="px-3 py-1.5 text-xs font-semibold">
+                <button type="button" onClick={() => setSubmitTargetId(null)} className="px-3 py-1.5 text-xs font-semibold text-[#4C637C] dark:text-[#93ADC8]">
                   {strings.cancelLabel}
                 </button>
                 <button
                   type="submit"
                   disabled={actionBusy}
-                  className="rounded-xl bg-[#00B4DB] px-4 py-2 text-xs font-bold text-white"
+                  className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white"
                 >
                   {strings.confirmLabel}
                 </button>
@@ -993,16 +1010,16 @@ export const AiCoachScreen: React.FC = () => {
             title={isArabic ? 'المدرب المهني ومحاكاة المقابلات' : 'AI Career Coach & Mock Interviewer'}
             subtitle={isArabic ? 'محادثة متخصصة بالبث المباشر مبنية على أهدافك' : 'Streaming real-time coaching & technical interview practice'}
           />
-          <div className="flex gap-1.5 rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-white dark:bg-slate-900 p-1">
+          <div className="flex gap-1.5 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-1">
             {(['COACH', 'INTERVIEW'] as const).map((m) => (
               <button
                 key={m}
                 type="button"
                 onClick={() => setMode(m)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition active:scale-95 whitespace-nowrap ${
                   mode === m
-                    ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-slate-950'
-                    : 'text-slate-600 dark:text-slate-300'
+                    ? 'bg-[#00B4DB] text-white'
+                    : 'text-[#4C637C] dark:text-[#93ADC8] hover:text-[#0B1F38] dark:hover:text-[#F1F7FC]'
                 }`}
               >
                 {m === 'COACH'
@@ -1017,12 +1034,12 @@ export const AiCoachScreen: React.FC = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col h-[520px]">
+        <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] flex flex-col h-[520px]">
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center text-center gap-3 px-4">
-                <ShieldCheck className="w-8 h-8 text-[#00B4DB]" />
-                <p className="text-sm font-semibold text-[#0B1F38] dark:text-white">
+                <ShieldCheck className="w-8 h-8 text-[#00B4DB] dark:text-[#7EE8F5]" />
+                <p className="text-sm font-semibold text-[#0B1F38] dark:text-[#F1F7FC]">
                   {mode === 'INTERVIEW'
                     ? isArabic
                       ? 'ابدأ مقابلة تقنية واقعية مع تقييم فوري'
@@ -1045,9 +1062,9 @@ export const AiCoachScreen: React.FC = () => {
                       key={q}
                       type="button"
                       onClick={() => sendMessage(q)}
-                      className="rounded-xl border border-[#D5E0EC] dark:border-slate-700 px-3 py-1.5 text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-800"
+                      className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] px-3 py-1.5 text-xs font-medium text-[#0B1F38] dark:text-[#F1F7FC] hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] hover:border-[#00B4DB] active:scale-95 transition"
                     >
-                      <TrendingUp className="w-3.5 h-3.5 inline me-1 text-[#00B4DB]" />
+                      <TrendingUp className="w-3.5 h-3.5 inline me-1 text-[#00B4DB] dark:text-[#7EE8F5]" />
                       {q}
                     </button>
                   ))}
@@ -1060,8 +1077,8 @@ export const AiCoachScreen: React.FC = () => {
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed whitespace-pre-wrap ${
                     m.sender === 'USER'
-                      ? 'bg-[#0B1F38] text-white'
-                      : 'bg-slate-100 dark:bg-slate-800 text-[#0B1F38] dark:text-slate-100'
+                      ? 'bg-[#0B1F38] dark:bg-[#00B4DB] text-white'
+                      : 'bg-[#F0F6FA] dark:bg-[#132D4F] text-[#0B1F38] dark:text-[#F1F7FC]'
                   }`}
                 >
                   {m.content || (streaming ? '...' : '')}
@@ -1075,7 +1092,7 @@ export const AiCoachScreen: React.FC = () => {
               e.preventDefault();
               sendMessage();
             }}
-            className="p-3 border-t border-[#D5E0EC] dark:border-slate-800 flex items-center gap-2"
+            className="p-3 border-t border-[#D5E0EC] dark:border-[#1C395E] flex items-center gap-2"
           >
             <input
               type="text"
@@ -1083,12 +1100,12 @@ export const AiCoachScreen: React.FC = () => {
               onChange={(e) => setInput(e.target.value)}
               placeholder={strings.aiAgentAskHint}
               disabled={streaming}
-              className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+              className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
             />
             <button
               type="submit"
               disabled={streaming || !input.trim()}
-              className="rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] disabled:opacity-50 px-4 py-2 text-xs font-bold text-white flex items-center gap-1.5"
+              className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] disabled:opacity-50 px-4 py-2 text-xs font-bold text-white flex items-center gap-1.5"
             >
               <Send className="w-3.5 h-3.5" />
             </button>

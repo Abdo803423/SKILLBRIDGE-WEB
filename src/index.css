@@ -18,14 +18,6 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'Space Grotesk';
-  src: url('/assets/fonts/space_grotesk.ttf') format('truetype');
-  font-weight: 500 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
   --sb-navy: #0B1F38;
   --sb-navy-elevated: #132D4F;
@@ -36,11 +28,42 @@
   --sb-lime: #A6E22E;
   --sb-lime-dark: #558B00;
   --sb-canvas: #F7FAFC;
+  --sb-surface: #FFFFFF;
+  --sb-surface-muted: #F0F6FA;
+  --sb-ink: #0B1F38;
+  --sb-muted: #4C637C;
   --sb-border: #D5E0EC;
+  --sb-gl-rule: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 140, 174, 0.35) 18%,
+    rgba(0, 180, 219, 0.72) 50%,
+    rgba(126, 232, 245, 0.5) 82%,
+    transparent
+  );
+}
+
+.dark {
+  --sb-canvas: #061120;
+  --sb-surface: #0D1E36;
+  --sb-surface-muted: #09172B;
+  --sb-ink: #F1F7FC;
+  --sb-muted: #93ADC8;
+  --sb-border: #1C375A;
+  --sb-gl-rule: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 180, 219, 0.35) 20%,
+    rgba(126, 232, 245, 0.65) 50%,
+    rgba(0, 140, 174, 0.35) 80%,
+    transparent
+  );
 }
 
 body {
   font-family: 'Plus Jakarta Sans', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+  background-color: var(--sb-canvas);
+  color: var(--sb-ink);
 }
 
 html[dir="rtl"] body {
@@ -48,9 +71,171 @@ html[dir="rtl"] body {
 }
 
 .font-display {
-  font-family: 'Space Grotesk', 'Plus Jakarta Sans', 'IBM Plex Sans Arabic', sans-serif;
+  font-family: 'Outfit', 'Plus Jakarta Sans', 'IBM Plex Sans Arabic', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
 }
 
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+.sb-gl-divider {
+  height: 1px;
+  width: 100%;
+  background: var(--sb-gl-rule);
+}
+
+/* Living Blue Ambient Hero Atmosphere */
+.sb-blue-atmosphere {
+  position: relative;
+}
+
+.sb-blue-atmosphere::before {
+  content: '';
+  position: absolute;
+  inset: -48px -24px auto -24px;
+  height: 520px;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(660px 280px at 14% 18%, rgba(0, 180, 219, 0.14), transparent 70%),
+    radial-gradient(560px 260px at 58% 6%, rgba(126, 232, 245, 0.22), transparent 70%),
+    radial-gradient(520px 250px at 90% 30%, rgba(11, 31, 56, 0.08), transparent 70%);
+}
+
+.dark .sb-blue-atmosphere::before {
+  background:
+    radial-gradient(660px 280px at 14% 18%, rgba(0, 180, 219, 0.16), transparent 70%),
+    radial-gradient(560px 260px at 58% 6%, rgba(126, 232, 245, 0.11), transparent 70%),
+    radial-gradient(520px 250px at 90% 30%, rgba(0, 140, 174, 0.14), transparent 70%);
+}
+
+/* Gaming-inspired subtle perspective grid & GPU motion primitives */
+.sb-perspective-grid {
+  background-image:
+    linear-gradient(to right, rgba(0, 180, 219, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 180, 219, 0.07) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.dark .sb-perspective-grid {
+  background-image:
+    linear-gradient(to right, rgba(126, 232, 245, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(126, 232, 245, 0.06) 1px, transparent 1px);
+}
+
+@keyframes sbFloatSlow {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes sbRouteEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.994);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes sbOrbitalSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sbSweep {
+  0% {
+    transform: translate3d(-120%, 0, 0);
+  }
+  100% {
+    transform: translate3d(220%, 0, 0);
+  }
+}
+
+.sb-route-enter {
+  animation: sbRouteEnter 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.sb-float-slow {
+  animation: sbFloatSlow 5.5s ease-in-out infinite;
+}
+
+.sb-orbital-spin {
+  animation: sbOrbitalSpin 18s linear infinite;
+}
+
+.sb-btn-interactive {
+  position: relative;
+  overflow: hidden;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1), background-color 160ms ease, border-color 160ms ease;
+}
+
+.sb-btn-interactive::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.24), transparent);
+  transform: translate3d(-140%, 0, 0) skewX(-18deg);
+  pointer-events: none;
+}
+
+.sb-btn-interactive:hover::after,
+.sb-btn-interactive:focus-visible::after {
+  animation: sbSweep 650ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sb-btn-interactive:active {
+  transform: translate3d(0, 1px, 0) scale(0.985);
+}
+
+.sb-nav-underline {
+  position: relative;
+}
+
+.sb-nav-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #00B4DB, #7EE8F5);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sb-nav-underline:hover::after,
+.sb-nav-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sb-route-enter,
+  .sb-float-slow,
+  .sb-orbital-spin,
+  .sb-btn-interactive::after {
+    animation: none !important;
+  }
+  .sb-btn-interactive,
+  .sb-nav-underline::after {
+    transition-duration: 0.01ms !important;
+  }
 }

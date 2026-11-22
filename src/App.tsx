@@ -42,10 +42,15 @@ export const App: React.FC = () => {
 
   if (!authReady) {
     return (
-      <div className="min-h-screen bg-[#F7FAFC] dark:bg-slate-950 flex items-center justify-center">
-        <div className="text-center space-y-2">
-          <div className="w-8 h-8 rounded-full border-2 border-[#00B4DB] border-t-transparent animate-spin mx-auto" />
-          <p className="text-xs font-semibold text-slate-500">SkillBridge</p>
+      <div className="min-h-screen bg-[#F7FAFC] dark:bg-[#061120] flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="relative w-10 h-10 mx-auto">
+            <div className="absolute inset-0 rounded-full border-2 border-[#00B4DB]/25" />
+            <div className="absolute inset-0 rounded-full border-2 border-[#00B4DB] border-t-transparent animate-spin" />
+          </div>
+          <p className="font-display text-sm font-semibold tracking-tight text-[#0B1F38] dark:text-[#7EE8F5]">
+            SkillBridge
+          </p>
         </div>
       </div>
     );
@@ -119,7 +124,9 @@ export const App: React.FC = () => {
 
   return (
     <AppShell>
-      {renderRoleView()}
+      <div key={`${role}_${route}`} className="sb-route-enter">
+        {renderRoleView()}
+      </div>
       {role === 'STUDENT' && <AiAgentDrawer />}
     </AppShell>
   );

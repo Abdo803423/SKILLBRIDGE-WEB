@@ -145,18 +145,18 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
           : strings.roleLearner;
 
   return (
-    <div className="min-h-screen bg-[#F7FAFC] dark:bg-slate-950 text-[#0B1F38] dark:text-slate-100 flex">
+    <div className="min-h-screen bg-[#F7FAFC] dark:bg-[#061120] text-[#0B1F38] dark:text-[#F1F7FC] flex">
       {/* Desktop Left Navigation Rail */}
-      <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 md:start-0 z-30 bg-white dark:bg-slate-900 border-e border-[#D5E0EC] dark:border-slate-800">
-        <div className="h-16 px-4 flex items-center justify-between border-b border-[#D5E0EC] dark:border-slate-800">
+      <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 md:start-0 z-30 bg-white dark:bg-[#09182D] border-e border-[#D5E0EC] dark:border-[#1C395E]">
+        <div className="h-16 px-4 flex items-center justify-between border-b border-[#D5E0EC] dark:border-[#1C395E]">
           <button type="button" onClick={() => setRoute(navItems[0].id)} className="text-start">
             <SkillBridgeLogo size="sm" subtitle />
           </button>
         </div>
 
         {/* Account & Role Identity Strip */}
-        <div className="px-4 py-3 border-b border-[#D5E0EC] dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40">
-          <p className="text-xs font-bold text-[#0B1F38] dark:text-white truncate">
+        <div className="px-4 py-3 border-b border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA]/75 dark:bg-[#061120]/60">
+          <p className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] truncate">
             {session ? session.displayName : profile.displayName}
           </p>
           <p className="text-[11px] text-[#008CAE] dark:text-[#7EE8F5] font-semibold mt-0.5">
@@ -174,13 +174,17 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
                 key={item.id}
                 type="button"
                 onClick={() => setRoute(item.id)}
-                className={`w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold transition whitespace-nowrap ${
+                className={`group w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-150 whitespace-nowrap active:scale-[0.98] ${
                   active
-                    ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-slate-950'
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-[#061120] shadow-[0_10px_22px_-12px_rgba(0,180,219,0.6)]'
+                    : 'text-[#4C637C] dark:text-[#93ADC8] hover:bg-[#F0F6FA] hover:text-[#0B1F38] dark:hover:bg-[#132D4F] dark:hover:text-[#F1F7FC]'
                 }`}
               >
-                <Icon className="w-4 h-4 shrink-0" />
+                <Icon
+                  className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${
+                    active ? 'text-[#7EE8F5] dark:text-[#061120]' : 'text-[#008CAE] dark:text-[#7EE8F5]/80'
+                  }`}
+                />
                 <span className="truncate">{item.label}</span>
               </button>
             );
@@ -188,27 +192,27 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         </nav>
 
         {/* Bottom Utility Actions */}
-        <div className="p-3 border-t border-[#D5E0EC] dark:border-slate-800 space-y-2">
+        <div className="p-3 border-t border-[#D5E0EC] dark:border-[#1C395E] space-y-2">
           <div className="flex items-center justify-between gap-2">
             <button
               type="button"
               onClick={toggleLanguage}
-              className="flex-1 rounded-lg border border-[#D5E0EC] dark:border-slate-700 py-1.5 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="sb-btn-interactive flex-1 rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] py-1.5 text-xs font-semibold text-[#0B1F38] dark:text-[#F1F7FC] hover:border-[#00B4DB]"
             >
               {strings.languageToggleLabel}
             </button>
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-2 rounded-lg border border-[#D5E0EC] dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="p-2 rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] text-[#0B1F38] dark:text-[#F1F7FC] hover:border-[#00B4DB] transition active:scale-95"
               aria-label="Toggle Theme"
             >
-              {darkTheme ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {darkTheme ? <Sun className="w-4 h-4 text-[#7EE8F5]" /> : <Moon className="w-4 h-4 text-[#008CAE]" />}
             </button>
             <button
               type="button"
               onClick={signOutAll}
-              className="p-2 rounded-lg border border-[#D5E0EC] dark:border-slate-700 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+              className="p-2 rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition active:scale-95"
               aria-label={strings.signOut}
               title={strings.signOut}
             >
@@ -221,25 +225,26 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
       {/* Main Content Area */}
       <div className="flex-1 md:ps-64 flex flex-col min-w-0">
-        {/* Shared Compact Top Header (<=56px on Mobile, SaaS Top Bar on Desktop) */}
-        <header className="sticky top-0 z-20 h-14 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-[#D5E0EC] dark:border-slate-800 px-4 flex items-center justify-between gap-3">
+        {/* Shared Compact Top Header */}
+        <header className="sticky top-0 z-20 h-14 bg-[#F7FAFC]/90 dark:bg-[#061120]/90 backdrop-blur-md border-b border-[#D5E0EC] dark:border-[#1C395E] px-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="md:hidden">
               <SkillBridgeLogo size="sm" />
             </div>
             <div className="hidden md:block min-w-0">
-              <h1 className="font-display text-sm font-bold text-[#0B1F38] dark:text-white truncate">{activeTitle}</h1>
+              <h1 className="font-display text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC] truncate">
+                {activeTitle}
+              </h1>
             </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            {/* Real-time Central Sync Indicator */}
             <span
               className={`hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-lg border whitespace-nowrap shrink-0 ${
                 !isOnline
                   ? 'border-amber-300 text-amber-700 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-300'
                   : sseConnected || !session
-                    ? 'border-emerald-300/70 text-emerald-700 dark:text-emerald-300 bg-emerald-50/70 dark:bg-emerald-950/30'
+                    ? 'border-[#00B4DB]/40 text-[#008CAE] dark:text-[#7EE8F5] bg-[#E0F9FD]/75 dark:bg-[#09213B]'
                     : 'border-sky-300 text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/30'
               }`}
             >
@@ -258,7 +263,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
               <button
                 type="button"
                 onClick={() => setRoute('search')}
-                className="p-2 rounded-lg border border-[#D5E0EC] dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"
+                className="p-2 rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] hover:border-[#00B4DB] text-[#4C637C] dark:text-[#93ADC8] transition active:scale-95"
                 aria-label="Search"
               >
                 <Search className="w-4 h-4" />
@@ -268,7 +273,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             <button
               type="button"
               onClick={() => setRoute('notifications')}
-              className="relative p-2 rounded-lg border border-[#D5E0EC] dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"
+              className="relative p-2 rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] hover:border-[#00B4DB] text-[#4C637C] dark:text-[#93ADC8] transition active:scale-95"
               aria-label={strings.notificationsTitle}
             >
               <Bell className="w-4 h-4" />
@@ -283,7 +288,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
               <button
                 type="button"
                 onClick={() => setAiDrawerOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#0B1F38] dark:bg-[#00B4DB] px-3 py-1.5 text-xs font-semibold text-white dark:text-slate-950 hover:opacity-90 transition whitespace-nowrap shrink-0"
+                className="sb-btn-interactive inline-flex items-center gap-1.5 rounded-xl bg-[#0B1F38] dark:bg-[#00B4DB] px-3 py-1.5 text-xs font-semibold text-white dark:text-[#061120] hover:opacity-95 transition whitespace-nowrap shrink-0"
               >
                 <Bot className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">{isArabic ? 'المساعد الذكي' : 'AI Agent'}</span>
@@ -293,7 +298,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             <button
               type="button"
               onClick={() => setRoute('settings')}
-              className="md:hidden p-2 rounded-lg border border-[#D5E0EC] dark:border-slate-700 text-slate-600 dark:text-slate-300"
+              className="md:hidden p-2 rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] text-[#4C637C] dark:text-[#93ADC8]"
               aria-label={strings.accountSettingsTitle}
             >
               <Settings className="w-4 h-4" />
@@ -303,12 +308,12 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
         {/* Guest Preview Banner */}
         {isGuestPreview && (
-          <div className="bg-[#E0F9FD] dark:bg-slate-800 border-b border-[#00B4DB]/30 px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="bg-[#E0F9FD] dark:bg-[#0D233E] border-b border-[#00B4DB]/35 px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
             <span className="font-medium text-[#0B1F38] dark:text-[#7EE8F5]">{strings.guestBannerTitle}</span>
             <button
               type="button"
               onClick={() => setRoute('welcome')}
-              className="rounded-lg bg-[#0B1F38] text-white px-3 py-1 font-semibold hover:bg-[#132D4F] whitespace-nowrap shrink-0"
+              className="sb-btn-interactive rounded-lg bg-[#0B1F38] dark:bg-[#00B4DB] text-white dark:text-[#061120] px-3 py-1 font-semibold hover:opacity-90 whitespace-nowrap shrink-0"
             >
               {isArabic ? 'تسجيل الدخول الآن' : 'Sign In'}
             </button>
@@ -322,7 +327,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
       </div>
 
       {/* Mobile Bottom Thumb Bar (< md only) */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-t border-[#D5E0EC] dark:border-slate-800 flex items-center justify-around px-1">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 h-16 bg-white/95 dark:bg-[#09182D]/95 backdrop-blur-md border-t border-[#D5E0EC] dark:border-[#1C395E] flex items-center justify-around px-1">
         {mobileBottomItems.map((item) => {
           const Icon = item.icon;
           const active = route === item.id;
@@ -331,8 +336,8 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
               key={item.id}
               type="button"
               onClick={() => setRoute(item.id)}
-              className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] rounded-xl px-2 py-1 text-[10px] font-semibold transition ${
-                active ? 'text-[#008CAE] dark:text-[#7EE8F5]' : 'text-slate-500 dark:text-slate-400'
+              className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] rounded-xl px-2 py-1 text-[10px] font-semibold transition active:scale-95 ${
+                active ? 'text-[#008CAE] dark:text-[#7EE8F5]' : 'text-[#4C637C] dark:text-[#93ADC8]'
               }`}
             >
               <Icon className="w-4 h-4 mb-0.5" />

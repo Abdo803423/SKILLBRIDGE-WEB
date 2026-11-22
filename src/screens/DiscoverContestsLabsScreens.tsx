@@ -14,6 +14,7 @@ import {
   Terminal,
   Trophy,
 } from 'lucide-react';
+import { MotionReveal, SpatialCard } from '../components/InteractiveMotion';
 import { SectionHeader, StateWrapper, StatusLabel } from '../components/SkillBridgeUi';
 import {
   CHALLENGES_CATALOG,
@@ -71,32 +72,32 @@ export const DiscoverScreen: React.FC = () => {
             <button
               type="button"
               onClick={() => setRoute('contests')}
-              className="rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold flex items-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-800"
+              className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] px-3 py-2 text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] flex items-center gap-1.5 hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] hover:border-[#00B4DB] active:scale-95 transition whitespace-nowrap"
             >
-              <Trophy className="w-4 h-4 text-[#00B4DB]" />
+              <Trophy className="w-4 h-4 text-[#00B4DB] dark:text-[#7EE8F5]" />
               {strings.contestsTitle}
             </button>
             <button
               type="button"
               onClick={() => setRoute('reverseEng')}
-              className="rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold flex items-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-800"
+              className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] px-3 py-2 text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] flex items-center gap-1.5 hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] hover:border-[#00B4DB] active:scale-95 transition whitespace-nowrap"
             >
-              <Terminal className="w-4 h-4 text-[#00B4DB]" />
+              <Terminal className="w-4 h-4 text-[#00B4DB] dark:text-[#7EE8F5]" />
               {strings.reverseEngTitle}
             </button>
           </div>
         </div>
 
         {/* Search & Filters */}
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-3">
+        <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4 space-y-3">
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute start-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#4C637C] dark:text-[#93ADC8] absolute start-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={strings.searchPlaceholder}
-              className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 ps-9 pe-3 py-2 text-xs focus:outline-none focus:border-[#00B4DB]"
+              className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] ps-9 pe-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
             />
           </div>
 
@@ -113,10 +114,10 @@ export const DiscoverScreen: React.FC = () => {
                 key={tab.id}
                 type="button"
                 onClick={() => setCategoryTab(tab.id)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition active:scale-95 whitespace-nowrap ${
                   categoryTab === tab.id
-                    ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-slate-950'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                    ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-white'
+                    : 'bg-[#F0F6FA] dark:bg-[#09172B] text-[#4C637C] dark:text-[#93ADC8] hover:text-[#0B1F38] dark:hover:text-[#F1F7FC]'
                 }`}
               >
                 {tab.label}
@@ -126,7 +127,7 @@ export const DiscoverScreen: React.FC = () => {
             <select
               value={selectedDomain}
               onChange={(e) => setSelectedDomain(e.target.value)}
-              className="ms-auto rounded-lg border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-1.5 text-xs font-medium"
+              className="ms-auto rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-2.5 py-1.5 text-xs font-medium text-[#0B1F38] dark:text-[#F1F7FC]"
             >
               <option value="ALL">{isArabic ? 'كل المجالات' : 'All Domains'}</option>
               {DOMAINS.map((d) => (
@@ -140,100 +141,108 @@ export const DiscoverScreen: React.FC = () => {
 
         {/* Synchronized Live Company Briefs Highlight */}
         {publicBriefs.length > 0 && (
-          <div className="rounded-2xl border border-[#00B4DB]/40 bg-[#E0F9FD]/40 dark:bg-slate-900 p-4 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5]">
-                {isArabic
-                  ? `${publicBriefs.length} مشاريع شركات حية منشورة حاليًا`
-                  : `${publicBriefs.length} Live Synchronized Company Briefs Open Now`}
-              </p>
-              <p className="text-xs text-slate-600 dark:text-slate-300">
-                {isArabic
-                  ? 'قدّم مباشرة وتابع حالة القبول والمهام في الوقت الفعلي عبر كل الأجهزة'
-                  : 'Apply live and sync milestone reviews directly with Company Directors'}
-              </p>
+          <SpatialCard
+            tiltStrength={2}
+            highlight
+            className="rounded-2xl border border-[#00B4DB]/45 dark:border-[#1C4E78] bg-[#E0F9FD]/65 dark:bg-[#08243B] p-4"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5]">
+                  {isArabic
+                    ? `${publicBriefs.length} مشاريع شركات حية منشورة حاليًا`
+                    : `${publicBriefs.length} Live Synchronized Company Briefs Open Now`}
+                </p>
+                <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">
+                  {isArabic
+                    ? 'قدّم مباشرة وتابع حالة القبول والمهام في الوقت الفعلي عبر كل الأجهزة'
+                    : 'Apply live and sync milestone reviews directly with Company Directors'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setRoute('briefs')}
+                className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] text-white px-4 py-2 text-xs font-bold whitespace-nowrap"
+              >
+                {isArabic ? 'فتح مشاريع الشركات' : 'Open Company Briefs'}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setRoute('briefs')}
-              className="rounded-xl bg-[#0B1F38] dark:bg-[#00B4DB] text-white dark:text-slate-950 px-4 py-2 text-xs font-bold"
-            >
-              {isArabic ? 'فتح مشاريع الشركات' : 'Open Company Briefs'}
-            </button>
-          </div>
+          </SpatialCard>
         )}
 
         {/* Challenges Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredChallenges.map((ch) => {
+          {filteredChallenges.map((ch, idx) => {
             const isSaved = profile.savedChallengeIds.includes(ch.id);
             return (
-              <div
-                key={ch.id}
-                className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex flex-col justify-between gap-4"
-              >
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between gap-2 text-[11px]">
-                    <span className="font-bold text-[#008CAE] dark:text-[#7EE8F5] truncate">{ch.companyName}</span>
-                    <StatusLabel status={ch.companyTier} />
+              <MotionReveal key={ch.id} delayMs={Math.min(idx, 5) * 55}>
+                <SpatialCard
+                  tiltStrength={5}
+                  className="h-full rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 flex flex-col justify-between gap-4"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between gap-2 text-[11px]">
+                      <span className="font-bold text-[#008CAE] dark:text-[#7EE8F5] truncate">{ch.companyName}</span>
+                      <StatusLabel status={ch.companyTier} />
+                    </div>
+                    <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
+                      {lText(ch.title, isArabic ? 'AR' : 'EN')}
+                    </h3>
+                    <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] line-clamp-3 leading-relaxed">
+                      {lText(ch.summary, isArabic ? 'AR' : 'EN')}
+                    </p>
+                    <div className="text-[11px] text-[#4C637C] dark:text-[#93ADC8] flex flex-wrap gap-2 tabular-nums">
+                      <span>{ch.level}</span>
+                      <span>·</span>
+                      <span className="font-semibold text-[#0B1F38] dark:text-[#F1F7FC]">{ch.rewardLabel}</span>
+                      <span>·</span>
+                      <span>+{ch.pointsReward} {strings.pointsLabel}</span>
+                    </div>
+                    <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{ch.skills.join(' · ')}</p>
                   </div>
-                  <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-white">
-                    {lText(ch.title, isArabic ? 'AR' : 'EN')}
-                  </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
-                    {lText(ch.summary, isArabic ? 'AR' : 'EN')}
-                  </p>
-                  <div className="text-[11px] text-slate-500 flex flex-wrap gap-2">
-                    <span>{ch.level}</span>
-                    <span>·</span>
-                    <span className="font-semibold text-[#0B1F38] dark:text-slate-200">{ch.rewardLabel}</span>
-                    <span>·</span>
-                    <span>+{ch.pointsReward} {strings.pointsLabel}</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500">{ch.skills.join(' · ')}</p>
-                </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedChallengeId(ch.id);
-                      setRoute('challengeDetail');
-                    }}
-                    className="flex-1 rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] py-2 text-xs font-bold text-white"
-                  >
-                    {strings.projectDetails}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => saveChallengeToggle(ch.id)}
-                    className={`p-2 rounded-xl border transition ${
-                      isSaved
-                        ? 'border-[#00B4DB] bg-[#E0F9FD] dark:bg-slate-800 text-[#008CAE]'
-                        : 'border-[#D5E0EC] dark:border-slate-700 text-slate-500'
-                    }`}
-                    aria-label={strings.saveForLater}
-                  >
-                    <Bookmark className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+                  <div className="flex items-center gap-2 pt-2 border-t border-[#D5E0EC]/80 dark:border-[#1C395E]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedChallengeId(ch.id);
+                        setRoute('challengeDetail');
+                      }}
+                      className="sb-btn-interactive flex-1 rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] py-2 text-xs font-bold text-white whitespace-nowrap"
+                    >
+                      {strings.projectDetails}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => saveChallengeToggle(ch.id)}
+                      className={`p-2 rounded-xl border transition active:scale-95 ${
+                        isSaved
+                          ? 'border-[#00B4DB] bg-[#E0F9FD] dark:bg-[#08243B] text-[#008CAE] dark:text-[#7EE8F5]'
+                          : 'border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8] hover:border-[#00B4DB]'
+                      }`}
+                      aria-label={strings.saveForLater}
+                    >
+                      <Bookmark className="w-4 h-4" />
+                    </button>
+                  </div>
+                </SpatialCard>
+              </MotionReveal>
             );
           })}
         </div>
 
         {/* Verified Partner Companies Directory */}
-        <section className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+        <section className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
           <SectionHeader title={isArabic ? 'الشركات الموثّقة الشريكة' : 'Verified Partner Companies'} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {SEED_COMPANIES.map((c) => (
-              <div key={c.id} className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 space-y-1">
+              <div key={c.id} className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-3 space-y-1 hover:border-[#00B4DB] transition">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-[#0B1F38] dark:text-white truncate">{c.name}</span>
+                  <span className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] truncate">{c.name}</span>
                   <StatusLabel status={c.tier} />
                 </div>
-                <p className="text-[11px] text-slate-500">{c.city} · {c.domain}</p>
-                <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{c.city} · {c.domain}</p>
+                <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8] tabular-nums">
                   ★ {c.avgMentorRating} · {c.completionRate}% completion
                 </p>
               </div>
@@ -322,7 +331,7 @@ export const ChallengeDetailScreen: React.FC = () => {
           <button
             type="button"
             onClick={() => setRoute('discover')}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#008CAE] hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:underline"
           >
             {isArabic ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
             {strings.backLabel}
@@ -333,7 +342,7 @@ export const ChallengeDetailScreen: React.FC = () => {
               setAiAgentMode('CHALLENGE_MENTOR');
               setAiDrawerOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-[#00B4DB]/40 px-3 py-1.5 text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5]"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#00B4DB]/45 dark:border-[#1C4E78] bg-[#E0F9FD]/60 dark:bg-[#08243B] px-3 py-1.5 text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5] hover:border-[#00B4DB] active:scale-95 transition whitespace-nowrap"
           >
             <Bot className="w-3.5 h-3.5" />
             {isArabic ? 'اسأل مرشد التحدي' : 'Ask Challenge Mentor'}
@@ -341,44 +350,44 @@ export const ChallengeDetailScreen: React.FC = () => {
         </div>
 
         {/* Overview Card */}
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 space-y-4">
+        <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 sm:p-6 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5]">
               {challenge.companyName} · {challenge.domain}
             </span>
             <StatusLabel status={challenge.companyTier} />
           </div>
-          <h1 className="font-display text-2xl font-bold text-[#0B1F38] dark:text-white">
+          <h1 className="font-display text-2xl font-bold text-[#0B1F38] dark:text-[#F1F7FC] [text-wrap:balance]">
             {lText(challenge.title, lang)}
           </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="text-sm text-[#4C637C] dark:text-[#93ADC8] leading-relaxed">
             {lText(challenge.summary, lang)}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-            <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-2">
-              <h3 className="text-xs font-bold text-[#0B1F38] dark:text-white flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-[#00B4DB]" />
+            <div className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-4 space-y-2">
+              <h3 className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-[#00B4DB] dark:text-[#7EE8F5]" />
                 {strings.rubricBeforeStart}
               </h3>
-              <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300 list-disc list-inside">
+              <ul className="space-y-1.5 text-xs text-[#4C637C] dark:text-[#93ADC8] list-disc list-inside">
                 {challenge.rubric.map((r, i) => (
                   <li key={i}>{lText(r, lang)}</li>
                 ))}
               </ul>
             </div>
 
-            <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-2">
-              <h3 className="text-xs font-bold text-[#0B1F38] dark:text-white">{strings.ipRightsTitle}</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300">{lText(challenge.ipPolicy, lang)}</p>
-              <h3 className="text-xs font-bold text-[#0B1F38] dark:text-white pt-1">{strings.aiPolicyTitle}</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300">{lText(challenge.aiPolicy, lang)}</p>
+            <div className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-4 space-y-2">
+              <h3 className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{strings.ipRightsTitle}</h3>
+              <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{lText(challenge.ipPolicy, lang)}</p>
+              <h3 className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] pt-1">{strings.aiPolicyTitle}</h3>
+              <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{lText(challenge.aiPolicy, lang)}</p>
             </div>
           </div>
         </div>
 
         {/* Interactive AI Work Simulation */}
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+        <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
           <SectionHeader
             title={strings.launchWorkSim}
             subtitle={lText(challenge.simulationPrompt, lang)}
@@ -393,20 +402,20 @@ export const ChallengeDetailScreen: React.FC = () => {
                   ? 'اكتب قرارك الهندسي للتحدي (مثال: استخدام TimescaleDB مع فهرس مركب)...'
                   : 'Propose your engineering decision (e.g., partition telemetry by hour & use idempotency key)...'
               }
-              className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+              className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
             />
             <button
               type="button"
               disabled={simBusy || !simDecision.trim()}
               onClick={handleRunSim}
-              className="rounded-xl bg-[#0B1F38] dark:bg-[#00B4DB] text-white dark:text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-center gap-1.5 disabled:opacity-50"
+              className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] text-white px-4 py-2 text-xs font-bold flex items-center justify-center gap-1.5 disabled:opacity-50 whitespace-nowrap"
             >
               <Play className="w-3.5 h-3.5" />
               {simBusy ? '...' : isArabic ? 'اختبر القرار' : 'Run Simulation'}
             </button>
           </div>
           {simOutput && (
-            <div className="rounded-xl border border-[#00B4DB]/30 bg-slate-50 dark:bg-slate-950/60 p-3.5 text-xs leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-200">
+            <div className="rounded-xl border border-[#00B4DB]/40 dark:border-[#1C4E78] bg-[#F0F6FA] dark:bg-[#09172B] p-3.5 text-xs leading-relaxed whitespace-pre-wrap text-[#0B1F38] dark:text-[#F1F7FC]">
               {simOutput}
             </div>
           )}
@@ -415,7 +424,7 @@ export const ChallengeDetailScreen: React.FC = () => {
         {/* Submit Catalog Solution */}
         <form
           onSubmit={handleSubmitSolution}
-          className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3"
+          className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3"
         >
           <SectionHeader
             title={strings.submitSolution}
@@ -430,7 +439,7 @@ export const ChallengeDetailScreen: React.FC = () => {
                 value={repoUrl}
                 onChange={(e) => setRepoUrl(e.target.value)}
                 placeholder="https://github.com/your-handle/solution"
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
             </div>
             <div>
@@ -441,7 +450,7 @@ export const ChallengeDetailScreen: React.FC = () => {
                 value={report}
                 onChange={(e) => setReport(e.target.value)}
                 placeholder="Summarize design trade-offs & test assertions..."
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
             </div>
           </div>
@@ -449,7 +458,7 @@ export const ChallengeDetailScreen: React.FC = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-5 py-2 text-xs font-bold text-white"
+              className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-5 py-2 text-xs font-bold text-white"
             >
               {submitting ? '...' : strings.submitSolution}
             </button>
@@ -475,7 +484,7 @@ export const ContestsScreen: React.FC = () => {
       <div className="space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <SectionHeader title={strings.contestsTitle} subtitle={strings.prizePoolDisclaimer} />
-          <button type="button" onClick={() => setRoute('discover')} className="text-xs font-semibold text-[#008CAE] hover:underline">
+          <button type="button" onClick={() => setRoute('discover')} className="text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:underline">
             {strings.backLabel}
           </button>
         </div>
@@ -492,10 +501,10 @@ export const ContestsScreen: React.FC = () => {
               key={tab.id}
               type="button"
               onClick={() => setStatusFilter(tab.id)}
-              className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+              className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition active:scale-95 whitespace-nowrap ${
                 statusFilter === tab.id
-                  ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-slate-950'
-                  : 'bg-white dark:bg-slate-900 border border-[#D5E0EC] dark:border-slate-700'
+                  ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-white'
+                  : 'bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8]'
               }`}
             >
               {tab.label}
@@ -509,20 +518,20 @@ export const ContestsScreen: React.FC = () => {
               key={contest.id}
               type="button"
               onClick={() => setSelectedContestId(contest.id)}
-              className={`text-start rounded-2xl border p-4 space-y-1.5 transition ${
+              className={`text-start rounded-2xl border p-4 space-y-1.5 transition active:scale-[0.99] ${
                 active.id === contest.id
-                  ? 'border-[#00B4DB] bg-white dark:bg-slate-900 ring-1 ring-[#00B4DB]/30'
-                  : 'border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900'
+                  ? 'border-[#00B4DB] bg-white dark:bg-[#0D1E36] ring-1 ring-[#00B4DB]/30 shadow-[0_12px_28px_-18px_rgba(0,180,219,0.5)]'
+                  : 'border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] hover:border-[#00B4DB]/60'
               }`}
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="text-[11px] font-bold text-[#008CAE] dark:text-[#7EE8F5]">{contest.organizer}</span>
                 <StatusLabel status={contest.status} />
               </div>
-              <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-white">
+              <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                 {lText(contest.title, lang)}
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] tabular-nums">
                 {contest.prizePool} · {contest.participantsCount} {isArabic ? 'متسابق' : 'entrants'}
               </p>
             </button>
@@ -530,13 +539,13 @@ export const ContestsScreen: React.FC = () => {
         </div>
 
         {/* Contest Arena */}
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
+        <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-display text-lg font-bold text-[#0B1F38] dark:text-white">
+              <h2 className="font-display text-lg font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                 {lText(active.title, lang)}
               </h2>
-              <p className="text-xs text-slate-500">{lText(active.startsOrEndsIn, lang)}</p>
+              <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{lText(active.startsOrEndsIn, lang)}</p>
             </div>
             <div className="flex gap-1.5">
               {(
@@ -550,10 +559,10 @@ export const ContestsScreen: React.FC = () => {
                   key={t.id}
                   type="button"
                   onClick={() => setSubTab(t.id)}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-bold ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-bold active:scale-95 transition whitespace-nowrap ${
                     subTab === t.id
                       ? 'bg-[#00B4DB] text-white'
-                      : 'border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                      : 'border border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8]'
                   }`}
                 >
                   {t.label}
@@ -563,20 +572,20 @@ export const ContestsScreen: React.FC = () => {
           </div>
 
           {subTab === 'PROBLEMS' && (
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="divide-y divide-[#D5E0EC]/80 dark:divide-[#1C395E]">
               {active.problems.map((p) => (
                 <div key={p.code} className="py-3 flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <span className="font-mono text-xs font-bold text-[#008CAE] me-2">[{p.code}]</span>
-                    <span className="text-sm font-semibold text-[#0B1F38] dark:text-white">{lText(p.title, lang)}</span>
-                    <p className="text-[11px] text-slate-500 mt-0.5">
+                    <span className="font-mono text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5] me-2">[{p.code}]</span>
+                    <span className="text-sm font-semibold text-[#0B1F38] dark:text-[#F1F7FC]">{lText(p.title, lang)}</span>
+                    <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8] mt-0.5 tabular-nums">
                       {p.difficulty} · {p.points} pts · {p.solvedPercent}% AC
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => showToast(isArabic ? `تم فتح بيئة المسألة ${p.code}` : `Opened Problem ${p.code} sandbox.`)}
-                    className="rounded-lg border border-[#D5E0EC] dark:border-slate-700 px-3 py-1.5 text-xs font-semibold"
+                    className="rounded-lg border border-[#D5E0EC] dark:border-[#1C395E] px-3 py-1.5 text-xs font-semibold text-[#0B1F38] dark:text-[#F1F7FC] hover:border-[#00B4DB] active:scale-95 transition"
                   >
                     {isArabic ? 'فتح المسألة' : 'Open Problem'}
                   </button>
@@ -594,12 +603,12 @@ export const ContestsScreen: React.FC = () => {
               ].map((row) => (
                 <div
                   key={row.rank}
-                  className="rounded-xl border border-slate-200 dark:border-slate-800 px-3.5 py-2.5 flex items-center justify-between"
+                  className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] px-3.5 py-2.5 flex items-center justify-between"
                 >
-                  <span className="font-semibold">
+                  <span className="font-semibold text-[#0B1F38] dark:text-[#F1F7FC]">
                     #{row.rank} · {row.name}
                   </span>
-                  <span className="tabular-nums text-[#008CAE] font-bold">
+                  <span className="tabular-nums text-[#008CAE] dark:text-[#7EE8F5] font-bold">
                     {row.score} pts ({row.penalty})
                   </span>
                 </div>
@@ -608,7 +617,7 @@ export const ContestsScreen: React.FC = () => {
           )}
 
           {subTab === 'EDITORIAL' && (
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] leading-relaxed">
               {lText(active.editorialSummary, lang)}
             </p>
           )}
@@ -669,12 +678,12 @@ export const ReverseEngHubScreen: React.FC = () => {
                 setAiAgentMode('REVERSE_ENG_GUIDE');
                 setAiDrawerOpen(true);
               }}
-              className="rounded-xl border border-[#00B4DB]/40 px-3 py-1.5 text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5]"
+              className="rounded-xl border border-[#00B4DB]/45 dark:border-[#1C4E78] bg-[#E0F9FD]/60 dark:bg-[#08243B] px-3 py-1.5 text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5] hover:border-[#00B4DB] active:scale-95 transition whitespace-nowrap"
             >
               <Bot className="w-3.5 h-3.5 inline me-1" />
               {isArabic ? 'مرشد الهندسة العكسية' : 'Reverse Eng Guide'}
             </button>
-            <button type="button" onClick={() => setRoute('discover')} className="text-xs font-semibold text-[#008CAE] hover:underline">
+            <button type="button" onClick={() => setRoute('discover')} className="text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:underline">
               {strings.backLabel}
             </button>
           </div>
@@ -687,20 +696,20 @@ export const ReverseEngHubScreen: React.FC = () => {
               key={item.id}
               type="button"
               onClick={() => setSelectedLabId(item.id)}
-              className={`text-start rounded-2xl border p-4 space-y-1 transition ${
+              className={`text-start rounded-2xl border p-4 space-y-1 transition active:scale-[0.99] ${
                 lab.id === item.id
-                  ? 'border-[#00B4DB] bg-white dark:bg-slate-900 ring-1 ring-[#00B4DB]/30'
-                  : 'border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900'
+                  ? 'border-[#00B4DB] bg-white dark:bg-[#0D1E36] ring-1 ring-[#00B4DB]/30 shadow-[0_12px_28px_-18px_rgba(0,180,219,0.5)]'
+                  : 'border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] hover:border-[#00B4DB]/60'
               }`}
             >
               <div className="flex items-center justify-between gap-2 text-[11px]">
-                <span className="font-bold text-[#008CAE]">{item.authorizedOrg}</span>
-                <span className="text-slate-500">+{item.pointsReward} pts</span>
+                <span className="font-bold text-[#008CAE] dark:text-[#7EE8F5]">{item.authorizedOrg}</span>
+                <span className="text-[#4C637C] dark:text-[#93ADC8] tabular-nums">+{item.pointsReward} pts</span>
               </div>
-              <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-white">
+              <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                 {lText(item.title, lang)}
               </h3>
-              <p className="text-xs text-slate-500">{item.targetSystem}</p>
+              <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{item.targetSystem}</p>
             </button>
           ))}
         </div>
@@ -733,17 +742,17 @@ export const ReverseEngHubScreen: React.FC = () => {
         </div>
 
         {/* Sandbox Trace Inspector */}
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-[#0B1F38] text-slate-100 p-4 space-y-2">
+        <div className="rounded-2xl border border-[#1C395E] bg-[#061120] text-[#F1F7FC] p-4 space-y-2 shadow-[0_14px_34px_-18px_rgba(0,180,219,0.35)]">
           <div className="flex items-center justify-between text-xs text-[#7EE8F5]">
             <span className="font-bold flex items-center gap-1.5">
-              <Cpu className="w-4 h-4" />
+              <Cpu className="w-4 h-4 text-[#00B4DB]" />
               Sandbox Artifact Trace
             </span>
             <span className="flex items-center gap-1">
               <Lock className="w-3.5 h-3.5" /> Read-Only Authorized Fixture
             </span>
           </div>
-          <pre className="text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap">
+          <pre className="text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap text-[#D5E6F5]">
             {lab.sampleArtifactTrace}
           </pre>
         </div>
@@ -751,10 +760,10 @@ export const ReverseEngHubScreen: React.FC = () => {
         {/* Submit Understanding Report */}
         <form
           onSubmit={handleSubmitLab}
-          className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3"
+          className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3"
         >
           <SectionHeader title={strings.understandingReportLabel} />
-          <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside">
+          <ul className="text-xs text-[#4C637C] dark:text-[#93ADC8] space-y-1 list-disc list-inside">
             {lab.understandingChecklist.map((c, idx) => (
               <li key={idx}>{lText(c, lang)}</li>
             ))}
@@ -769,13 +778,13 @@ export const ReverseEngHubScreen: React.FC = () => {
                 ? 'اشرح الحالة الأمنية قبل وبعد الإصلاح مع ذكر حدود الحالات الحرجة...'
                 : 'Document root cause, state transition proof, and safe boundary assertions...'
             }
-            className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+            className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
           />
           <div className="flex justify-end">
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-5 py-2 text-xs font-bold text-white"
+              className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-5 py-2 text-xs font-bold text-white"
             >
               {submitting ? '...' : strings.submitSolution}
             </button>

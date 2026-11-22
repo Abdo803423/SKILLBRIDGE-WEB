@@ -32,12 +32,12 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-[#F7FAFC] dark:bg-slate-950 p-6">
-          <div className="max-w-lg w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 space-y-4">
-            <h1 className="text-xl font-bold text-[#0B1F38] dark:text-white">
+        <div className="min-h-screen flex items-center justify-center bg-[#F7FAFC] dark:bg-[#061120] p-6">
+          <div className="max-w-lg w-full rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-6 space-y-4 shadow-[0_20px_50px_-32px_rgba(11,31,56,0.22)]">
+            <h1 className="font-display text-xl font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
               Something went wrong in SkillBridge
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-300 break-words">
+            <p className="text-sm text-[#4C637C] dark:text-[#93ADC8] break-words">
               {this.state.errorMessage || 'An unexpected error occurred while synchronizing data.'}
             </p>
             <button
@@ -46,7 +46,7 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
                 this.setState({ hasError: false, errorMessage: '' });
                 window.location.reload();
               }}
-              className="px-4 py-2 rounded-lg bg-[#00B4DB] text-white text-sm font-semibold hover:bg-[#008CAE] transition"
+              className="sb-btn-interactive px-4 py-2 rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] text-white text-sm font-semibold transition"
             >
               Reload SkillBridge
             </button>

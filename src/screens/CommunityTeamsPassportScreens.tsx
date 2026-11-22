@@ -15,6 +15,7 @@ import {
   Trophy,
   Users,
 } from 'lucide-react';
+import { AnimatedNumber, MotionReveal, SpatialCard } from '../components/InteractiveMotion';
 import { SectionHeader, StateWrapper, StatusLabel, VerifiedIndicator } from '../components/SkillBridgeUi';
 import { SEED_COMMENTS, useSkillBridge } from '../context/SkillBridgeContext';
 import { EVIDENCE_NODES, LEADERBOARD_ENTRIES } from '../data/ecosystemData';
@@ -75,7 +76,7 @@ export const CommunityFeedScreen: React.FC = () => {
           <button
             type="button"
             onClick={() => setComposerOpen(true)}
-            className="rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white flex items-center gap-1.5"
+            className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white flex items-center gap-1.5 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             {strings.newPost}
@@ -95,10 +96,10 @@ export const CommunityFeedScreen: React.FC = () => {
               key={tab.id}
               type="button"
               onClick={() => setSortBy(tab.id)}
-              className={`rounded-xl px-3 py-1.5 text-xs font-semibold ${
+              className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition active:scale-95 whitespace-nowrap ${
                 sortBy === tab.id
-                  ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-slate-950'
-                  : 'bg-white dark:bg-slate-900 border border-[#D5E0EC] dark:border-slate-700'
+                  ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-white'
+                  : 'bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8]'
               }`}
             >
               {tab.label}
@@ -107,68 +108,70 @@ export const CommunityFeedScreen: React.FC = () => {
         </div>
 
         <div className="space-y-3">
-          {sorted.map((post) => (
-            <div
-              key={post.id}
-              className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2.5"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-bold text-[#0B1F38] dark:text-white">{post.authorName}</span>
-                  <span className="text-slate-400">·</span>
-                  <span className="text-slate-500">{post.authorLevel}</span>
-                  <VerifiedIndicator verified={post.authorVerified} />
-                </div>
-                <span className="text-[11px] font-semibold text-[#008CAE] dark:text-[#7EE8F5]">{post.postType}</span>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedPostId(post.id);
-                  setRoute('postDetail');
-                }}
-                className="text-start block w-full"
+          {sorted.map((post, idx) => (
+            <MotionReveal key={post.id} delayMs={Math.min(idx, 5) * 45}>
+              <SpatialCard
+                tiltStrength={2.5}
+                className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-2.5"
               >
-                <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-white hover:text-[#008CAE] transition">
-                  {post.title}
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-2 leading-relaxed">
-                  {post.body}
-                </p>
-              </button>
-
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500">
-                <span>{post.tags.map((t) => `#${t}`).join('  ')}</span>
-                <div className="flex items-center gap-4">
-                  <span className="inline-flex items-center gap-1 tabular-nums">
-                    <ThumbsUp className="w-3.5 h-3.5" /> {post.helpfulCount} {strings.helpfulLabel}
-                  </span>
-                  <span className="inline-flex items-center gap-1 tabular-nums">
-                    <MessageCircle className="w-3.5 h-3.5" /> {post.commentCount}
-                  </span>
-                  {post.acceptedCommentId && (
-                    <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> {strings.bestAnswer}
-                    </span>
-                  )}
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{post.authorName}</span>
+                    <span className="text-[#4C637C] dark:text-[#93ADC8]">·</span>
+                    <span className="text-[#4C637C] dark:text-[#93ADC8]">{post.authorLevel}</span>
+                    <VerifiedIndicator verified={post.authorVerified} />
+                  </div>
+                  <span className="text-[11px] font-semibold text-[#008CAE] dark:text-[#7EE8F5]">{post.postType}</span>
                 </div>
-              </div>
-            </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedPostId(post.id);
+                    setRoute('postDetail');
+                  }}
+                  className="text-start block w-full"
+                >
+                  <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC] hover:text-[#008CAE] dark:hover:text-[#7EE8F5] transition">
+                    {post.title}
+                  </h3>
+                  <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] mt-1 line-clamp-2 leading-relaxed">
+                    {post.body}
+                  </p>
+                </button>
+
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#D5E0EC]/80 dark:border-[#1C395E] text-xs text-[#4C637C] dark:text-[#93ADC8]">
+                  <span>{post.tags.map((t) => `#${t}`).join('  ')}</span>
+                  <div className="flex items-center gap-4">
+                    <span className="inline-flex items-center gap-1 tabular-nums">
+                      <ThumbsUp className="w-3.5 h-3.5 text-[#00B4DB]" /> {post.helpfulCount} {strings.helpfulLabel}
+                    </span>
+                    <span className="inline-flex items-center gap-1 tabular-nums">
+                      <MessageCircle className="w-3.5 h-3.5" /> {post.commentCount}
+                    </span>
+                    {post.acceptedCommentId && (
+                      <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> {strings.bestAnswer}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </SpatialCard>
+            </MotionReveal>
           ))}
         </div>
 
         {composerOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#061120]/65 backdrop-blur-sm p-4">
             <form
               onSubmit={handlePublish}
-              className="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-[#D5E0EC] dark:border-slate-800 p-5 space-y-3"
+              className="sb-route-enter w-full max-w-lg rounded-2xl bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] p-5 space-y-3 shadow-2xl"
             >
-              <h3 className="font-display text-base font-bold">{strings.newPost}</h3>
+              <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{strings.newPost}</h3>
               <select
                 value={postType}
                 onChange={(e) => setPostType(e.target.value)}
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC]"
               >
                 <option value="Technical Question">Technical Question</option>
                 <option value="Tutorial">Tutorial</option>
@@ -180,7 +183,7 @@ export const CommunityFeedScreen: React.FC = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Concise title..."
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
               <textarea
                 required
@@ -188,20 +191,20 @@ export const CommunityFeedScreen: React.FC = () => {
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 placeholder="Include code context or constraints (secrets are auto-blocked)..."
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
               <input
                 type="text"
                 value={tagsCsv}
                 onChange={(e) => setTagsCsv(e.target.value)}
                 placeholder="Tags (comma-separated)"
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
               <div className="flex justify-end gap-2">
-                <button type="button" onClick={() => setComposerOpen(false)} className="px-3 py-1.5 text-xs font-semibold">
+                <button type="button" onClick={() => setComposerOpen(false)} className="px-3 py-1.5 text-xs font-semibold text-[#4C637C] dark:text-[#93ADC8]">
                   {strings.cancelLabel}
                 </button>
-                <button type="submit" className="rounded-xl bg-[#00B4DB] px-4 py-2 text-xs font-bold text-white">
+                <button type="submit" className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white">
                   {strings.confirmLabel}
                 </button>
               </div>
@@ -236,16 +239,16 @@ export const PostDetailScreen: React.FC = () => {
         <button
           type="button"
           onClick={() => setRoute('community')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#008CAE] hover:underline"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:underline"
         >
           {isArabic ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
           {strings.backLabel}
         </button>
 
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 space-y-3">
+        <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 sm:p-6 space-y-3">
           <div className="flex items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-2">
-              <span className="font-bold">{post.authorName}</span>
+              <span className="font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{post.authorName}</span>
               <VerifiedIndicator verified={post.authorVerified} />
             </div>
             <button
@@ -257,15 +260,15 @@ export const PostDetailScreen: React.FC = () => {
                   showToast(strings.guestLockedReason);
                 }
               }}
-              className="text-xs text-slate-500 hover:text-rose-600 inline-flex items-center gap-1"
+              className="text-xs text-[#4C637C] dark:text-[#93ADC8] hover:text-rose-600 inline-flex items-center gap-1"
             >
               <Flag className="w-3.5 h-3.5" />
               {strings.reportContent}
             </button>
           </div>
 
-          <h1 className="font-display text-xl font-bold text-[#0B1F38] dark:text-white">{post.title}</h1>
-          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{post.body}</p>
+          <h1 className="font-display text-xl font-bold text-[#0B1F38] dark:text-[#F1F7FC] [text-wrap:balance]">{post.title}</h1>
+          <p className="text-sm text-[#4C637C] dark:text-[#93ADC8] leading-relaxed whitespace-pre-wrap">{post.body}</p>
         </div>
 
         <div className="space-y-3">
@@ -273,13 +276,13 @@ export const PostDetailScreen: React.FC = () => {
           {comments.map((c) => (
             <div
               key={c.id}
-              className={`rounded-2xl border p-4 space-y-1.5 bg-white dark:bg-slate-900 ${
-                c.isBestAnswer ? 'border-emerald-400 dark:border-emerald-700' : 'border-[#D5E0EC] dark:border-slate-800'
+              className={`rounded-2xl border p-4 space-y-1.5 bg-white dark:bg-[#0D1E36] ${
+                c.isBestAnswer ? 'border-emerald-400 dark:border-emerald-700' : 'border-[#D5E0EC] dark:border-[#1C395E]'
               }`}
             >
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold">{c.authorName}</span>
+                  <span className="font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{c.authorName}</span>
                   <VerifiedIndicator verified={c.authorVerified} />
                 </div>
                 {c.isBestAnswer && (
@@ -288,7 +291,7 @@ export const PostDetailScreen: React.FC = () => {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">{c.body}</p>
+              <p className="text-xs text-[#0B1F38] dark:text-[#F1F7FC] leading-relaxed">{c.body}</p>
             </div>
           ))}
         </div>
@@ -303,7 +306,7 @@ export const PostDetailScreen: React.FC = () => {
               showToast(err instanceof Error ? err.message : 'Sign in required');
             }
           }}
-          className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-4 flex gap-2"
+          className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4 flex gap-2"
         >
           <input
             type="text"
@@ -311,9 +314,9 @@ export const PostDetailScreen: React.FC = () => {
             value={replyBody}
             onChange={(e) => setReplyBody(e.target.value)}
             placeholder={isArabic ? 'أضف إجابة تقنية أو ملاحظة...' : 'Write a helpful technical answer...'}
-            className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+            className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
           />
-          <button type="submit" className="rounded-xl bg-[#00B4DB] px-4 py-2 text-xs font-bold text-white">
+          <button type="submit" className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white">
             {strings.replyLabel}
           </button>
         </form>
@@ -360,7 +363,7 @@ export const TeamsHubScreen: React.FC = () => {
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className="rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white flex items-center gap-1.5"
+            className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white flex items-center gap-1.5 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             {strings.createTeam}
@@ -371,10 +374,10 @@ export const TeamsHubScreen: React.FC = () => {
           <button
             type="button"
             onClick={() => setTab('RECRUITING')}
-            className={`rounded-xl px-3.5 py-1.5 text-xs font-bold ${
+            className={`rounded-xl px-3.5 py-1.5 text-xs font-bold active:scale-95 transition whitespace-nowrap ${
               tab === 'RECRUITING'
-                ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-slate-950'
-                : 'bg-white dark:bg-slate-900 border border-[#D5E0EC] dark:border-slate-700'
+                ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-white'
+                : 'bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8]'
             }`}
           >
             {strings.recruitingTeams}
@@ -382,10 +385,10 @@ export const TeamsHubScreen: React.FC = () => {
           <button
             type="button"
             onClick={() => setTab('MINE')}
-            className={`rounded-xl px-3.5 py-1.5 text-xs font-bold ${
+            className={`rounded-xl px-3.5 py-1.5 text-xs font-bold active:scale-95 transition whitespace-nowrap ${
               tab === 'MINE'
-                ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-slate-950'
-                : 'bg-white dark:bg-slate-900 border border-[#D5E0EC] dark:border-slate-700'
+                ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-white'
+                : 'bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8]'
             }`}
           >
             {strings.myTeams}
@@ -393,48 +396,54 @@ export const TeamsHubScreen: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {visibleTeams.map((team) => (
-            <div
-              key={team.id}
-              className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-bold text-[#008CAE]">{localizedDomain(team.domain, isArabic ? 'AR' : 'EN')}</span>
-                <span className="text-xs text-slate-500 tabular-nums">
-                  {team.memberNames.length}/{team.maxMembers} {strings.membersLabel}
-                </span>
-              </div>
-              <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-white">{team.name}</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{team.description}</p>
-              <p className="text-[11px] text-slate-500">
-                <span className="font-semibold">{strings.needRolePrefix}</span> {team.rolesNeeded.join(', ')}
-              </p>
+          {visibleTeams.map((team, idx) => (
+            <MotionReveal key={team.id} delayMs={Math.min(idx, 5) * 55}>
+              <SpatialCard
+                tiltStrength={4}
+                className="h-full rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3"
+              >
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5]">
+                      {localizedDomain(team.domain, isArabic ? 'AR' : 'EN')}
+                    </span>
+                    <span className="text-xs text-[#4C637C] dark:text-[#93ADC8] tabular-nums">
+                      {team.memberNames.length}/{team.maxMembers} {strings.membersLabel}
+                    </span>
+                  </div>
+                  <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{team.name}</h3>
+                  <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] leading-relaxed">{team.description}</p>
+                  <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">
+                    <span className="font-semibold">{strings.needRolePrefix}</span> {team.rolesNeeded.join(', ')}
+                  </p>
+                </div>
 
-              <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedTeamId(team.id);
-                    setRoute('teamWorkspace');
-                  }}
-                  className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-slate-700 py-2 text-xs font-bold"
-                >
-                  {strings.sprintBoard}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => joinTeam(team)}
-                  className="rounded-xl bg-[#00B4DB] px-4 py-2 text-xs font-bold text-white"
-                >
-                  {strings.joinTeam}
-                </button>
-              </div>
-            </div>
+                <div className="flex items-center gap-2 pt-2 border-t border-[#D5E0EC]/80 dark:border-[#1C395E]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedTeamId(team.id);
+                      setRoute('teamWorkspace');
+                    }}
+                    className="flex-1 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] py-2 text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] hover:border-[#00B4DB] active:scale-95 transition"
+                  >
+                    {strings.sprintBoard}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => joinTeam(team)}
+                    className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white"
+                  >
+                    {strings.joinTeam}
+                  </button>
+                </div>
+              </SpatialCard>
+            </MotionReveal>
           ))}
         </div>
 
         {modalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#061120]/65 backdrop-blur-sm p-4">
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -454,16 +463,16 @@ export const TeamsHubScreen: React.FC = () => {
                   showToast(err instanceof Error ? err.message : 'Unable to create team');
                 }
               }}
-              className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-[#D5E0EC] dark:border-slate-800 p-5 space-y-3"
+              className="sb-route-enter w-full max-w-md rounded-2xl bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] p-5 space-y-3 shadow-2xl"
             >
-              <h3 className="font-display text-base font-bold">{strings.createTeam}</h3>
+              <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{strings.createTeam}</h3>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Team Name"
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
               <textarea
                 required
@@ -471,27 +480,27 @@ export const TeamsHubScreen: React.FC = () => {
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
                 placeholder="Team goal & collaboration charter..."
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
               <input
                 type="text"
                 value={challengeTitle}
                 onChange={(e) => setChallengeTitle(e.target.value)}
                 placeholder="Target Challenge"
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
               <input
                 type="text"
                 value={rolesNeeded}
                 onChange={(e) => setRolesNeeded(e.target.value)}
                 placeholder="Roles Needed"
-                className="w-full rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] px-3 py-2 text-xs text-[#0B1F38] dark:text-[#F1F7FC] focus:outline-none focus:border-[#00B4DB]"
               />
               <div className="flex justify-end gap-2">
-                <button type="button" onClick={() => setModalOpen(false)} className="px-3 py-1.5 text-xs font-semibold">
+                <button type="button" onClick={() => setModalOpen(false)} className="px-3 py-1.5 text-xs font-semibold text-[#4C637C] dark:text-[#93ADC8]">
                   {strings.cancelLabel}
                 </button>
-                <button type="submit" className="rounded-xl bg-[#00B4DB] px-4 py-2 text-xs font-bold text-white">
+                <button type="submit" className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white">
                   {strings.confirmLabel}
                 </button>
               </div>
@@ -514,21 +523,21 @@ export const TeamWorkspaceScreen: React.FC = () => {
         <button
           type="button"
           onClick={() => setRoute('teams')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#008CAE] hover:underline"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:underline"
         >
           {isArabic ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
           {strings.backLabel}
         </button>
 
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+        <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h1 className="font-display text-xl font-bold text-[#0B1F38] dark:text-white">{team.name}</h1>
-            <span className="text-xs font-bold text-[#008CAE] tabular-nums">{team.sprintProgress}% Sprint Progress</span>
+            <h1 className="font-display text-xl font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{team.name}</h1>
+            <span className="text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5] tabular-nums">{team.sprintProgress}% Sprint Progress</span>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-300">{team.challengeTitle} — {team.description}</p>
-          <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-3 text-xs">
-            <p className="font-bold text-[#0B1F38] dark:text-white mb-1">{strings.rewardSplitTitle}</p>
-            <p className="text-slate-600 dark:text-slate-300">
+          <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{team.challengeTitle} — {team.description}</p>
+          <div className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-3 text-xs">
+            <p className="font-bold text-[#0B1F38] dark:text-[#F1F7FC] mb-1">{strings.rewardSplitTitle}</p>
+            <p className="text-[#4C637C] dark:text-[#93ADC8]">
               {isArabic
                 ? `توزيع متساوٍ بين الأعضاء النشطين (${Math.round(100 / Math.max(1, team.memberNames.length))}% لكل عضو موثّق).`
                 : `Equal documented split (${Math.round(100 / Math.max(1, team.memberNames.length))}% per active verified contributor).`}
@@ -536,14 +545,14 @@ export const TeamWorkspaceScreen: React.FC = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+        <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
           <SectionHeader title={strings.sprintBoard} />
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="divide-y divide-[#D5E0EC]/80 dark:divide-[#1C395E]">
             {tasks.map((t) => (
               <div key={t.id} className="py-3 flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-bold text-[#0B1F38] dark:text-white">{t.title}</p>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{t.title}</p>
+                  <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">
                     {t.assigneeName} · {t.role}
                   </p>
                 </div>
@@ -577,9 +586,9 @@ export const ExperiencePassportScreen: React.FC = () => {
             <button
               type="button"
               onClick={() => setRoute('badges')}
-              className="rounded-xl border border-[#D5E0EC] dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold flex items-center gap-1.5"
+              className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] px-3 py-2 text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] flex items-center gap-1.5 hover:border-[#00B4DB] active:scale-95 transition whitespace-nowrap"
             >
-              <Trophy className="w-4 h-4 text-[#00B4DB]" />
+              <Trophy className="w-4 h-4 text-[#00B4DB] dark:text-[#7EE8F5]" />
               {strings.badgesTitle}
             </button>
             <button
@@ -588,7 +597,7 @@ export const ExperiencePassportScreen: React.FC = () => {
                 await navigator.clipboard?.writeText(window.location.href).catch(() => {});
                 showToast(isArabic ? 'تم نسخ رابط التحقق من السجل.' : 'Passport verification link copied.');
               }}
-              className="rounded-xl bg-[#0B1F38] dark:bg-[#00B4DB] text-white dark:text-slate-950 px-4 py-2 text-xs font-bold flex items-center gap-1.5"
+              className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] text-white px-4 py-2 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap"
             >
               <Share2 className="w-3.5 h-3.5" />
               {strings.sharePassport}
@@ -598,33 +607,35 @@ export const ExperiencePassportScreen: React.FC = () => {
 
         {/* Summary Strip */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
-            <p className="text-[11px] text-slate-500">{strings.verifiedExperience}</p>
-            <p className="font-display text-2xl font-bold tabular-nums mt-1">
-              {realSubs.filter((s) => s.status === 'VERIFIED').length}
+          <SpatialCard tiltStrength={4} className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4">
+            <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{strings.verifiedExperience}</p>
+            <p className="font-display text-2xl font-bold text-[#0B1F38] dark:text-[#F1F7FC] tabular-nums mt-1">
+              <AnimatedNumber value={realSubs.filter((s) => s.status === 'VERIFIED').length} />
             </p>
-          </div>
-          <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
-            <p className="text-[11px] text-slate-500">{strings.pointsLabel}</p>
-            <p className="font-display text-2xl font-bold tabular-nums mt-1">{profile.points}</p>
-          </div>
-          <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
-            <p className="text-[11px] text-slate-500">{isArabic ? 'المستوى المهني' : 'Verified Tier'}</p>
-            <p className="font-display text-base font-bold text-[#008CAE] mt-1">{profile.careerLevel}</p>
-          </div>
-          <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
-            <p className="text-[11px] text-slate-500">{isArabic ? 'إظهار السجل' : 'Visibility'}</p>
-            <p className="font-display text-base font-bold mt-1">
+          </SpatialCard>
+          <SpatialCard tiltStrength={4} className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4">
+            <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{strings.pointsLabel}</p>
+            <p className="font-display text-2xl font-bold text-[#0B1F38] dark:text-[#F1F7FC] tabular-nums mt-1">
+              <AnimatedNumber value={profile.points} />
+            </p>
+          </SpatialCard>
+          <SpatialCard tiltStrength={4} className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4">
+            <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{isArabic ? 'المستوى المهني' : 'Verified Tier'}</p>
+            <p className="font-display text-base font-bold text-[#008CAE] dark:text-[#7EE8F5] mt-1">{profile.careerLevel}</p>
+          </SpatialCard>
+          <SpatialCard tiltStrength={4} className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4">
+            <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{isArabic ? 'إظهار السجل' : 'Visibility'}</p>
+            <p className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC] mt-1">
               {profile.passportPublic ? (isArabic ? 'عام للتحقق' : 'Public Verify') : isArabic ? 'خاص' : 'Private'}
             </p>
-          </div>
+          </SpatialCard>
         </div>
 
         {/* Verified & Synchronized Submissions */}
         <section className="space-y-3">
           <SectionHeader title={strings.verifiedExperience} />
           {realSubs.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-6 text-center text-xs text-slate-500">
+            <div className="rounded-2xl border border-dashed border-[#D5E0EC] dark:border-[#1C395E] p-6 text-center text-xs text-[#4C637C] dark:text-[#93ADC8]">
               {isArabic
                 ? 'لا توجد تسليمات خاصة بك موثّقة بعد — قدّم في مشروع شركة أو تحدٍ ليظهر هنا مع رمز تحقق.'
                 : 'No personal submissions verified yet — submit a company brief or challenge below to mint your first verification code.'}
@@ -634,37 +645,37 @@ export const ExperiencePassportScreen: React.FC = () => {
               {realSubs.map((sub) => (
                 <div
                   key={sub.id}
-                  className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-2"
+                  className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-2 hover:border-[#00B4DB] transition"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
-                      <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-white">
+                      <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                         {sub.challengeTitle}
                       </h3>
-                      <p className="text-xs text-[#008CAE] font-semibold">
+                      <p className="text-xs text-[#008CAE] dark:text-[#7EE8F5] font-semibold">
                         {sub.companyName} · {sub.skillsApplied.join(' · ')}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <StatusLabel status={sub.status} />
                       {sub.score > 0 && (
-                        <span className="text-xs font-bold tabular-nums text-[#0B1F38] dark:text-white">
+                        <span className="text-xs font-bold tabular-nums text-[#0B1F38] dark:text-[#F1F7FC]">
                           {sub.score}%
                         </span>
                       )}
                     </div>
                   </div>
                   {sub.mentorFeedback && (
-                    <p className="text-xs text-slate-600 dark:text-slate-300">
+                    <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">
                       <span className="font-semibold">{strings.mentorFeedback}:</span> {sub.mentorFeedback}
                     </p>
                   )}
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
-                    <span className="font-mono text-[11px] text-slate-500">{sub.verificationCode}</span>
+                  <div className="flex items-center justify-between pt-2 border-t border-[#D5E0EC]/80 dark:border-[#1C395E] text-xs">
+                    <span className="font-mono text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{sub.verificationCode}</span>
                     <button
                       type="button"
                       onClick={() => setProofCodeModal(sub.verificationCode)}
-                      className="font-semibold text-[#008CAE] hover:underline"
+                      className="font-semibold text-[#008CAE] dark:text-[#7EE8F5] hover:underline"
                     >
                       {isArabic ? 'بطاقة التحقق' : 'Inspect Verification Proof'}
                     </button>
@@ -680,32 +691,33 @@ export const ExperiencePassportScreen: React.FC = () => {
           <SectionHeader title={`${strings.demoCatalogLabel} — ${strings.skillEvidenceGraph}`} />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {EVIDENCE_NODES.map((node) => (
-              <div
+              <SpatialCard
                 key={node.verificationId}
-                className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-1.5"
+                tiltStrength={4}
+                className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4 space-y-1.5"
               >
                 <div className="flex items-center justify-between gap-2 text-[11px]">
-                  <span className="font-bold text-[#008CAE]">{node.level}</span>
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span className="font-bold text-[#008CAE] dark:text-[#7EE8F5]">{node.level}</span>
+                  <ShieldCheck className="w-4 h-4 text-[#00B4DB]" />
                 </div>
-                <h4 className="font-display text-sm font-bold text-[#0B1F38] dark:text-white">{node.skill}</h4>
-                <p className="text-xs text-slate-600 dark:text-slate-300">{lText(node.proofTitle, lang)}</p>
-                <p className="text-[11px] text-slate-500">{node.evaluator}</p>
-              </div>
+                <h4 className="font-display text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{node.skill}</h4>
+                <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{lText(node.proofTitle, lang)}</p>
+                <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{node.evaluator}</p>
+              </SpatialCard>
             ))}
           </div>
 
           {demoSubs.map((sub) => (
             <div
               key={sub.id}
-              className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-4 flex flex-wrap items-center justify-between gap-2"
+              className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-[#F0F6FA] dark:bg-[#09172B] p-4 flex flex-wrap items-center justify-between gap-2"
             >
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#4C637C] dark:text-[#93ADC8]">
                   {strings.demoCatalogLabel}
                 </p>
-                <p className="text-sm font-bold text-[#0B1F38] dark:text-white">{sub.challengeTitle}</p>
-                <p className="text-xs text-slate-500">{sub.mentorFeedback}</p>
+                <p className="text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{sub.challengeTitle}</p>
+                <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{sub.mentorFeedback}</p>
               </div>
               <StatusLabel status={sub.status} />
             </div>
@@ -713,19 +725,19 @@ export const ExperiencePassportScreen: React.FC = () => {
         </section>
 
         {proofCodeModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="w-full max-w-sm rounded-2xl bg-white dark:bg-slate-900 border border-[#D5E0EC] dark:border-slate-800 p-5 space-y-3 text-center">
-              <Award className="w-8 h-8 mx-auto text-[#00B4DB]" />
-              <h3 className="font-display text-base font-bold">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#061120]/65 backdrop-blur-sm p-4">
+            <div className="sb-route-enter w-full max-w-sm rounded-2xl bg-white dark:bg-[#0D1E36] border border-[#D5E0EC] dark:border-[#1C395E] p-5 space-y-3 text-center shadow-2xl">
+              <Award className="w-8 h-8 mx-auto text-[#00B4DB] dark:text-[#7EE8F5]" />
+              <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                 {isArabic ? 'شهادة توثيق خبرة SkillBridge' : 'SkillBridge Cryptographic Verification'}
               </h3>
-              <p className="font-mono text-sm font-bold bg-slate-100 dark:bg-slate-800 py-2 rounded-xl">
+              <p className="font-mono text-sm font-bold bg-[#F0F6FA] dark:bg-[#09172B] text-[#0B1F38] dark:text-[#7EE8F5] py-2 rounded-xl">
                 {proofCodeModal}
               </p>
               <button
                 type="button"
                 onClick={() => setProofCodeModal(null)}
-                className="w-full rounded-xl bg-[#00B4DB] py-2 text-xs font-bold text-white"
+                className="sb-btn-interactive w-full rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] py-2 text-xs font-bold text-white"
               >
                 {strings.closeLabel}
               </button>
@@ -769,46 +781,51 @@ export const BadgesGalleryScreen: React.FC = () => {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {progressList.map((item) => (
-            <div
-              key={item.definition.id}
-              className={`rounded-2xl border p-4 space-y-2.5 bg-white dark:bg-slate-900 ${
-                item.isUnlocked
-                  ? 'border-[#00B4DB] ring-1 ring-[#00B4DB]/20'
-                  : 'border-[#D5E0EC] dark:border-slate-800'
-              }`}
-            >
-              <div className="flex items-center justify-between gap-2">
-                {item.isUnlocked ? (
-                  <Trophy className="w-5 h-5 text-[#00B4DB]" />
-                ) : (
-                  <Lock className="w-5 h-5 text-slate-400" />
-                )}
-                <span className="text-[11px] font-bold text-[#008CAE] tabular-nums">
-                  +{item.definition.pointsAwarded} pts
-                </span>
-              </div>
-              <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-white">
-                {lText(item.definition.title, lang)}
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                {lText(item.definition.description, lang)}
-              </p>
-              <div className="space-y-1 pt-1">
-                <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                  <div
-                    className="h-full bg-[#00B4DB] rounded-full transition-all"
-                    style={{ width: `${item.progressPercent}%` }}
-                  />
+          {progressList.map((item, idx) => (
+            <MotionReveal key={item.definition.id} delayMs={Math.min(idx, 5) * 45}>
+              <SpatialCard
+                tiltStrength={5}
+                highlight={item.isUnlocked}
+                className={`h-full rounded-2xl border p-4 space-y-2.5 bg-white dark:bg-[#0D1E36] ${
+                  item.isUnlocked
+                    ? 'border-[#00B4DB] ring-1 ring-[#00B4DB]/25'
+                    : 'border-[#D5E0EC] dark:border-[#1C395E]'
+                }`}
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    {item.isUnlocked ? (
+                      <Trophy className="w-5 h-5 text-[#00B4DB] dark:text-[#7EE8F5]" />
+                    ) : (
+                      <Lock className="w-5 h-5 text-[#4C637C] dark:text-[#93ADC8]" />
+                    )}
+                    <span className="text-[11px] font-bold text-[#008CAE] dark:text-[#7EE8F5] tabular-nums">
+                      +{item.definition.pointsAwarded} pts
+                    </span>
+                  </div>
+                  <h3 className="font-display text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
+                    {lText(item.definition.title, lang)}
+                  </h3>
+                  <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] leading-relaxed">
+                    {lText(item.definition.description, lang)}
+                  </p>
                 </div>
-                <p className="text-[11px] text-slate-500 flex justify-between tabular-nums">
-                  <span>{lText(item.remainingLabel, lang)}</span>
-                  <span>
-                    {item.currentCount}/{item.targetCount}
-                  </span>
-                </p>
-              </div>
-            </div>
+                <div className="space-y-1 pt-1">
+                  <div className="h-1.5 w-full rounded-full bg-[#D5E0EC] dark:bg-[#1C395E] overflow-hidden">
+                    <div
+                      className="h-full bg-[#00B4DB] rounded-full transition-all duration-500"
+                      style={{ width: `${item.progressPercent}%` }}
+                    />
+                  </div>
+                  <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8] flex justify-between tabular-nums">
+                    <span>{lText(item.remainingLabel, lang)}</span>
+                    <span>
+                      {item.currentCount}/{item.targetCount}
+                    </span>
+                  </p>
+                </div>
+              </SpatialCard>
+            </MotionReveal>
           ))}
         </div>
       </div>
@@ -827,52 +844,58 @@ export const PointsWalletScreen: React.FC = () => {
           subtitle={`${profile.points} ${strings.pointsLabel} · ${strings.auditLogTitle}`}
         />
 
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-slate-500">{isArabic ? 'الرصيد الكلي الموثّق' : 'Total Verified Points'}</p>
-            <p className="font-display text-3xl font-bold text-[#0B1F38] dark:text-white tabular-nums mt-1">
-              {profile.points}
-            </p>
+        <SpatialCard
+          tiltStrength={3}
+          highlight
+          className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{isArabic ? 'الرصيد الكلي الموثّق' : 'Total Verified Points'}</p>
+              <p className="font-display text-3xl font-bold text-[#0B1F38] dark:text-[#F1F7FC] tabular-nums mt-1">
+                <AnimatedNumber value={profile.points} />
+              </p>
+            </div>
+            <Coins className="w-9 h-9 text-[#00B4DB] dark:text-[#7EE8F5]" />
           </div>
-          <Coins className="w-9 h-9 text-[#00B4DB]" />
-        </div>
+        </SpatialCard>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+          <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
             <SectionHeader title={strings.walletTitle} />
             {pointLedger.length === 0 ? (
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">
                 {isArabic
                   ? 'ستظهر حركات النقاط والمكافآت هنا بعد أول توثيق عملي.'
                   : 'Reward transactions appear here once submissions or badges are verified.'}
               </p>
             ) : (
-              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              <div className="divide-y divide-[#D5E0EC]/80 dark:divide-[#1C395E]">
                 {pointLedger.map((tx) => (
                   <div key={tx.id} className="py-2.5 flex items-center justify-between text-xs">
                     <div>
-                      <p className="font-semibold text-[#0B1F38] dark:text-white">{tx.title}</p>
-                      <p className="text-[11px] text-slate-500">{tx.reason}</p>
+                      <p className="font-semibold text-[#0B1F38] dark:text-[#F1F7FC]">{tx.title}</p>
+                      <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{tx.reason}</p>
                     </div>
-                    <span className="font-bold text-emerald-600 tabular-nums">+{tx.points} pts</span>
+                    <span className="font-bold text-[#008CAE] dark:text-[#7EE8F5] tabular-nums">+{tx.points} pts</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+          <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
             <SectionHeader title={strings.auditLogTitle} />
             {auditLogs.length === 0 ? (
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">
                 {isArabic ? 'سجل الأمان والتحقق جاهز لتوثيق أفعالك.' : 'Account verification audit events record automatically here.'}
               </p>
             ) : (
-              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              <div className="divide-y divide-[#D5E0EC]/80 dark:divide-[#1C395E]">
                 {auditLogs.map((log) => (
                   <div key={log.id} className="py-2.5 text-xs">
-                    <p className="font-semibold text-[#0B1F38] dark:text-white">{log.summary}</p>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="font-semibold text-[#0B1F38] dark:text-[#F1F7FC]">{log.summary}</p>
+                    <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">
                       {log.actionType} · {log.actorRole}
                     </p>
                   </div>
@@ -907,8 +930,8 @@ export const LeaderboardScreen: React.FC = () => {
             <button
               type="button"
               onClick={() => setFilterTeamsOnly(false)}
-              className={`rounded-xl px-3 py-1.5 text-xs font-bold ${
-                !filterTeamsOnly ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-slate-950' : 'border border-[#D5E0EC] dark:border-slate-700'
+              className={`rounded-xl px-3 py-1.5 text-xs font-bold active:scale-95 transition whitespace-nowrap ${
+                !filterTeamsOnly ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-white' : 'border border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8]'
               }`}
             >
               {isArabic ? 'الأفراد' : 'Individuals'}
@@ -916,8 +939,8 @@ export const LeaderboardScreen: React.FC = () => {
             <button
               type="button"
               onClick={() => setFilterTeamsOnly(true)}
-              className={`rounded-xl px-3 py-1.5 text-xs font-bold ${
-                filterTeamsOnly ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-slate-950' : 'border border-[#D5E0EC] dark:border-slate-700'
+              className={`rounded-xl px-3 py-1.5 text-xs font-bold active:scale-95 transition whitespace-nowrap ${
+                filterTeamsOnly ? 'bg-[#0B1F38] text-white dark:bg-[#00B4DB] dark:text-white' : 'border border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8]'
               }`}
             >
               <Users className="w-3.5 h-3.5 inline me-1" />
@@ -926,9 +949,9 @@ export const LeaderboardScreen: React.FC = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#D5E0EC] dark:border-slate-800 bg-white dark:bg-slate-900 overflow-x-auto">
+        <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] overflow-x-auto">
           <table className="w-full text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-950/60 border-b border-[#D5E0EC] dark:border-slate-800 text-slate-500">
+            <thead className="bg-[#F0F6FA] dark:bg-[#09172B] border-b border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8]">
               <tr>
                 <th className="text-start px-4 py-3 font-semibold">#</th>
                 <th className="text-start px-4 py-3 font-semibold">{isArabic ? 'الاسم' : 'Contributor'}</th>
@@ -938,20 +961,20 @@ export const LeaderboardScreen: React.FC = () => {
                 <th className="text-start px-4 py-3 font-semibold">{isArabic ? 'أدلة موثّقة' : 'Verified'}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-[#D5E0EC]/80 dark:divide-[#1C395E]">
               {rows.map((row) => (
-                <tr key={row.name} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
-                  <td className="px-4 py-3 font-bold tabular-nums">{row.rank}</td>
-                  <td className="px-4 py-3 font-semibold text-[#0B1F38] dark:text-white">
+                <tr key={row.name} className="hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F]/70 transition">
+                  <td className="px-4 py-3 font-bold tabular-nums text-[#0B1F38] dark:text-[#F1F7FC]">{row.rank}</td>
+                  <td className="px-4 py-3 font-semibold text-[#0B1F38] dark:text-[#F1F7FC]">
                     {row.name}
-                    <span className="block text-[11px] font-normal text-slate-500">
+                    <span className="block text-[11px] font-normal text-[#4C637C] dark:text-[#93ADC8]">
                       {row.country} · {row.level}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.domain}</td>
-                  <td className="px-4 py-3 font-bold text-[#008CAE] tabular-nums">{row.rating}</td>
-                  <td className="px-4 py-3 font-semibold tabular-nums">{row.points}</td>
-                  <td className="px-4 py-3 tabular-nums">{row.verifiedCount}</td>
+                  <td className="px-4 py-3 text-[#4C637C] dark:text-[#93ADC8]">{row.domain}</td>
+                  <td className="px-4 py-3 font-bold text-[#008CAE] dark:text-[#7EE8F5] tabular-nums">{row.rating}</td>
+                  <td className="px-4 py-3 font-semibold tabular-nums text-[#0B1F38] dark:text-[#F1F7FC]">{row.points}</td>
+                  <td className="px-4 py-3 tabular-nums text-[#0B1F38] dark:text-[#F1F7FC]">{row.verifiedCount}</td>
                 </tr>
               ))}
             </tbody>
