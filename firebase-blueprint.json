@@ -1,0 +1,357 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated learner/mentor/company profile storing career identity, persisted preferences, skills, progression, and privacy flags.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "currentRole": { "type": "string" },
+        "experienceLevel": { "type": "string" },
+        "country": { "type": "string" },
+        "timezone": { "type": "string" },
+        "domain": { "type": "string" },
+        "careerLevel": { "type": "string", "enum": ["Junior", "Mid-level", "Senior", "Director / Leadership"] },
+        "planTier": { "type": "string", "enum": ["Starter — Free", "Growth — Paid", "Professional+ — Paid", "Company / Enterprise"] },
+        "roleMode": { "type": "string", "enum": ["LEARNER", "MENTOR", "DIRECTOR", "COMPANY", "ADMIN"] },
+        "weeklyHours": { "type": "integer" },
+        "currentSkills": { "type": "array" },
+        "targetSkills": { "type": "array" },
+        "goalsSummary": { "type": "string" },
+        "points": { "type": "integer" },
+        "streakDays": { "type": "integer" },
+        "passportPublic": { "type": "boolean" },
+        "showRepoLinks": { "type": "boolean" },
+        "preferredLanguage": { "type": "string", "enum": ["EN", "AR"] },
+        "darkTheme": { "type": "boolean" },
+        "onboardingCompleted": { "type": "boolean" },
+        "savedChallengeIds": { "type": "array" },
+        "savedPostIds": { "type": "array" },
+        "followedTags": { "type": "array" },
+        "mutedAuthors": { "type": "array" },
+        "aiPersonalizationEnabled": { "type": "boolean" },
+        "aiContextSharingEnabled": { "type": "boolean" },
+        "emailNotifications": { "type": "boolean" },
+        "pushNotifications": { "type": "boolean" },
+        "teamMentionsNotifications": { "type": "boolean" },
+        "lastRoute": { "type": "string" },
+        "verifiedSkillCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "displayName", "createdAt", "updatedAt"]
+    },
+    "CareerGoal": {
+      "title": "CareerGoal",
+      "description": "Target career role and AI skill gap analysis summary.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "targetRole": { "type": "string" },
+        "experienceLevel": { "type": "string" },
+        "weeklyHours": { "type": "integer" },
+        "readinessScore": { "type": "integer" },
+        "executiveSummary": { "type": "string" },
+        "currentSkills": { "type": "array" },
+        "matchedSkills": { "type": "array" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "targetRole", "experienceLevel", "weeklyHours", "readinessScore", "executiveSummary", "currentSkills", "matchedSkills", "isActive", "createdAt", "updatedAt"]
+    },
+    "SkillGap": {
+      "title": "SkillGap",
+      "description": "Identified skill gap linked to a CareerGoal.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "goalId": { "type": "string" },
+        "skillName": { "type": "string" },
+        "priority": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW"] },
+        "currentLevel": { "type": "string" },
+        "targetLevel": { "type": "string" },
+        "whyItMatters": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "goalId", "skillName", "priority", "currentLevel", "targetLevel", "whyItMatters", "createdAt", "updatedAt"]
+    },
+    "RoadmapMilestone": {
+      "title": "RoadmapMilestone",
+      "description": "Actionable learning milestone for a CareerGoal.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "goalId": { "type": "string" },
+        "phaseOrder": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "estimatedHours": { "type": "integer" },
+        "practiceProject": { "type": "string" },
+        "resourceTip": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "goalId", "phaseOrder", "title", "description", "estimatedHours", "practiceProject", "resourceTip", "completed", "createdAt", "updatedAt"]
+    },
+    "CoachMessage": {
+      "title": "CoachMessage",
+      "description": "Saved AI agent, career coach, or mock interview message.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "goalId": { "type": "string" },
+        "mode": { "type": "string", "enum": ["INTERVIEW", "COACH", "AGENT"] },
+        "sender": { "type": "string", "enum": ["USER", "AI"] },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "goalId", "mode", "sender", "content", "createdAt"]
+    },
+    "ChallengeSubmission": {
+      "title": "ChallengeSubmission",
+      "description": "User challenge, contest, or reverse engineering submission and verified experience passport evidence.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "challengeId": { "type": "string" },
+        "challengeTitle": { "type": "string" },
+        "companyName": { "type": "string" },
+        "category": { "type": "string", "enum": ["CHALLENGE", "CONTEST", "REVERSE_ENG"] },
+        "roleInTeam": { "type": "string" },
+        "skillsApplied": { "type": "array" },
+        "repoOrDemoUrl": { "type": "string" },
+        "understandingReport": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING", "UNDER_REVIEW", "VERIFIED", "REJECTED", "DISPUTED"] },
+        "rejectionReason": { "type": "string" },
+        "mentorFeedback": { "type": "string" },
+        "score": { "type": "integer" },
+        "pointsAwarded": { "type": "integer" },
+        "rewardAmount": { "type": "string" },
+        "rewardStatus": { "type": "string", "enum": ["PENDING", "UNDER_REVIEW", "APPROVED", "PAID", "REJECTED", "DISPUTED"] },
+        "isPublicOnPassport": { "type": "boolean" },
+        "verificationCode": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "challengeId", "challengeTitle", "companyName", "category", "roleInTeam", "skillsApplied", "understandingReport", "status", "score", "pointsAwarded", "rewardStatus", "isPublicOnPassport", "verificationCode", "createdAt", "updatedAt"]
+    },
+    "UserBadge": {
+      "title": "UserBadge",
+      "description": "Earned SkillBridge badge stored with deterministic ID to prevent duplicate awarding.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "badgeId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "criteria": { "type": "string" },
+        "pointsAwarded": { "type": "integer" },
+        "isShareable": { "type": "boolean" },
+        "unlockedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "badgeId", "title", "description", "criteria", "pointsAwarded", "isShareable", "unlockedAt"]
+    },
+    "PointLedgerEntry": {
+      "title": "PointLedgerEntry",
+      "description": "Idempotent transaction ledger recording why points or rewards were granted.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "txId": { "type": "string" },
+        "sourceType": { "type": "string", "enum": ["CHALLENGE", "CONTEST", "REVERSE_ENG", "BADGE", "COMMUNITY", "TEAM", "MENTOR"] },
+        "sourceId": { "type": "string" },
+        "title": { "type": "string" },
+        "points": { "type": "integer" },
+        "cashAmount": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING", "UNDER_REVIEW", "APPROVED", "PAID", "REJECTED", "DISPUTED"] },
+        "reason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "txId", "sourceType", "sourceId", "title", "points", "status", "reason", "createdAt"]
+    },
+    "AuditLogEntry": {
+      "title": "AuditLogEntry",
+      "description": "Append-only audit trail for points, badges, evaluations, team actions, and account changes.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "actionType": { "type": "string" },
+        "summary": { "type": "string" },
+        "actorRole": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "actionType", "summary", "actorRole", "createdAt"]
+    },
+    "CommunityPost": {
+      "title": "CommunityPost",
+      "description": "Community question, tutorial, code review, or team recruitment post.",
+      "type": "object",
+      "properties": {
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorLevel": { "type": "string" },
+        "authorVerified": { "type": "boolean" },
+        "postType": { "type": "string" },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "tags": { "type": "array" },
+        "helpfulCount": { "type": "integer" },
+        "commentCount": { "type": "integer" },
+        "acceptedCommentId": { "type": "string" },
+        "isHidden": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorId", "authorName", "authorLevel", "authorVerified", "postType", "title", "body", "tags", "helpfulCount", "commentCount", "isHidden", "createdAt", "updatedAt"]
+    },
+    "CommunityComment": {
+      "title": "CommunityComment",
+      "description": "Nested comment on a community post.",
+      "type": "object",
+      "properties": {
+        "postId": { "type": "string" },
+        "parentCommentId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorLevel": { "type": "string" },
+        "authorVerified": { "type": "boolean" },
+        "body": { "type": "string" },
+        "helpfulCount": { "type": "integer" },
+        "isBestAnswer": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postId", "parentCommentId", "authorId", "authorName", "authorLevel", "authorVerified", "body", "helpfulCount", "isBestAnswer", "createdAt"]
+    },
+    "Team": {
+      "title": "Team",
+      "description": "Collaborative SkillBridge team for projects and contests.",
+      "type": "object",
+      "properties": {
+        "captainId": { "type": "string" },
+        "captainName": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "domain": { "type": "string" },
+        "level": { "type": "string" },
+        "maxMembers": { "type": "integer" },
+        "memberIds": { "type": "array" },
+        "memberNames": { "type": "array" },
+        "requiredSkills": { "type": "array" },
+        "rolesNeeded": { "type": "array" },
+        "challengeTitle": { "type": "string" },
+        "lookingForTeammates": { "type": "boolean" },
+        "sprintProgress": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["captainId", "captainName", "name", "description", "domain", "level", "maxMembers", "memberIds", "memberNames", "requiredSkills", "rolesNeeded", "lookingForTeammates", "sprintProgress", "createdAt", "updatedAt"]
+    },
+    "TeamTask": {
+      "title": "TeamTask",
+      "description": "Sprint task inside a collaborative Team.",
+      "type": "object",
+      "properties": {
+        "teamId": { "type": "string" },
+        "memberIds": { "type": "array" },
+        "title": { "type": "string" },
+        "assigneeName": { "type": "string" },
+        "role": { "type": "string" },
+        "status": { "type": "string", "enum": ["TODO", "IN_PROGRESS", "DONE"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["teamId", "memberIds", "title", "assigneeName", "role", "status", "createdAt", "updatedAt"]
+    },
+    "ContentReport": {
+      "title": "ContentReport",
+      "description": "Moderation report submitted by a user (including AI response reports).",
+      "type": "object",
+      "properties": {
+        "reporterId": { "type": "string" },
+        "targetType": { "type": "string" },
+        "targetId": { "type": "string" },
+        "reason": { "type": "string" },
+        "status": { "type": "string", "enum": ["OPEN", "REVIEWED", "DISMISSED"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reporterId", "targetType", "targetId", "reason", "status", "createdAt"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized SkillBridge platform administrator record keyed by Firebase UID.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "grantedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "email", "grantedAt"]
+    }
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "Server-managed administrator records."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile and persisted preferences owned by userId."
+    },
+    "/users/{userId}/goals/{goalId}": {
+      "schema": { "$ref": "#/entities/CareerGoal" },
+      "description": "Saved career bridge goals owned by userId."
+    },
+    "/users/{userId}/gaps/{gapId}": {
+      "schema": { "$ref": "#/entities/SkillGap" },
+      "description": "Skill gap items scoped to userId."
+    },
+    "/users/{userId}/milestones/{milestoneId}": {
+      "schema": { "$ref": "#/entities/RoadmapMilestone" },
+      "description": "Learning roadmap milestones scoped to userId."
+    },
+    "/users/{userId}/coachMessages/{messageId}": {
+      "schema": { "$ref": "#/entities/CoachMessage" },
+      "description": "AI agent, career coach, and mock interview history scoped to userId."
+    },
+    "/users/{userId}/submissions/{submissionId}": {
+      "schema": { "$ref": "#/entities/ChallengeSubmission" },
+      "description": "Challenge, contest, and reverse engineering submissions and verified passport evidence."
+    },
+    "/users/{userId}/badges/{badgeId}": {
+      "schema": { "$ref": "#/entities/UserBadge" },
+      "description": "Idempotent unlocked badges earned by userId."
+    },
+    "/users/{userId}/pointLedger/{txId}": {
+      "schema": { "$ref": "#/entities/PointLedgerEntry" },
+      "description": "Idempotent points and rewards ledger for userId."
+    },
+    "/users/{userId}/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLogEntry" },
+      "description": "Audit trail of account, progression, and evaluation events for userId."
+    },
+    "/communityPosts/{postId}": {
+      "schema": { "$ref": "#/entities/CommunityPost" },
+      "description": "Shared community posts."
+    },
+    "/communityPosts/{postId}/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/CommunityComment" },
+      "description": "Nested comments on community posts."
+    },
+    "/teams/{teamId}": {
+      "schema": { "$ref": "#/entities/Team" },
+      "description": "Collaborative project/contest teams."
+    },
+    "/teams/{teamId}/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/TeamTask" },
+      "description": "Sprint tasks for a collaborative team."
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/ContentReport" },
+      "description": "Safety, AI response, and content moderation reports."
+    }
+  }
+}

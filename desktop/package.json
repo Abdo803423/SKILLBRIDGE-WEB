@@ -1,0 +1,42 @@
+{
+  "name": "skillbridge-desktop",
+  "productName": "SkillBridge",
+  "version": "1.0.0",
+  "description": "SkillBridge Cross-Platform Career Ecosystem Desktop Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack:win": "electron-builder --win dir --x64 --publish never"
+  },
+  "build": {
+    "appId": "com.skillbridge.desktop",
+    "productName": "SkillBridge",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "offline.html",
+      "server-switch.html",
+      "build/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false
+    }
+  },
+  "devDependencies": {
+    "electron": "^35.1.5",
+    "electron-builder": "^26.0.12"
+  }
+}

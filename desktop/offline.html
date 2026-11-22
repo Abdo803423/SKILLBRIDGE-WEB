@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillBridge Desktop — Reconnecting</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --navy: #0B1F38;
+      --surface: #132C4B;
+      --cyan: #24B8DB;
+      --text: #F7FAFC;
+      --muted: #A3B8D1;
+      --border: #264873;
+    }
+    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, var(--navy) 0%, #071426 100%);
+      color: var(--text);
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+    h1 { margin: 0 0 8px; font-size: 22px; }
+    p { margin: 0 0 18px; color: var(--muted); line-height: 1.5; font-size: 14px; }
+    label { display: block; font-size: 12px; font-weight: 600; color: var(--cyan); margin-bottom: 6px; }
+    input {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--navy);
+      color: var(--text);
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+    .row { display: flex; gap: 10px; }
+    button {
+      flex: 1;
+      padding: 11px 16px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .primary { background: var(--cyan); color: #05162B; }
+    .secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .error { color: #FCA5A5; font-size: 12px; margin-bottom: 12px; min-height: 16px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Unable to Reach SkillBridge Central Server</h1>
+    <p>Check your internet connection or switch to another SkillBridge central environment below.</p>
+    <label for="serverUrlInput">Central Server URL</label>
+    <input id="serverUrlInput" type="url" placeholder="https://..." />
+    <div id="errorText" class="error"></div>
+    <div class="row">
+      <button id="retryBtn" class="primary" type="button">Reconnect</button>
+      <button id="switchBtn" class="secondary" type="button">Save & Connect</button>
+    </div>
+  </div>
+  <script>
+    (async () => {
+      const input = document.getElementById('serverUrlInput');
+      const errorText = document.getElementById('errorText');
+      if (window.skillbridgeDesktop) {
+        const cfg = await window.skillbridgeDesktop.getServerConfig();
+        input.value = cfg.serverUrl || '';
+      }
+      document.getElementById('retryBtn').addEventListener('click', () => {
+        window.skillbridgeDesktop?.reloadApp();
+      });
+      document.getElementById('switchBtn').addEventListener('click', async () => {
+        errorText.textContent = '';
+        try {
+          await window.skillbridgeDesktop?.setServerUrl(input.value);
+        } catch (err) {
+          errorText.textContent = err?.message || 'Invalid server URL';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

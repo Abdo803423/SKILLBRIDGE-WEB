@@ -1,0 +1,6 @@
+{
+  "name": "SkillBridge",
+  "description": "Mobile-first career development ecosystem bridging skill gaps to real-world challenges, contests, ethical reverse engineering, collaborative teams, and a verified experience passport.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
