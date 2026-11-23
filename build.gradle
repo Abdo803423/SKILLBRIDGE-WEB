@@ -1,0 +1,17 @@
+tasks.register('lint', Exec) {
+    group = 'verification'
+    description = 'Runs ESLint and TypeScript type-checking for the SkillBridge website'
+    commandLine 'npm', 'run', 'lint'
+}
+
+tasks.register('assembleDebug', Exec) {
+    group = 'build'
+    description = 'Builds the SkillBridge Vite production website into dist/'
+    commandLine 'npm', 'run', 'build'
+}
+
+tasks.register('build') {
+    group = 'build'
+    description = 'Runs web lint and Vite production build'
+    dependsOn 'lint', 'assembleDebug'
+}
