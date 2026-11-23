@@ -40,20 +40,29 @@ export const GlobalSearchScreen: React.FC = () => {
   const matchedChallenges = useMemo(
     () =>
       CHALLENGES_CATALOG.filter(
-        (c) => !q || `${c.title.en} ${c.title.ar} ${c.skills.join(' ')}`.toLowerCase().includes(q),
+        (c) => !q || `${c.title.en} ${c.title.ar} ${(c.skills ?? []).join(' ')}`.toLowerCase().includes(q),
       ),
     [q],
   );
   const matchedBriefs = useMemo(
-    () => publicBriefs.filter((b) => !q || `${b.title} ${b.companyName} ${b.skillsCsv}`.toLowerCase().includes(q)),
+    () =>
+      (Array.isArray(publicBriefs) ? publicBriefs : []).filter(
+        (b) => !q || `${b.title ?? ''} ${b.companyName ?? ''} ${b.skillsCsv ?? ''}`.toLowerCase().includes(q),
+      ),
     [publicBriefs, q],
   );
   const matchedPosts = useMemo(
-    () => communityPosts.filter((p) => !q || `${p.title} ${p.tags.join(' ')}`.toLowerCase().includes(q)),
+    () =>
+      (Array.isArray(communityPosts) ? communityPosts : []).filter(
+        (p) => !q || `${p.title ?? ''} ${(p.tags ?? []).join(' ')}`.toLowerCase().includes(q),
+      ),
     [communityPosts, q],
   );
   const matchedTeams = useMemo(
-    () => teams.filter((t) => !q || `${t.name} ${t.domain}`.toLowerCase().includes(q)),
+    () =>
+      (Array.isArray(teams) ? teams : []).filter(
+        (t) => !q || `${t.name ?? ''} ${t.domain ?? ''}`.toLowerCase().includes(q),
+      ),
     [teams, q],
   );
 
@@ -155,7 +164,8 @@ export const NotificationsScreen: React.FC = () => {
     session,
   } = useSkillBridge();
   const lang = isArabic ? 'AR' : 'EN';
-  const centralNotifs = snapshot?.notifications ?? [];
+  const centralNotifs = Array.isArray(snapshot?.notifications) ? snapshot.notifications : [];
+  const safeLocalNotifs = Array.isArray(localNotifications) ? localNotifications : [];
 
   return (
     <StateWrapper>
@@ -206,7 +216,7 @@ export const NotificationsScreen: React.FC = () => {
           ))}
 
           {!session &&
-            localNotifications.map((n) => (
+            safeLocalNotifs.map((n) => (
               <div
                 key={n.id}
                 className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-4 flex items-start justify-between gap-3"
@@ -326,7 +336,7 @@ export const AccountAndPrivacySettingsScreen: React.FC = () => {
   } = useSkillBridge();
 
   const [confirmDeleteStep, setConfirmDeleteStep] = useState(false);
-  const deviceSessions = snapshot?.deviceSessions ?? [];
+  const deviceSessions = Array.isArray(snapshot?.deviceSessions) ? snapshot.deviceSessions : [];
 
   return (
     <StateWrapper allowBypassPreview>

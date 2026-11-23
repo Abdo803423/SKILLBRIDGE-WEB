@@ -50,11 +50,12 @@ export const AiAgentDrawer: React.FC = () => {
   const abortRef = useRef<AbortController | null>(null);
 
   const contextSummary = useMemo(() => {
-    const base = `Route=${route}; DisplayName=${profile.displayName}; Domain=${profile.domain}; Level=${profile.careerLevel}`;
+    const safeGaps = Array.isArray(gaps) ? gaps : [];
+    const base = `Route=${route}; DisplayName=${profile?.displayName ?? ''}; Domain=${profile?.domain ?? ''}; Level=${profile?.careerLevel ?? ''}`;
     const goalPart = activeGoal ? `; TargetRole=${activeGoal.targetRole}; Readiness=${activeGoal.readinessScore}%` : '';
-    const gapsPart = gaps.length > 0 ? `; TopGaps=${gaps.slice(0, 3).map((g) => g.skillName).join(', ')}` : '';
+    const gapsPart = safeGaps.length > 0 ? `; TopGaps=${safeGaps.slice(0, 3).map((g) => g.skillName).join(', ')}` : '';
     return `${base}${goalPart}${gapsPart}`;
-  }, [route, profile.displayName, profile.domain, profile.careerLevel, activeGoal, gaps]);
+  }, [route, profile?.displayName, profile?.domain, profile?.careerLevel, activeGoal, gaps]);
 
   if (!aiDrawerOpen) return null;
 
@@ -111,7 +112,8 @@ export const AiAgentDrawer: React.FC = () => {
         controller.signal,
       );
 
-      if (aiAgentMode === 'SKILL_ADVISOR' && profile.targetSkills.length < 6 && !profile.targetSkills.includes('System Design')) {
+      const safeTargets = Array.isArray(profile?.targetSkills) ? profile.targetSkills : [];
+      if (aiAgentMode === 'SKILL_ADVISOR' && safeTargets.length < 6 && !safeTargets.includes('System Design')) {
         setAiMessages((prev) =>
           prev.map((m) =>
             m.id === aiMsgId
@@ -144,13 +146,15 @@ export const AiAgentDrawer: React.FC = () => {
   const handleConfirmPendingAction = async () => {
     if (!confirmAction) return;
     if (confirmAction.type === 'UpdateTargetSkills') {
-      const merged = Array.from(new Set([...profile.targetSkills, ...confirmAction.skillsToAdd]));
+      const safeTargets = Array.isArray(profile?.targetSkills) ? profile.targetSkills : [];
+      const safeCurrent = Array.isArray(profile?.currentSkills) ? profile.currentSkills : [];
+      const merged = Array.from(new Set([...safeTargets, ...(confirmAction.skillsToAdd ?? [])]));
       if (session) {
         await updateStudentProfile({
           displayName: profile.displayName,
           domain: profile.domain,
           country: profile.country,
-          skills: profile.currentSkills,
+          skills: safeCurrent,
           targetSkills: merged,
           goalsSummary: profile.goalsSummary,
           weeklyHours: profile.weeklyHours,

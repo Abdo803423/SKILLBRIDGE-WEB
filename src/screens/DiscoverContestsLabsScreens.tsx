@@ -43,13 +43,16 @@ export const DiscoverScreen: React.FC = () => {
   const [selectedDomain, setSelectedDomain] = useState<string>('ALL');
   const [query, setQuery] = useState('');
 
+  const safePublicBriefs = Array.isArray(publicBriefs) ? publicBriefs : [];
+  const safeSavedIds = Array.isArray(profile?.savedChallengeIds) ? profile.savedChallengeIds : [];
+
   const filteredChallenges = useMemo(() => {
     const q = query.trim().toLowerCase();
     return CHALLENGES_CATALOG.filter((ch) => {
       if (categoryTab !== 'ALL' && ch.category !== categoryTab) return false;
       if (selectedDomain !== 'ALL' && ch.domain !== selectedDomain) return false;
       if (q) {
-        const hay = `${ch.title.en} ${ch.title.ar} ${ch.companyName} ${ch.skills.join(' ')}`.toLowerCase();
+        const hay = `${ch.title.en} ${ch.title.ar} ${ch.companyName} ${(ch.skills ?? []).join(' ')}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -140,7 +143,7 @@ export const DiscoverScreen: React.FC = () => {
         </div>
 
         {/* Synchronized Live Company Briefs Highlight */}
-        {publicBriefs.length > 0 && (
+        {safePublicBriefs.length > 0 && (
           <SpatialCard
             tiltStrength={2}
             highlight
@@ -150,8 +153,8 @@ export const DiscoverScreen: React.FC = () => {
               <div>
                 <p className="text-xs font-bold text-[#008CAE] dark:text-[#7EE8F5]">
                   {isArabic
-                    ? `${publicBriefs.length} مشاريع شركات حية منشورة حاليًا`
-                    : `${publicBriefs.length} Live Synchronized Company Briefs Open Now`}
+                    ? `${safePublicBriefs.length} مشاريع شركات حية منشورة حاليًا`
+                    : `${safePublicBriefs.length} Live Synchronized Company Briefs Open Now`}
                 </p>
                 <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">
                   {isArabic
@@ -173,7 +176,7 @@ export const DiscoverScreen: React.FC = () => {
         {/* Challenges Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredChallenges.map((ch, idx) => {
-            const isSaved = profile.savedChallengeIds.includes(ch.id);
+            const isSaved = safeSavedIds.includes(ch.id);
             return (
               <MotionReveal key={ch.id} delayMs={Math.min(idx, 5) * 55}>
                 <SpatialCard
@@ -198,7 +201,7 @@ export const DiscoverScreen: React.FC = () => {
                       <span>·</span>
                       <span>+{ch.pointsReward} {strings.pointsLabel}</span>
                     </div>
-                    <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{ch.skills.join(' · ')}</p>
+                    <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">{(ch.skills ?? []).join(' · ')}</p>
                   </div>
 
                   <div className="flex items-center gap-2 pt-2 border-t border-[#D5E0EC]/80 dark:border-[#1C395E]">
@@ -371,7 +374,7 @@ export const ChallengeDetailScreen: React.FC = () => {
                 {strings.rubricBeforeStart}
               </h3>
               <ul className="space-y-1.5 text-xs text-[#4C637C] dark:text-[#93ADC8] list-disc list-inside">
-                {challenge.rubric.map((r, i) => (
+                {(challenge.rubric ?? []).map((r, i) => (
                   <li key={i}>{lText(r, lang)}</li>
                 ))}
               </ul>
@@ -722,7 +725,7 @@ export const ReverseEngHubScreen: React.FC = () => {
               {isArabic ? 'الإجراءات المسموحة داخل النطاق' : 'Authorized Actions'}
             </h3>
             <ul className="space-y-1 text-xs text-emerald-900 dark:text-emerald-200 list-disc list-inside">
-              {lab.allowedActions.map((a, idx) => (
+              {(lab.allowedActions ?? []).map((a, idx) => (
                 <li key={idx}>{lText(a, lang)}</li>
               ))}
             </ul>
@@ -734,7 +737,7 @@ export const ReverseEngHubScreen: React.FC = () => {
               {isArabic ? 'الإجراءات المحظورة' : 'Strictly Prohibited'}
             </h3>
             <ul className="space-y-1 text-xs text-rose-900 dark:text-rose-200 list-disc list-inside">
-              {lab.prohibitedActions.map((a, idx) => (
+              {(lab.prohibitedActions ?? []).map((a, idx) => (
                 <li key={idx}>{lText(a, lang)}</li>
               ))}
             </ul>
@@ -764,7 +767,7 @@ export const ReverseEngHubScreen: React.FC = () => {
         >
           <SectionHeader title={strings.understandingReportLabel} />
           <ul className="text-xs text-[#4C637C] dark:text-[#93ADC8] space-y-1 list-disc list-inside">
-            {lab.understandingChecklist.map((c, idx) => (
+            {(lab.understandingChecklist ?? []).map((c, idx) => (
               <li key={idx}>{lText(c, lang)}</li>
             ))}
           </ul>

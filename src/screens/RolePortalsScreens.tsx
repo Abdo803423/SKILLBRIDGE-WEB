@@ -7,23 +7,15 @@ import {
   UserCheck,
   XCircle,
 } from 'lucide-react';
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
 import { AnimatedNumber, SpatialCard } from '../components/InteractiveMotion';
-import { SectionHeader, StateWrapper, StatusLabel } from '../components/SkillBridgeUi';
+import {
+  DonutBreakdownChart,
+  DualTrendLineChart,
+  SectionHeader,
+  StateWrapper,
+  StatusLabel,
+  VerticalColumnChart,
+} from '../components/SkillBridgeUi';
 import { useSkillBridge } from '../context/SkillBridgeContext';
 import type {
   AccountRole,
@@ -31,8 +23,6 @@ import type {
   ProjectBriefEntity,
   VerificationTier,
 } from '../types/skillbridge';
-
-const CHART_COLORS = ['#00B4DB', '#0B1F38', '#0284C7', '#38BDF8', '#D97706'];
 
 // ==========================================
 // 1. PLATFORM ADMIN PORTAL
@@ -50,12 +40,12 @@ export const RoleAdminDashboardScreen: React.FC<{ activeSubRoute: string }> = ({
     setRoute,
   } = useSkillBridge();
 
-  const companies = snapshot?.companies ?? [];
-  const briefs = snapshot?.briefs ?? [];
-  const accounts = snapshot?.accounts ?? [];
-  const applications = snapshot?.applications ?? [];
-  const reports = snapshot?.reports ?? [];
-  const activities = snapshot?.activities ?? [];
+  const companies = Array.isArray(snapshot?.companies) ? snapshot.companies : [];
+  const briefs = Array.isArray(snapshot?.briefs) ? snapshot.briefs : [];
+  const accounts = Array.isArray(snapshot?.accounts) ? snapshot.accounts : [];
+  const applications = Array.isArray(snapshot?.applications) ? snapshot.applications : [];
+  const reports = Array.isArray(snapshot?.reports) ? snapshot.reports : [];
+  const activities = Array.isArray(snapshot?.activities) ? snapshot.activities : [];
 
   const [tierByCompany, setTierByCompany] = useState<Record<string, VerificationTier>>({});
   const [adminNotesById, setAdminNotesById] = useState<Record<string, string>>({});
@@ -228,17 +218,8 @@ export const RoleAdminDashboardScreen: React.FC<{ activeSubRoute: string }> = ({
               <p className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                 {isArabic ? 'نشاط المنصة والتقديمات' : 'Activity & Applications Trend'}
               </p>
-              <div className="h-48 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={activityTrendData}>
-                    <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                    <XAxis dataKey="day" tick={{ fontSize: 10 }} />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="events" name="Events" stroke="#00B4DB" strokeWidth={2} dot={{ r: 3 }} />
-                    <Line type="monotone" dataKey="applications" name="Apps" stroke="#0B1F38" strokeWidth={2} dot={{ r: 3 }} />
-                  </LineChart>
-                </ResponsiveContainer>
+              <div className="min-h-48 w-full">
+                <DualTrendLineChart data={activityTrendData} />
               </div>
             </div>
 
@@ -246,25 +227,11 @@ export const RoleAdminDashboardScreen: React.FC<{ activeSubRoute: string }> = ({
               <p className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                 {isArabic ? 'توزيع الأدوار' : 'User Role Distribution'}
               </p>
-              <div className="h-48 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={roleDistData}
-                      dataKey="value"
-                      nameKey="name"
-                      innerRadius={42}
-                      outerRadius={68}
-                      paddingAngle={3}
-                    >
-                      {roleDistData.map((_, i) => (
-                        <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend wrapperStyle={{ fontSize: 11 }} />
-                  </PieChart>
-                </ResponsiveContainer>
+              <div className="min-h-48 w-full">
+                <DonutBreakdownChart
+                  data={roleDistData}
+                  emptyLabel={isArabic ? 'لا توجد حسابات بعد' : 'No accounts yet.'}
+                />
               </div>
             </div>
 
@@ -272,15 +239,12 @@ export const RoleAdminDashboardScreen: React.FC<{ activeSubRoute: string }> = ({
               <p className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
                 {isArabic ? 'حالة مشاريع الشركات' : 'Project Brief Pipeline'}
               </p>
-              <div className="h-48 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={briefPipelineData}>
-                    <XAxis dataKey="stage" tick={{ fontSize: 10 }} />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="#00B4DB" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className="min-h-48 w-full">
+                <VerticalColumnChart
+                  data={briefPipelineData}
+                  xKey="stage"
+                  series={[{ key: 'count', label: 'Briefs', color: '#00B4DB' }]}
+                />
               </div>
             </div>
           </div>
@@ -722,10 +686,11 @@ export const RoleCompanyDashboardScreen: React.FC<{ activeSubRoute: string }> = 
     setRoute,
   } = useSkillBridge();
 
-  const company = snapshot?.companies.find((c) => c.id === snapshot?.account?.companyId) ?? snapshot?.companies[0];
-  const briefs = snapshot?.briefs ?? [];
-  const applications = snapshot?.applications ?? [];
-  const allAccounts = snapshot?.accounts ?? [];
+  const companiesList = Array.isArray(snapshot?.companies) ? snapshot.companies : [];
+  const company = companiesList.find((c) => c.id === snapshot?.account?.companyId) ?? companiesList[0];
+  const briefs = Array.isArray(snapshot?.briefs) ? snapshot.briefs : [];
+  const applications = Array.isArray(snapshot?.applications) ? snapshot.applications : [];
+  const allAccounts = Array.isArray(snapshot?.accounts) ? snapshot.accounts : [];
   const directors = useMemo(
     () => allAccounts.filter((a) => a.role === 'COMPANY_DIRECTOR' && a.companyId === company?.id),
     [allAccounts, company?.id],
@@ -782,7 +747,7 @@ export const RoleCompanyDashboardScreen: React.FC<{ activeSubRoute: string }> = 
   const chartData = useMemo(
     () =>
       briefs.map((b) => ({
-        name: b.title.slice(0, 18),
+        name: (b.title ?? '').slice(0, 18),
         applicants: applications.filter((a) => a.briefId === b.id).length,
       })),
     [briefs, applications],
@@ -869,38 +834,23 @@ export const RoleCompanyDashboardScreen: React.FC<{ activeSubRoute: string }> = 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <section className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-2">
               <SectionHeader title={isArabic ? 'مسار المتقدمين' : 'Application Pipeline Breakdown'} />
-              <div className="h-56 w-full">
-                {appPipelineData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={appPipelineData} dataKey="value" nameKey="name" innerRadius={48} outerRadius={76} paddingAngle={3}>
-                        {appPipelineData.map((_, i) => (
-                          <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend wrapperStyle={{ fontSize: 11 }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="h-full flex items-center justify-center text-xs text-[#4C637C] dark:text-[#93ADC8]">
-                    No applications submitted yet.
-                  </div>
-                )}
+              <div className="min-h-56 w-full">
+                <DonutBreakdownChart
+                  data={appPipelineData}
+                  emptyLabel="No applications submitted yet."
+                />
               </div>
             </section>
 
             <section className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-2">
               <SectionHeader title={isArabic ? 'تحليلات التقديم حسب المشروع' : 'Applicant Engagement by Brief'} />
-              <div className="h-56 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData}>
-                    <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Bar dataKey="applicants" fill="#00B4DB" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className="min-h-56 w-full">
+                <VerticalColumnChart
+                  data={chartData}
+                  xKey="name"
+                  series={[{ key: 'applicants', label: 'Applicants', color: '#00B4DB' }]}
+                  emptyLabel="No published briefs yet."
+                />
               </div>
             </section>
           </div>
@@ -1308,10 +1258,10 @@ export const RoleDirectorDashboardScreen: React.FC<{ activeSubRoute: string }> =
     setRoute,
   } = useSkillBridge();
 
-  const briefs = snapshot?.briefs ?? [];
-  const applications = snapshot?.applications ?? [];
-  const tasks = snapshot?.tasks ?? [];
-  const submissions = snapshot?.submissions ?? [];
+  const briefs = Array.isArray(snapshot?.briefs) ? snapshot.briefs : [];
+  const applications = Array.isArray(snapshot?.applications) ? snapshot.applications : [];
+  const tasks = Array.isArray(snapshot?.tasks) ? snapshot.tasks : [];
+  const submissions = Array.isArray(snapshot?.submissions) ? snapshot.submissions : [];
 
   const [taskModalBriefId, setTaskModalBriefId] = useState<string | null>(null);
   const [selectedStudentId, setSelectedStudentId] = useState<string>('');
@@ -1348,7 +1298,7 @@ export const RoleDirectorDashboardScreen: React.FC<{ activeSubRoute: string }> =
         const bTasks = tasks.filter((t) => t.briefId === b.id);
         const done = bTasks.filter((t) => t.status === 'DONE').length;
         return {
-          name: b.title.slice(0, 16),
+          name: (b.title ?? '').slice(0, 16),
           done,
           remaining: Math.max(0, bTasks.length - done),
         };
@@ -1443,38 +1393,27 @@ export const RoleDirectorDashboardScreen: React.FC<{ activeSubRoute: string }> =
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <section className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-2">
               <SectionHeader title={isArabic ? 'توزيع حالات التقييم' : 'Submission Review Breakdown'} />
-              <div className="h-52 w-full">
-                {reviewBreakdownData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={reviewBreakdownData} dataKey="value" nameKey="name" innerRadius={45} outerRadius={72} paddingAngle={3}>
-                        {reviewBreakdownData.map((_, i) => (
-                          <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend wrapperStyle={{ fontSize: 11 }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="h-full flex items-center justify-center text-xs text-[#4C637C] dark:text-[#93ADC8]">No submissions yet.</div>
-                )}
+              <div className="min-h-52 w-full">
+                <DonutBreakdownChart
+                  data={reviewBreakdownData}
+                  emptyLabel="No submissions yet."
+                />
               </div>
             </section>
 
             <section className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-2">
               <SectionHeader title={isArabic ? 'تقدم المهام حسب المشروع' : 'Milestone Progress by Brief'} />
-              <div className="h-52 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={briefProgressData}>
-                    <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Legend wrapperStyle={{ fontSize: 11 }} />
-                    <Bar dataKey="done" name="Completed" stackId="a" fill="#00B4DB" radius={[0, 0, 0, 0]} />
-                    <Bar dataKey="remaining" name="Open" stackId="a" fill="#0B1F38" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className="min-h-52 w-full">
+                <VerticalColumnChart
+                  data={briefProgressData}
+                  xKey="name"
+                  stacked
+                  series={[
+                    { key: 'done', label: 'Completed', color: '#00B4DB' },
+                    { key: 'remaining', label: 'Open', color: '#0B1F38' },
+                  ]}
+                  emptyLabel="No supervised briefs yet."
+                />
               </div>
             </section>
           </div>

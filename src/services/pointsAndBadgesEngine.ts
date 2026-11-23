@@ -31,11 +31,13 @@ export function computeLevelFromEvidence(totalPoints: number, verifiedSubmission
 }
 
 export function computeVerifiedSkillCount(submissions: ChallengeSubmission[]): number {
-  const realVerified = submissions.filter((s) => !s.isDemoSample && !s.id.startsWith('seed_') && s.status === 'VERIFIED');
+  const safeSubs = Array.isArray(submissions) ? submissions : [];
+  const realVerified = safeSubs.filter((s) => !s?.isDemoSample && !String(s?.id ?? '').startsWith('seed_') && s?.status === 'VERIFIED');
   const uniqueSkills = new Set<string>();
   for (const sub of realVerified) {
-    for (const skill of sub.skillsApplied) {
-      if (skill.trim()) uniqueSkills.add(skill.trim().toLowerCase());
+    const skills = Array.isArray(sub.skillsApplied) ? sub.skillsApplied : [];
+    for (const skill of skills) {
+      if (typeof skill === 'string' && skill.trim()) uniqueSkills.add(skill.trim().toLowerCase());
     }
   }
   return uniqueSkills.size;
@@ -51,21 +53,19 @@ export function evaluateBadgeProgress(params: {
   userTeamTasks: TeamTask[];
   completedMilestones: RoadmapMilestone[];
 }): BadgeProgressItem[] {
-  const {
-    profile,
-    submissions,
-    earnedBadges,
-    authoredPosts,
-    authoredComments,
-    userTeams,
-    userTeamTasks,
-    completedMilestones,
-  } = params;
+  const profile = params.profile;
+  const submissions = Array.isArray(params.submissions) ? params.submissions : [];
+  const earnedBadges = Array.isArray(params.earnedBadges) ? params.earnedBadges : [];
+  const authoredPosts = Array.isArray(params.authoredPosts) ? params.authoredPosts : [];
+  const authoredComments = Array.isArray(params.authoredComments) ? params.authoredComments : [];
+  const userTeams = Array.isArray(params.userTeams) ? params.userTeams : [];
+  const userTeamTasks = Array.isArray(params.userTeamTasks) ? params.userTeamTasks : [];
+  const completedMilestones = Array.isArray(params.completedMilestones) ? params.completedMilestones : [];
 
   const earnedMap = new Map(earnedBadges.map((b) => [b.badgeId, b]));
-  const realVerified = submissions.filter((s) => !s.isDemoSample && !s.id.startsWith('seed_') && s.status === 'VERIFIED');
+  const realVerified = submissions.filter((s) => !s?.isDemoSample && !String(s?.id ?? '').startsWith('seed_') && s?.status === 'VERIFIED');
   const verifiedSkillsCount = computeVerifiedSkillCount(submissions);
-  const completedTasksCount = userTeamTasks.filter((t) => t.status === 'DONE').length;
+  const completedTasksCount = userTeamTasks.filter((t) => t?.status === 'DONE').length;
 
   return BADGE_DEFINITIONS.map((def: BadgeDefinition) => {
     const unlockedEntry = earnedMap.get(def.id);
@@ -97,7 +97,7 @@ export function evaluateBadgeProgress(params: {
         current = authoredComments.filter((c) => c.isBestAnswer).length;
         break;
       case 'top_mena_performer':
-        current = profile.points;
+        current = profile?.points ?? 0;
         break;
       default:
         current = 0;

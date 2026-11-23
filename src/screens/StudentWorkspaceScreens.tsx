@@ -46,23 +46,29 @@ export const StudentHomeScreen: React.FC = () => {
     actionBusy,
   } = useSkillBridge();
 
-  const realVerifiedCount = submissions.filter((s) => !s.isDemoSample && s.status === 'VERIFIED').length;
-  const computedLevel = computeLevelFromEvidence(profile.points, realVerifiedCount);
+  const safeSubs = Array.isArray(submissions) ? submissions : [];
+  const safeSkills = Array.isArray(profile?.currentSkills) ? profile.currentSkills : [];
+  const safeMilestones = Array.isArray(milestones) ? milestones : [];
+  const safeGaps = Array.isArray(gaps) ? gaps : [];
+  const safePublicBriefs = Array.isArray(publicBriefs) ? publicBriefs : [];
+
+  const realVerifiedCount = safeSubs.filter((s) => !s.isDemoSample && s.status === 'VERIFIED').length;
+  const computedLevel = computeLevelFromEvidence(profile?.points ?? 0, realVerifiedCount);
   const readiness = activeGoal?.readinessScore ?? Math.min(92, 54 + realVerifiedCount * 10);
 
   const skillBars = useMemo(
     () => [
-      { name: strings.techSkills, score: Math.min(96, 62 + profile.currentSkills.length * 5) },
+      { name: strings.techSkills, score: Math.min(96, 62 + safeSkills.length * 5) },
       { name: strings.softSkills, score: 78 },
       { name: strings.domainKnowledge, score: Math.min(94, 60 + realVerifiedCount * 8) },
-      { name: strings.problemSolving, score: Math.min(95, 68 + milestones.filter((m) => m.completed).length * 6) },
+      { name: strings.problemSolving, score: Math.min(95, 68 + safeMilestones.filter((m) => m.completed).length * 6) },
       { name: strings.commCollab, score: 82 },
     ],
-    [strings, profile.currentSkills.length, realVerifiedCount, milestones],
+    [strings, safeSkills.length, realVerifiedCount, safeMilestones],
   );
 
-  const studentTasks = snapshot?.tasks ?? [];
-  const nextMilestone = milestones.find((m) => !m.completed) ?? milestones[0] ?? null;
+  const studentTasks = Array.isArray(snapshot?.tasks) ? snapshot.tasks : [];
+  const nextMilestone = safeMilestones.find((m) => !m.completed) ?? safeMilestones[0] ?? null;
 
   return (
     <StateWrapper>
@@ -105,7 +111,7 @@ export const StudentHomeScreen: React.FC = () => {
                     className="inline-flex items-center gap-1.5 rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] px-4 py-2 text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC] hover:bg-[#F0F6FA] dark:hover:bg-[#132D4F] hover:border-[#00B4DB] active:scale-[0.98] transition whitespace-nowrap"
                   >
                     <Briefcase className="w-4 h-4 text-[#00B4DB] dark:text-[#7EE8F5]" />
-                    {isArabic ? 'مشاريع الشركات المفتوحة' : 'Company Briefs'} ({publicBriefs.length})
+                    {isArabic ? 'مشاريع الشركات المفتوحة' : 'Company Briefs'} ({safePublicBriefs.length})
                   </button>
                   <button
                     type="button"
@@ -202,7 +208,7 @@ export const StudentHomeScreen: React.FC = () => {
               ) : (
                 <div className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-4 space-y-1.5">
                   <p className="text-sm font-bold text-[#0B1F38] dark:text-[#F1F7FC]">
-                    {gaps[0]?.skillName ?? (isArabic ? 'تشغيل محلل الفجوات الذكي' : 'Run AI Skill Gap Analyzer')}
+                    {safeGaps[0]?.skillName ?? (isArabic ? 'تشغيل محلل الفجوات الذكي' : 'Run AI Skill Gap Analyzer')}
                   </p>
                   <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">
                     {isArabic
@@ -338,11 +344,15 @@ export const SkillAnalysisScreen: React.FC = () => {
     showToast,
   } = useSkillBridge();
 
+  const safeGaps = Array.isArray(gaps) ? gaps : [];
+  const safeMilestones = Array.isArray(milestones) ? milestones : [];
   const [targetRole, setTargetRole] = useState(activeGoal?.targetRole || 'Senior Backend & Distributed Systems Engineer');
-  const [expLevel, setExpLevel] = useState(activeGoal?.experienceLevel || profile.careerLevel || 'Mid-level');
-  const [weeklyHours, setWeeklyHours] = useState(activeGoal?.weeklyHours || profile.weeklyHours || 12);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>(profile.currentSkills);
-  const [notes, setNotes] = useState(profile.goalsSummary);
+  const [expLevel, setExpLevel] = useState(activeGoal?.experienceLevel || profile?.careerLevel || 'Mid-level');
+  const [weeklyHours, setWeeklyHours] = useState(activeGoal?.weeklyHours || profile?.weeklyHours || 12);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>(() =>
+    Array.isArray(profile?.currentSkills) ? profile.currentSkills : [],
+  );
+  const [notes, setNotes] = useState(profile?.goalsSummary ?? '');
   const [analyzing, setAnalyzing] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
 
@@ -524,7 +534,7 @@ export const SkillAnalysisScreen: React.FC = () => {
               <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
                 <SectionHeader title={isArabic ? 'فجوات المهارات ذات الأولوية' : 'Prioritized Skill Gaps'} />
                 <div className="space-y-2.5">
-                  {gaps.map((gap) => (
+                  {safeGaps.map((gap) => (
                     <div key={gap.id} className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-3 space-y-1 hover:border-[#00B4DB] transition">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{gap.skillName}</span>
@@ -543,7 +553,7 @@ export const SkillAnalysisScreen: React.FC = () => {
             <div className="lg:col-span-7 rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
               <SectionHeader title={isArabic ? 'معالم خارطة الطريق' : 'Execution Milestones'} />
               <div className="space-y-3">
-                {milestones.map((ms) => (
+                {safeMilestones.map((ms) => (
                   <div key={ms.id} className="rounded-xl border border-[#D5E0EC] dark:border-[#1C395E] p-4 space-y-2 hover:border-[#00B4DB]/70 transition">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-2.5">
@@ -630,14 +640,17 @@ export const StudentBriefsScreen: React.FC = () => {
   const [skillsInput, setSkillsInput] = useState('TypeScript, SQL, System Design');
 
   const briefs = useMemo(() => {
-    const map = new Map(publicBriefs.map((b) => [b.id, b]));
-    for (const b of snapshot?.briefs ?? []) map.set(b.id, b);
+    const safePublic = Array.isArray(publicBriefs) ? publicBriefs : [];
+    const safeSnapBriefs = Array.isArray(snapshot?.briefs) ? snapshot.briefs : [];
+    const map = new Map(safePublic.map((b) => [b.id, b]));
+    for (const b of safeSnapBriefs) map.set(b.id, b);
     return Array.from(map.values());
   }, [publicBriefs, snapshot?.briefs]);
 
   const myAppsMap = useMemo(() => {
     const map = new Map<string, NonNullable<typeof snapshot>['applications'][number]>();
-    for (const app of snapshot?.applications ?? []) {
+    const safeApps = Array.isArray(snapshot?.applications) ? snapshot.applications : [];
+    for (const app of safeApps) {
       map.set(app.briefId, app);
     }
     return map;
@@ -650,11 +663,11 @@ export const StudentBriefsScreen: React.FC = () => {
       if (filterTab === 'APPLIED' && !app) return false;
       if (filterTab === 'ACCEPTED' && app?.status !== 'ACCEPTED') return false;
       if (!q) return true;
-      return `${b.title} ${b.companyName} ${b.domain} ${b.skillsCsv}`.toLowerCase().includes(q);
+      return `${b.title ?? ''} ${b.companyName ?? ''} ${b.domain ?? ''} ${b.skillsCsv ?? ''}`.toLowerCase().includes(q);
     });
   }, [briefs, myAppsMap, filterTab, briefSearch]);
 
-  const allTasks = snapshot?.tasks ?? [];
+  const allTasks = Array.isArray(snapshot?.tasks) ? snapshot.tasks : [];
 
   return (
     <StateWrapper>
@@ -971,8 +984,8 @@ export const AiCoachScreen: React.FC = () => {
         {
           mode,
           targetRole: activeGoal?.targetRole ?? 'Software Engineer',
-          matchedSkills: activeGoal?.matchedSkills ?? ['SQL', 'TypeScript'],
-          topGaps: gaps.slice(0, 4).map((g) => g.skillName),
+          matchedSkills: Array.isArray(activeGoal?.matchedSkills) ? activeGoal.matchedSkills : ['SQL', 'TypeScript'],
+          topGaps: (Array.isArray(gaps) ? gaps : []).slice(0, 4).map((g) => g.skillName),
           history: nextHistory.slice(-6),
           userPrompt: query,
           isArabic,
@@ -981,6 +994,7 @@ export const AiCoachScreen: React.FC = () => {
           assembled += delta;
           setMessages((prev) => {
             const copy = [...prev];
+            if (copy.length === 0) return [{ sender: 'AI', content: assembled }];
             copy[copy.length - 1] = { sender: 'AI', content: assembled };
             return copy;
           });
@@ -994,6 +1008,7 @@ export const AiCoachScreen: React.FC = () => {
       const msg = err instanceof Error ? err.message : strings.aiAgentUnavailable;
       setMessages((prev) => {
         const copy = [...prev];
+        if (copy.length === 0) return [{ sender: 'AI', content: `⚠️ ${msg}` }];
         copy[copy.length - 1] = { sender: 'AI', content: `⚠️ ${msg}` };
         return copy;
       });

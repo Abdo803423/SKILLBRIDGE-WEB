@@ -40,7 +40,15 @@ import { PlatformOverviewScreen, WelcomeScreen } from './screens/WelcomeAndPlatf
 export const App: React.FC = () => {
   const { route, session, isGuestPreview, authReady } = useSkillBridge();
 
-  if (!authReady) {
+  if (route === 'welcome') {
+    return <WelcomeScreen />;
+  }
+
+  if (route === 'platform' && !session && !isGuestPreview) {
+    return <PlatformOverviewScreen />;
+  }
+
+  if (!authReady && !session && !isGuestPreview) {
     return (
       <div className="min-h-screen bg-[#F7FAFC] dark:bg-[#061120] flex items-center justify-center">
         <div className="text-center space-y-3">
@@ -56,12 +64,8 @@ export const App: React.FC = () => {
     );
   }
 
-  if (route === 'welcome' || (!session && !isGuestPreview && route !== 'platform')) {
+  if (!session && !isGuestPreview) {
     return <WelcomeScreen />;
-  }
-
-  if (route === 'platform' && !session && !isGuestPreview) {
-    return <PlatformOverviewScreen />;
   }
 
   const role = session?.role ?? 'STUDENT';

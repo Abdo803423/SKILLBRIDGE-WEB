@@ -57,8 +57,8 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
   const role = session?.role ?? 'STUDENT';
 
-  const unreadCentralCount = snapshot?.notifications.filter((n) => !n.isRead).length ?? 0;
-  const unreadLocalCount = session ? 0 : localNotifications.filter((n) => n.isUnread).length;
+  const unreadCentralCount = (Array.isArray(snapshot?.notifications) ? snapshot.notifications : []).filter((n) => !n.isRead).length;
+  const unreadLocalCount = session ? 0 : (Array.isArray(localNotifications) ? localNotifications : []).filter((n) => n.isUnread).length;
   const unreadTotal = unreadCentralCount + unreadLocalCount;
 
   const navItems: NavEntry[] = (() => {

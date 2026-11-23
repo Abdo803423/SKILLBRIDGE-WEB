@@ -329,6 +329,24 @@ function writeStoredToken(token: string | null) {
   }
 }
 
+function normalizeSnapshot(raw: unknown): CentralEcosystemSnapshot | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const s = raw as Partial<CentralEcosystemSnapshot>;
+  return {
+    ...(s as CentralEcosystemSnapshot),
+    accounts: Array.isArray(s.accounts) ? s.accounts : [],
+    companies: Array.isArray(s.companies) ? s.companies : [],
+    briefs: Array.isArray(s.briefs) ? s.briefs : [],
+    applications: Array.isArray(s.applications) ? s.applications : [],
+    tasks: Array.isArray(s.tasks) ? s.tasks : [],
+    submissions: Array.isArray(s.submissions) ? s.submissions : [],
+    notifications: Array.isArray(s.notifications) ? s.notifications : [],
+    activities: Array.isArray(s.activities) ? s.activities : [],
+    reports: Array.isArray(s.reports) ? s.reports : [],
+    deviceSessions: Array.isArray(s.deviceSessions) ? s.deviceSessions : [],
+  };
+}
+
 export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isOnline = useOnlineStatus();
   const [language, setLanguage] = useState<AppLanguage>('EN');
@@ -414,8 +432,8 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const refreshPublicCatalog = useCallback(async () => {
     try {
       const data = await fetchPublicCatalogApi();
-      setPublicBriefs(data.publishedBriefs);
-      setPublicCompanies(data.companies);
+      setPublicBriefs(Array.isArray(data?.publishedBriefs) ? data.publishedBriefs : []);
+      setPublicCompanies(Array.isArray(data?.companies) ? data.companies : []);
     } catch {
       // Offline cache may still serve static data
     }
@@ -476,11 +494,11 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const refreshSnapshot = useCallback(async () => {
     if (!bearerToken) return;
     try {
-      const next = await fetchEcosystemSnapshotApi(bearerToken);
+      const next = normalizeSnapshot(await fetchEcosystemSnapshotApi(bearerToken));
       setSnapshot(next);
       setLastSyncedMs(Date.now());
       setSyncError(null);
-      if (next.deviceSessions.some((d) => d.id === currentDeviceSessionId && d.revoked)) {
+      if ((next?.deviceSessions ?? []).some((d) => d.id === currentDeviceSessionId && d.revoked)) {
         writeStoredToken(null);
         setBearerToken(null);
         setSession(null);
@@ -514,7 +532,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     })
       .then((res) => {
         if (!cancelled) {
-          setSnapshot(res.snapshot);
+          setSnapshot(normalizeSnapshot(res?.snapshot));
           setLastSyncedMs(Date.now());
         }
       })
@@ -563,28 +581,53 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   // Firebase Auth listener for Google-signed-in learners
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      setFirebaseUser(user);
-      setAuthReady(true);
-      if (user) {
-        try {
-          await ensureFirestoreUserProfile(user.uid, user.displayName || user.email || 'SkillBridge Learner');
-          const res = await resolveGoogleSessionApi({
-            firebaseUid: user.uid,
-            displayName: user.displayName || 'SkillBridge Learner',
-            email: user.email || '',
-          });
-          writeStoredToken(res.token);
-          setBearerToken(res.token);
-          setSession(res.principal);
-          setIsGuestPreview(false);
-          setRoute((prev) => (prev === 'welcome' || prev === 'platform' ? routeHomeForRole(res.principal.role) : prev));
-        } catch {
-          // Keep Firebase state active even if central API temporarily unreachable
-        }
+    let settled = false;
+    const failsafeTimer = window.setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        setAuthReady(true);
       }
-    });
-    return () => unsub();
+    }, 400);
+
+    const unsub = onAuthStateChanged(
+      auth,
+      async (user) => {
+        if (!settled) {
+          settled = true;
+          window.clearTimeout(failsafeTimer);
+        }
+        setFirebaseUser(user);
+        setAuthReady(true);
+        if (user) {
+          try {
+            await ensureFirestoreUserProfile(user.uid, user.displayName || user.email || 'SkillBridge Learner');
+            const res = await resolveGoogleSessionApi({
+              firebaseUid: user.uid,
+              displayName: user.displayName || 'SkillBridge Learner',
+              email: user.email || '',
+            });
+            writeStoredToken(res.token);
+            setBearerToken(res.token);
+            setSession(res.principal);
+            setIsGuestPreview(false);
+            setRoute((prev) => (prev === 'welcome' || prev === 'platform' ? routeHomeForRole(res.principal.role) : prev));
+          } catch {
+            // Keep Firebase state active even if central API temporarily unreachable
+          }
+        }
+      },
+      () => {
+        if (!settled) {
+          settled = true;
+          window.clearTimeout(failsafeTimer);
+        }
+        setAuthReady(true);
+      },
+    );
+    return () => {
+      window.clearTimeout(failsafeTimer);
+      unsub();
+    };
   }, [setRoute]);
 
   // Firestore real-time subscriptions when Firebase user is authenticated
@@ -655,7 +698,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setBearerToken(res.token);
       setSession(res.principal);
       setIsGuestPreview(false);
-      const snap = await fetchEcosystemSnapshotApi(res.token);
+      const snap = normalizeSnapshot(await fetchEcosystemSnapshotApi(res.token));
       setSnapshot(snap);
       setLastSyncedMs(Date.now());
       setRoute(routeHomeForRole(res.principal.role));
@@ -676,7 +719,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setBearerToken(res.token);
         setSession(res.principal);
         setIsGuestPreview(false);
-        const snap = await fetchEcosystemSnapshotApi(res.token);
+        const snap = normalizeSnapshot(await fetchEcosystemSnapshotApi(res.token));
         setSnapshot(snap);
         setLastSyncedMs(Date.now());
         setRoute('home');
@@ -735,7 +778,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setActionBusy(true);
     try {
       const res = await fn(bearerToken);
-      setSnapshot(res.snapshot);
+      setSnapshot(normalizeSnapshot(res?.snapshot));
       setLastSyncedMs(Date.now());
       refreshPublicCatalog();
       showToast(successMsg);
@@ -944,9 +987,16 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const centralAcc = snapshot?.account;
     if (fsProfile) {
       return {
+        ...DEFAULT_PROFILE,
         ...fsProfile,
-        points: Math.max(fsProfile.points, centralAcc?.points ?? 0),
-        verifiedSkillCount: Math.max(fsProfile.verifiedSkillCount, centralAcc?.verifiedCount ?? 0),
+        currentSkills: Array.isArray(fsProfile.currentSkills) ? fsProfile.currentSkills : DEFAULT_PROFILE.currentSkills,
+        targetSkills: Array.isArray(fsProfile.targetSkills) ? fsProfile.targetSkills : DEFAULT_PROFILE.targetSkills,
+        savedChallengeIds: Array.isArray(fsProfile.savedChallengeIds) ? fsProfile.savedChallengeIds : [],
+        savedPostIds: Array.isArray(fsProfile.savedPostIds) ? fsProfile.savedPostIds : [],
+        followedTags: Array.isArray(fsProfile.followedTags) ? fsProfile.followedTags : [],
+        mutedAuthors: Array.isArray(fsProfile.mutedAuthors) ? fsProfile.mutedAuthors : [],
+        points: Math.max(fsProfile.points ?? 0, centralAcc?.points ?? 0),
+        verifiedSkillCount: Math.max(fsProfile.verifiedSkillCount ?? 0, centralAcc?.verifiedCount ?? 0),
       };
     }
     if (centralAcc) {
@@ -958,8 +1008,8 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
         careerLevel: centralAcc.careerLevel,
         country: centralAcc.country,
         weeklyHours: centralAcc.weeklyHours,
-        currentSkills: centralAcc.skillsCsv.split(',').map((s) => s.trim()).filter(Boolean),
-        targetSkills: centralAcc.targetSkillsCsv.split(',').map((s) => s.trim()).filter(Boolean),
+        currentSkills: (centralAcc.skillsCsv ?? '').split(',').map((s) => s.trim()).filter(Boolean),
+        targetSkills: (centralAcc.targetSkillsCsv ?? '').split(',').map((s) => s.trim()).filter(Boolean),
         goalsSummary: centralAcc.goalsSummary,
         points: centralAcc.points,
         streakDays: centralAcc.streakDays,
@@ -980,7 +1030,8 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const activeGoal = useMemo(() => goals.find((g) => g.isActive) ?? goals[0] ?? null, [goals]);
 
   const mergedSubmissions = useMemo(() => {
-    const centralSubs: ChallengeSubmission[] = (snapshot?.submissions ?? []).map((s) => ({
+    const rawCentralSubs = Array.isArray(snapshot?.submissions) ? snapshot.submissions : [];
+    const centralSubs: ChallengeSubmission[] = rawCentralSubs.map((s) => ({
       id: s.id,
       userId: s.studentAccountId,
       challengeId: s.briefId,
@@ -988,7 +1039,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
       companyName: s.companyName,
       category: 'CHALLENGE',
       roleInTeam: 'Project Contributor',
-      skillsApplied: s.skillsAppliedCsv.split(',').map((k) => k.trim()).filter(Boolean),
+      skillsApplied: (s.skillsAppliedCsv ?? '').split(',').map((k) => k.trim()).filter(Boolean),
       repoOrDemoUrl: s.repoOrDemoUrl,
       understandingReport: s.understandingReport,
       status:
@@ -1028,7 +1079,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const saveChallengeToggle = useCallback(
     async (challengeId: string) => {
       if (firebaseUser && fsProfile) {
-        const current = fsProfile.savedChallengeIds;
+        const current = Array.isArray(fsProfile.savedChallengeIds) ? fsProfile.savedChallengeIds : [];
         const next = current.includes(challengeId)
           ? current.filter((c) => c !== challengeId)
           : [...current, challengeId];
@@ -1055,6 +1106,9 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
         showToast(language === 'AR' ? 'تم حفظ خارطة الطريق في السحابة.' : 'AI Roadmap saved to Firestore.');
       } else {
         const goalId = `local_goal_${Date.now()}`;
+        const safeMatchedSkills = Array.isArray(params.analysis?.matchedSkills) ? params.analysis.matchedSkills : [];
+        const safeSkillGaps = Array.isArray(params.analysis?.skillGaps) ? params.analysis.skillGaps : [];
+        const safeMilestones = Array.isArray(params.analysis?.milestones) ? params.analysis.milestones : [];
         setGoals((prev) => [
           {
             id: goalId,
@@ -1062,17 +1116,17 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
             targetRole: params.targetRole,
             experienceLevel: params.experienceLevel,
             weeklyHours: params.weeklyHours,
-            readinessScore: params.analysis.readinessScore,
-            executiveSummary: params.analysis.executiveSummary,
-            currentSkills: params.currentSkills,
-            matchedSkills: params.analysis.matchedSkills,
+            readinessScore: params.analysis?.readinessScore ?? 60,
+            executiveSummary: params.analysis?.executiveSummary ?? '',
+            currentSkills: Array.isArray(params.currentSkills) ? params.currentSkills : [],
+            matchedSkills: safeMatchedSkills,
             isActive: true,
             createdAtMs: Date.now(),
           },
           ...prev.map((g) => ({ ...g, isActive: false })),
         ]);
         setGaps(
-          params.analysis.skillGaps.map((g, idx) => ({
+          safeSkillGaps.map((g, idx) => ({
             id: `local_gap_${idx}`,
             userId: session?.accountId ?? 'guest',
             goalId,
@@ -1080,7 +1134,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
           })),
         );
         setMilestones(
-          params.analysis.milestones.map((m, idx) => ({
+          safeMilestones.map((m, idx) => ({
             id: `local_ms_${idx}`,
             userId: session?.accountId ?? 'guest',
             goalId,

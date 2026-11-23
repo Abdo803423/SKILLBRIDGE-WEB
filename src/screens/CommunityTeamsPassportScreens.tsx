@@ -41,9 +41,9 @@ export const CommunityFeedScreen: React.FC = () => {
   const [tagsCsv, setTagsCsv] = useState('Backend, Architecture');
 
   const sorted = useMemo(() => {
-    const arr = [...communityPosts];
-    if (sortBy === 'NEW') return arr.sort((a, b) => b.createdAtMs - a.createdAtMs);
-    if (sortBy === 'TOP' || sortBy === 'TRENDING') return arr.sort((a, b) => b.helpfulCount - a.helpfulCount);
+    const arr = Array.isArray(communityPosts) ? [...communityPosts] : [];
+    if (sortBy === 'NEW') return arr.sort((a, b) => (b.createdAtMs ?? 0) - (a.createdAtMs ?? 0));
+    if (sortBy === 'TOP' || sortBy === 'TRENDING') return arr.sort((a, b) => (b.helpfulCount ?? 0) - (a.helpfulCount ?? 0));
     if (sortBy === 'UNANSWERED') return arr.filter((p) => !p.acceptedCommentId);
     return arr;
   }, [communityPosts, sortBy]);
@@ -141,7 +141,7 @@ export const CommunityFeedScreen: React.FC = () => {
                 </button>
 
                 <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#D5E0EC]/80 dark:border-[#1C395E] text-xs text-[#4C637C] dark:text-[#93ADC8]">
-                  <span>{post.tags.map((t) => `#${t}`).join('  ')}</span>
+                  <span>{(post.tags ?? []).map((t) => `#${t}`).join('  ')}</span>
                   <div className="flex items-center gap-4">
                     <span className="inline-flex items-center gap-1 tabular-nums">
                       <ThumbsUp className="w-3.5 h-3.5 text-[#00B4DB]" /> {post.helpfulCount} {strings.helpfulLabel}
@@ -229,9 +229,11 @@ export const PostDetailScreen: React.FC = () => {
     showToast,
   } = useSkillBridge();
 
-  const post = communityPosts.find((p) => p.id === selectedPostId) ?? communityPosts[0];
-  const comments = SEED_COMMENTS[post.id] ?? [];
+  const safePosts = Array.isArray(communityPosts) ? communityPosts : [];
+  const post = safePosts.find((p) => p.id === selectedPostId) ?? safePosts[0];
   const [replyBody, setReplyBody] = useState('');
+  if (!post) return null;
+  const comments = SEED_COMMENTS[post.id] ?? [];
 
   return (
     <StateWrapper>
@@ -345,12 +347,13 @@ export const TeamsHubScreen: React.FC = () => {
   const [challengeTitle, setChallengeTitle] = useState('Smart City Analytics Dashboard');
   const [rolesNeeded, setRolesNeeded] = useState('Backend API, QA Engineer');
 
+  const safeTeams = Array.isArray(teams) ? teams : [];
   const visibleTeams = useMemo(() => {
     if (tab === 'MINE' && firebaseUser) {
-      return teams.filter((t) => t.memberIds.includes(firebaseUser.uid));
+      return safeTeams.filter((t) => (t.memberIds ?? []).includes(firebaseUser.uid));
     }
-    return teams;
-  }, [teams, tab, firebaseUser]);
+    return safeTeams;
+  }, [safeTeams, tab, firebaseUser]);
 
   return (
     <StateWrapper>
@@ -408,13 +411,13 @@ export const TeamsHubScreen: React.FC = () => {
                       {localizedDomain(team.domain, isArabic ? 'AR' : 'EN')}
                     </span>
                     <span className="text-xs text-[#4C637C] dark:text-[#93ADC8] tabular-nums">
-                      {team.memberNames.length}/{team.maxMembers} {strings.membersLabel}
+                      {(team.memberNames ?? []).length}/{team.maxMembers} {strings.membersLabel}
                     </span>
                   </div>
                   <h3 className="font-display text-base font-bold text-[#0B1F38] dark:text-[#F1F7FC]">{team.name}</h3>
                   <p className="text-xs text-[#4C637C] dark:text-[#93ADC8] leading-relaxed">{team.description}</p>
                   <p className="text-[11px] text-[#4C637C] dark:text-[#93ADC8]">
-                    <span className="font-semibold">{strings.needRolePrefix}</span> {team.rolesNeeded.join(', ')}
+                    <span className="font-semibold">{strings.needRolePrefix}</span> {(team.rolesNeeded ?? []).join(', ')}
                   </p>
                 </div>
 
@@ -514,8 +517,10 @@ export const TeamsHubScreen: React.FC = () => {
 
 export const TeamWorkspaceScreen: React.FC = () => {
   const { selectedTeamId, teams, teamTasks, setRoute, strings, isArabic } = useSkillBridge();
-  const team = teams.find((t) => t.id === selectedTeamId) ?? teams[0];
-  const tasks = teamTasks[team.id] ?? [];
+  const safeTeams = Array.isArray(teams) ? teams : [];
+  const team = safeTeams.find((t) => t.id === selectedTeamId) ?? safeTeams[0];
+  if (!team) return null;
+  const tasks = Array.isArray(teamTasks?.[team.id]) ? teamTasks[team.id] : [];
 
   return (
     <StateWrapper>
@@ -539,8 +544,8 @@ export const TeamWorkspaceScreen: React.FC = () => {
             <p className="font-bold text-[#0B1F38] dark:text-[#F1F7FC] mb-1">{strings.rewardSplitTitle}</p>
             <p className="text-[#4C637C] dark:text-[#93ADC8]">
               {isArabic
-                ? `توزيع متساوٍ بين الأعضاء النشطين (${Math.round(100 / Math.max(1, team.memberNames.length))}% لكل عضو موثّق).`
-                : `Equal documented split (${Math.round(100 / Math.max(1, team.memberNames.length))}% per active verified contributor).`}
+                ? `توزيع متساوٍ بين الأعضاء النشطين (${Math.round(100 / Math.max(1, (team.memberNames ?? []).length))}% لكل عضو موثّق).`
+                : `Equal documented split (${Math.round(100 / Math.max(1, (team.memberNames ?? []).length))}% per active verified contributor).`}
             </p>
           </div>
         </div>
@@ -571,8 +576,9 @@ export const ExperiencePassportScreen: React.FC = () => {
   const [proofCodeModal, setProofCodeModal] = useState<string | null>(null);
   const lang = isArabic ? 'AR' : 'EN';
 
-  const realSubs = submissions.filter((s) => !s.isDemoSample && !s.id.startsWith('seed_'));
-  const demoSubs = submissions.filter((s) => s.isDemoSample || s.id.startsWith('seed_'));
+  const safeSubmissions = Array.isArray(submissions) ? submissions : [];
+  const realSubs = safeSubmissions.filter((s) => !s.isDemoSample && !String(s.id ?? '').startsWith('seed_'));
+  const demoSubs = safeSubmissions.filter((s) => s.isDemoSample || String(s.id ?? '').startsWith('seed_'));
 
   return (
     <StateWrapper>
@@ -653,7 +659,7 @@ export const ExperiencePassportScreen: React.FC = () => {
                         {sub.challengeTitle}
                       </h3>
                       <p className="text-xs text-[#008CAE] dark:text-[#7EE8F5] font-semibold">
-                        {sub.companyName} · {sub.skillsApplied.join(' · ')}
+                        {sub.companyName} · {(sub.skillsApplied ?? []).join(' · ')}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -755,16 +761,19 @@ export const BadgesGalleryScreen: React.FC = () => {
   const lang = isArabic ? 'AR' : 'EN';
 
   const progressList = useMemo(() => {
-    const allTasks = Object.values(teamTasks).flat();
+    const allTasks = Object.values(teamTasks ?? {}).flat();
+    const safePosts = Array.isArray(communityPosts) ? communityPosts : [];
+    const safeTeams = Array.isArray(teams) ? teams : [];
+    const safeMilestones = Array.isArray(milestones) ? milestones : [];
     return evaluateBadgeProgress({
       profile,
-      submissions,
-      earnedBadges: badges,
-      authoredPosts: communityPosts.filter((p) => p.authorId === profile.userId),
+      submissions: Array.isArray(submissions) ? submissions : [],
+      earnedBadges: Array.isArray(badges) ? badges : [],
+      authoredPosts: safePosts.filter((p) => p.authorId === profile?.userId),
       authoredComments: [],
-      userTeams: teams.filter((t) => t.memberIds.includes(profile.userId)),
+      userTeams: safeTeams.filter((t) => (t.memberIds ?? []).includes(profile?.userId)),
       userTeamTasks: allTasks,
-      completedMilestones: milestones.filter((m) => m.completed),
+      completedMilestones: safeMilestones.filter((m) => m.completed),
     });
   }, [profile, submissions, badges, communityPosts, teams, teamTasks, milestones]);
 

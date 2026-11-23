@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   Sparkles,
 } from 'lucide-react';
-import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useSkillBridge } from '../context/SkillBridgeContext';
 import { localizedStatus } from '../i18n/localization';
 import { AnimatedNumber } from './InteractiveMotion';
@@ -53,7 +52,7 @@ export const SkillBridgeLogo: React.FC<{ size?: 'sm' | 'md' | 'lg'; subtitle?: b
 
 export const StatusLabel: React.FC<{ status: string; className?: string }> = ({ status, className = '' }) => {
   const { language } = useSkillBridge();
-  const s = status.toUpperCase();
+  const s = String(status ?? '').toUpperCase();
   let tone =
     'border-[#D5E0EC] dark:border-[#1C395E] text-[#4C637C] dark:text-[#93ADC8] bg-[#F0F6FA] dark:bg-[#091A30]';
 
@@ -101,7 +100,8 @@ export const SectionHeader: React.FC<{
 );
 
 export const ReadinessRing: React.FC<{ score: number; label: string }> = ({ score, label }) => {
-  const clamped = Math.max(0, Math.min(100, Math.round(score)));
+  const safeScore = Number.isFinite(score) ? score : 0;
+  const clamped = Math.max(0, Math.min(100, Math.round(safeScore)));
   const radius = 44;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (clamped / 100) * circumference;
@@ -160,38 +160,383 @@ export interface SkillMetricDatum {
   score: number;
 }
 
+const SB_BAR_COLORS = ['#00B4DB', '#0B1F38', '#008CAE', '#0284C7', '#38BDF8'];
+
 export const SkillBarsChart: React.FC<{ data: SkillMetricDatum[] }> = ({ data }) => {
-  const colors = ['#00B4DB', '#0B1F38', '#008CAE', '#0284C7', '#38BDF8'];
+  const safeData = Array.isArray(data) ? data : [];
+  const [hoveredIdx, setHoveredIdx] = React.useState<number | null>(null);
+
+  if (safeData.length === 0) {
+    return (
+      <div className="h-56 w-full flex items-center justify-center text-xs text-[#4C637C] dark:text-[#93ADC8]">
+        No skill metrics available yet.
+      </div>
+    );
+  }
+
   return (
-    <div className="h-56 w-full">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, left: 8, bottom: 4 }}>
-          <XAxis type="number" domain={[0, 100]} hide />
-          <YAxis
-            type="category"
-            dataKey="name"
-            width={132}
-            tick={{ fontSize: 11, fill: '#4C637C' }}
-            axisLine={false}
-            tickLine={false}
+    <div className="min-h-56 w-full flex flex-col justify-center gap-3 py-1" role="list" aria-label="Skill readiness breakdown">
+      {safeData.map((item, index) => {
+        const clamped = Math.max(0, Math.min(100, Math.round(Number(item?.score ?? 0))));
+        const color = SB_BAR_COLORS[index % SB_BAR_COLORS.length];
+        const isHovered = hoveredIdx === index;
+
+        return (
+          <div
+            key={`${item?.name ?? 'skill'}-${index}`}
+            role="listitem"
+            onMouseEnter={() => setHoveredIdx(index)}
+            onMouseLeave={() => setHoveredIdx(null)}
+            className="group space-y-1 rounded-lg px-2 py-1 transition-colors hover:bg-[#F0F6FA] dark:hover:bg-[#091A30]"
+          >
+            <div className="flex items-center justify-between gap-3 text-xs">
+              <span className="font-medium text-[#4C637C] dark:text-[#93ADC8] truncate group-hover:text-[#0B1F38] dark:group-hover:text-[#F1F7FC] transition-colors">
+                {item?.name ?? ''}
+              </span>
+              <span className="font-mono text-[11px] font-bold text-[#0B1F38] dark:text-[#7EE8F5] tabular-nums shrink-0">
+                {clamped}%
+              </span>
+            </div>
+            <div className="h-2.5 w-full rounded-full bg-[#E6EFF7] dark:bg-[#132D4F] overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500 ease-out"
+                style={{
+                  width: `${clamped}%`,
+                  backgroundColor: color,
+                  opacity: hoveredIdx !== null && !isHovered ? 0.65 : 1,
+                }}
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export interface DonutSegmentDatum {
+  name: string;
+  value: number;
+}
+
+const SB_CHART_PALETTE = ['#00B4DB', '#0B1F38', '#0284C7', '#38BDF8', '#008CAE'];
+
+export const DonutBreakdownChart: React.FC<{
+  data: DonutSegmentDatum[];
+  emptyLabel?: string;
+}> = ({ data, emptyLabel = 'No data available yet.' }) => {
+  const safeData = (Array.isArray(data) ? data : []).filter((d) => Number(d?.value) > 0);
+  const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
+  const total = safeData.reduce((acc, d) => acc + Number(d.value || 0), 0);
+
+  if (safeData.length === 0 || total <= 0) {
+    return (
+      <div className="h-48 w-full flex items-center justify-center text-xs text-[#4C637C] dark:text-[#93ADC8]">
+        {emptyLabel}
+      </div>
+    );
+  }
+
+  const radius = 50;
+  const circumference = 2 * Math.PI * radius;
+  let runningOffset = 0;
+
+  return (
+    <div className="min-h-48 w-full flex flex-col sm:flex-row items-center justify-center gap-4 py-1">
+      <div className="relative w-36 h-36 shrink-0">
+        <svg viewBox="0 0 132 132" className="w-full h-full -rotate-90" role="img" aria-label="Distribution chart">
+          <circle
+            cx="66"
+            cy="66"
+            r={radius}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="16"
+            className="text-[#E6EFF7] dark:text-[#132D4F]"
           />
-          <Tooltip
-            formatter={(val: number) => [`${val}%`, 'Score']}
-            contentStyle={{
-              borderRadius: '10px',
-              border: '1px solid #D5E0EC',
-              backgroundColor: '#FFFFFF',
-              color: '#0B1F38',
-              fontSize: '12px',
-            }}
-          />
-          <Bar dataKey="score" radius={[0, 6, 6, 0]} barSize={18}>
-            {data.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+          {safeData.map((seg, idx) => {
+            const pct = seg.value / total;
+            const dash = Math.max(2, pct * circumference - 2);
+            const dashOffset = -runningOffset;
+            runningOffset += pct * circumference;
+            const color = SB_CHART_PALETTE[idx % SB_CHART_PALETTE.length];
+            const dimmed = activeIndex !== null && activeIndex !== idx;
+
+            return (
+              <circle
+                key={`${seg.name}-${idx}`}
+                cx="66"
+                cy="66"
+                r={radius}
+                fill="none"
+                stroke={color}
+                strokeWidth={activeIndex === idx ? 19 : 16}
+                strokeDasharray={`${dash} ${circumference}`}
+                strokeDashoffset={dashOffset}
+                onMouseEnter={() => setActiveIndex(idx)}
+                onMouseLeave={() => setActiveIndex(null)}
+                className="transition-all duration-300 cursor-pointer"
+                style={{ opacity: dimmed ? 0.45 : 1 }}
+              />
+            );
+          })}
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+          <span className="font-display text-lg font-bold text-[#0B1F38] dark:text-[#F1F7FC] tabular-nums">
+            {activeIndex !== null && safeData[activeIndex] ? safeData[activeIndex].value : total}
+          </span>
+          <span className="text-[10px] font-semibold text-[#4C637C] dark:text-[#93ADC8] max-w-[74px] truncate">
+            {activeIndex !== null && safeData[activeIndex] ? safeData[activeIndex].name : 'Total'}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap sm:flex-col gap-1.5 justify-center min-w-0">
+        {safeData.map((seg, idx) => {
+          const color = SB_CHART_PALETTE[idx % SB_CHART_PALETTE.length];
+          const pct = Math.round((seg.value / total) * 100);
+          return (
+            <button
+              key={`${seg.name}-${idx}`}
+              type="button"
+              onMouseEnter={() => setActiveIndex(idx)}
+              onMouseLeave={() => setActiveIndex(null)}
+              onFocus={() => setActiveIndex(idx)}
+              onBlur={() => setActiveIndex(null)}
+              className="flex items-center gap-2 rounded-lg px-2 py-1 text-left text-[11px] hover:bg-[#F0F6FA] dark:hover:bg-[#091A30] transition"
+            >
+              <span
+                className="w-2.5 h-2.5 rounded-full shrink-0"
+                style={{ backgroundColor: color }}
+              />
+              <span className="font-medium text-[#0B1F38] dark:text-[#F1F7FC] truncate">{seg.name}</span>
+              <span className="font-mono text-[10px] text-[#4C637C] dark:text-[#93ADC8] tabular-nums ms-auto">
+                {seg.value} ({pct}%)
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export interface VerticalColumnSeries {
+  key: string;
+  label: string;
+  color: string;
+}
+
+export const VerticalColumnChart: React.FC<{
+  data: Array<Record<string, string | number>>;
+  xKey: string;
+  series: VerticalColumnSeries[];
+  stacked?: boolean;
+  emptyLabel?: string;
+}> = ({ data, xKey, series, stacked = false, emptyLabel = 'No metrics recorded yet.' }) => {
+  const safeData = Array.isArray(data) ? data : [];
+  const safeSeries = Array.isArray(series) ? series : [];
+  const [hoverCol, setHoverCol] = React.useState<number | null>(null);
+
+  if (safeData.length === 0 || safeSeries.length === 0) {
+    return (
+      <div className="h-48 w-full flex items-center justify-center text-xs text-[#4C637C] dark:text-[#93ADC8]">
+        {emptyLabel}
+      </div>
+    );
+  }
+
+  const maxVal = Math.max(
+    1,
+    ...safeData.map((row) =>
+      stacked
+        ? safeSeries.reduce((sum, s) => sum + Math.max(0, Number(row?.[s.key] ?? 0)), 0)
+        : Math.max(...safeSeries.map((s) => Math.max(0, Number(row?.[s.key] ?? 0)))),
+    ),
+  );
+
+  return (
+    <div className="min-h-48 w-full flex flex-col justify-between gap-2 pt-2">
+      <div className="flex-1 flex items-end gap-2 sm:gap-3 min-h-[136px] border-b border-[#D5E0EC] dark:border-[#1C395E] pb-1 px-1">
+        {safeData.map((row, idx) => {
+          const xLabel = String(row?.[xKey] ?? '');
+          const isHovered = hoverCol === idx;
+          return (
+            <div
+              key={`${xLabel}-${idx}`}
+              onMouseEnter={() => setHoverCol(idx)}
+              onMouseLeave={() => setHoverCol(null)}
+              className="flex-1 min-w-0 h-full flex flex-col items-center justify-end gap-1 group"
+            >
+              <div className="text-[10px] font-mono font-bold text-[#008CAE] dark:text-[#7EE8F5] tabular-nums h-4 flex items-center">
+                {isHovered
+                  ? safeSeries.map((s) => Number(row?.[s.key] ?? 0)).join('/')
+                  : safeSeries.reduce((sum, s) => sum + Number(row?.[s.key] ?? 0), 0)}
+              </div>
+              <div
+                className={`w-full max-w-[36px] h-[108px] flex ${
+                  stacked ? 'flex-col-reverse justify-start' : 'items-end justify-center gap-1'
+                }`}
+              >
+                {safeSeries.map((s) => {
+                  const val = Math.max(0, Number(row?.[s.key] ?? 0));
+                  const pct = Math.max(val > 0 ? 6 : 0, Math.round((val / maxVal) * 100));
+                  return (
+                    <div
+                      key={s.key}
+                      className={`w-full transition-all duration-300 ${
+                        stacked ? 'first:rounded-b-sm last:rounded-t-md' : 'rounded-t-md'
+                      }`}
+                      style={{
+                        height: `${pct}%`,
+                        backgroundColor: s.color,
+                        opacity: hoverCol !== null && !isHovered ? 0.6 : 1,
+                      }}
+                      title={`${xLabel} — ${s.label}: ${val}`}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flex items-center gap-2 sm:gap-3 px-1">
+        {safeData.map((row, idx) => (
+          <div key={`lbl-${idx}`} className="flex-1 min-w-0 text-center">
+            <span className="block text-[10px] text-[#4C637C] dark:text-[#93ADC8] truncate">
+              {String(row?.[xKey] ?? '')}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {safeSeries.length > 1 && (
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+          {safeSeries.map((s) => (
+            <span key={s.key} className="inline-flex items-center gap-1.5 text-[11px] text-[#4C637C] dark:text-[#93ADC8]">
+              <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: s.color }} />
+              {s.label}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export interface TrendLineDatum {
+  day: string;
+  events: number;
+  applications: number;
+}
+
+export const DualTrendLineChart: React.FC<{ data: TrendLineDatum[] }> = ({ data }) => {
+  const safeData = Array.isArray(data) ? data : [];
+  const [hoverIdx, setHoverIdx] = React.useState<number | null>(null);
+
+  if (safeData.length === 0) {
+    return (
+      <div className="h-48 w-full flex items-center justify-center text-xs text-[#4C637C] dark:text-[#93ADC8]">
+        No trend activity recorded yet.
+      </div>
+    );
+  }
+
+  const width = 320;
+  const height = 148;
+  const padX = 20;
+  const padY = 16;
+  const plotW = width - padX * 2;
+  const plotH = height - padY * 2;
+  const maxVal = Math.max(1, ...safeData.flatMap((d) => [Number(d.events || 0), Number(d.applications || 0)]));
+
+  const getX = (i: number) =>
+    safeData.length <= 1 ? padX + plotW / 2 : padX + (i / (safeData.length - 1)) * plotW;
+  const getY = (val: number) => padY + plotH - (Math.max(0, val) / maxVal) * plotH;
+
+  const eventsPoints = safeData.map((d, i) => `${getX(i).toFixed(1)},${getY(d.events).toFixed(1)}`).join(' ');
+  const appsPoints = safeData.map((d, i) => `${getX(i).toFixed(1)},${getY(d.applications).toFixed(1)}`).join(' ');
+  const activePoint = hoverIdx !== null ? safeData[hoverIdx] : safeData[safeData.length - 1];
+
+  return (
+    <div className="min-h-48 w-full flex flex-col justify-between gap-1.5">
+      <div className="flex items-center justify-between text-[11px] text-[#4C637C] dark:text-[#93ADC8] px-1">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#00B4DB]" /> Events
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#0B1F38] dark:bg-[#7EE8F5]" /> Apps
+          </span>
+        </div>
+        {activePoint && (
+          <span className="font-mono text-[10px] tabular-nums text-[#0B1F38] dark:text-[#F1F7FC]">
+            {activePoint.day}: {activePoint.events}ev / {activePoint.applications}ap
+          </span>
+        )}
+      </div>
+
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-36 overflow-visible" role="img" aria-label="Activity and applications trend">
+        {[0, 0.5, 1].map((t) => {
+          const y = padY + t * plotH;
+          return (
+            <line
+              key={t}
+              x1={padX}
+              x2={width - padX}
+              y1={y}
+              y2={y}
+              stroke="currentColor"
+              strokeDasharray="3 3"
+              className="text-[#D5E0EC] dark:text-[#1C395E]"
+            />
+          );
+        })}
+
+        {safeData.length > 1 && (
+          <>
+            <polyline fill="none" stroke="#00B4DB" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" points={eventsPoints} />
+            <polyline
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              points={appsPoints}
+              className="text-[#0B1F38] dark:text-[#7EE8F5]"
+            />
+          </>
+        )}
+
+        {safeData.map((d, idx) => {
+          const cx = getX(idx);
+          const cyEv = getY(d.events);
+          const cyAp = getY(d.applications);
+          const selected = hoverIdx === idx;
+          return (
+            <g
+              key={`${d.day}-${idx}`}
+              onMouseEnter={() => setHoverIdx(idx)}
+              onMouseLeave={() => setHoverIdx(null)}
+              className="cursor-pointer"
+            >
+              <circle cx={cx} cy={cyAp} r={selected ? 4.5 : 3} className="fill-[#0B1F38] dark:fill-[#7EE8F5]" />
+              <circle cx={cx} cy={cyEv} r={selected ? 5 : 3.4} fill="#00B4DB" />
+              <text
+                x={cx}
+                y={height - 2}
+                textAnchor="middle"
+                fontSize="9"
+                className="fill-[#4C637C] dark:fill-[#93ADC8]"
+              >
+                {d.day}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
     </div>
   );
 };

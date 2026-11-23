@@ -1,6 +1,6 @@
 {
-  "revision": 6,
-  "updatedAtEpochMs": 1795438274107,
+  "revision": 80,
+  "updatedAtEpochMs": 1795439650769,
   "accounts": [
     {
       "id": "acc_admin_demo",
@@ -549,6 +549,663 @@
   ],
   "activities": [
     {
+      "id": "act_3a8b204f-f",
+      "actorAccountId": "acc_admin_demo",
+      "actorRole": "PLATFORM_ADMIN",
+      "actionType": "AUTH_LOGIN",
+      "summary": "SkillBridge Operations Admin (PLATFORM_ADMIN) signed in.",
+      "targetId": "acc_admin_demo",
+      "createdAtEpochMs": 1795439650769
+    },
+    {
+      "id": "act_24efc605-f",
+      "actorAccountId": "acc_director_demo",
+      "actorRole": "COMPANY_DIRECTOR",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Dr. Karim Hassan (COMPANY_DIRECTOR) signed in.",
+      "targetId": "acc_director_demo",
+      "createdAtEpochMs": 1795439650694
+    },
+    {
+      "id": "act_f8624c23-d",
+      "actorAccountId": "acc_company_demo",
+      "actorRole": "COMPANY",
+      "actionType": "AUTH_LOGIN",
+      "summary": "NileGrid Technologies (COMPANY) signed in.",
+      "targetId": "acc_company_demo",
+      "createdAtEpochMs": 1795439650608
+    },
+    {
+      "id": "act_d104ca9f-4",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439650534
+    },
+    {
+      "id": "act_58901e07-e",
+      "actorAccountId": "acc_admin_demo",
+      "actorRole": "PLATFORM_ADMIN",
+      "actionType": "AUTH_LOGIN",
+      "summary": "SkillBridge Operations Admin (PLATFORM_ADMIN) signed in.",
+      "targetId": "acc_admin_demo",
+      "createdAtEpochMs": 1795439214558
+    },
+    {
+      "id": "act_83020e0b-1",
+      "actorAccountId": "acc_director_demo",
+      "actorRole": "COMPANY_DIRECTOR",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Dr. Karim Hassan (COMPANY_DIRECTOR) signed in.",
+      "targetId": "acc_director_demo",
+      "createdAtEpochMs": 1795439214106
+    },
+    {
+      "id": "act_7c67b3a5-e",
+      "actorAccountId": "acc_company_demo",
+      "actorRole": "COMPANY",
+      "actionType": "AUTH_LOGIN",
+      "summary": "NileGrid Technologies (COMPANY) signed in.",
+      "targetId": "acc_company_demo",
+      "createdAtEpochMs": 1795439213696
+    },
+    {
+      "id": "act_2fabf263-f",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439213287
+    },
+    {
+      "id": "act_3a022d34-a",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439212880
+    },
+    {
+      "id": "act_1eac9121-7",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439212460
+    },
+    {
+      "id": "act_822803f3-0",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439212044
+    },
+    {
+      "id": "act_3d6f098f-e",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439211631
+    },
+    {
+      "id": "act_c1e064a3-f",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439211207
+    },
+    {
+      "id": "act_46ccc68c-0",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439210787
+    },
+    {
+      "id": "act_5f706028-2",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439210367
+    },
+    {
+      "id": "act_404be085-e",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439209943
+    },
+    {
+      "id": "act_158ea45c-a",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439209534
+    },
+    {
+      "id": "act_a102599f-3",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439209124
+    },
+    {
+      "id": "act_00484d3b-3",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439208711
+    },
+    {
+      "id": "act_5208fdaf-b",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439208276
+    },
+    {
+      "id": "act_a0e83f9b-c",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439207861
+    },
+    {
+      "id": "act_17d2389d-a",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439207447
+    },
+    {
+      "id": "act_85929fc4-9",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439207030
+    },
+    {
+      "id": "act_b1c97f5b-7",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439206615
+    },
+    {
+      "id": "act_3edb343f-9",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439206202
+    },
+    {
+      "id": "act_85b2dac7-3",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439205783
+    },
+    {
+      "id": "act_3dde4a84-3",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439205371
+    },
+    {
+      "id": "act_defc624f-d",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439204954
+    },
+    {
+      "id": "act_9abc0cc9-9",
+      "actorAccountId": "acc_admin_demo",
+      "actorRole": "PLATFORM_ADMIN",
+      "actionType": "AUTH_LOGIN",
+      "summary": "SkillBridge Operations Admin (PLATFORM_ADMIN) signed in.",
+      "targetId": "acc_admin_demo",
+      "createdAtEpochMs": 1795439124997
+    },
+    {
+      "id": "act_458e3eb8-b",
+      "actorAccountId": "acc_director_demo",
+      "actorRole": "COMPANY_DIRECTOR",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Dr. Karim Hassan (COMPANY_DIRECTOR) signed in.",
+      "targetId": "acc_director_demo",
+      "createdAtEpochMs": 1795439124580
+    },
+    {
+      "id": "act_cbef766d-4",
+      "actorAccountId": "acc_company_demo",
+      "actorRole": "COMPANY",
+      "actionType": "AUTH_LOGIN",
+      "summary": "NileGrid Technologies (COMPANY) signed in.",
+      "targetId": "acc_company_demo",
+      "createdAtEpochMs": 1795439124173
+    },
+    {
+      "id": "act_841a570a-e",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439123762
+    },
+    {
+      "id": "act_545bd4eb-1",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439123348
+    },
+    {
+      "id": "act_898796e6-0",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439122936
+    },
+    {
+      "id": "act_64d5a6c6-5",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439122520
+    },
+    {
+      "id": "act_ecd02edd-f",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439122099
+    },
+    {
+      "id": "act_06043fa9-a",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439121688
+    },
+    {
+      "id": "act_490b3138-b",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439121273
+    },
+    {
+      "id": "act_e6dc5d18-c",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439120853
+    },
+    {
+      "id": "act_cf2bb85d-b",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439120441
+    },
+    {
+      "id": "act_695d8c9f-d",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439120028
+    },
+    {
+      "id": "act_9ffeff47-9",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439119620
+    },
+    {
+      "id": "act_b2213aa6-2",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439119205
+    },
+    {
+      "id": "act_c55590e6-e",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439118793
+    },
+    {
+      "id": "act_6225e2ce-4",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439118375
+    },
+    {
+      "id": "act_e6c1ece4-f",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439117961
+    },
+    {
+      "id": "act_1261052d-3",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439117552
+    },
+    {
+      "id": "act_85d57024-7",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439117145
+    },
+    {
+      "id": "act_f9159012-4",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439116727
+    },
+    {
+      "id": "act_53952093-8",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439116304
+    },
+    {
+      "id": "act_44ec0682-0",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439115885
+    },
+    {
+      "id": "act_e7cb15bd-3",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439115465
+    },
+    {
+      "id": "act_3c08fcff-7",
+      "actorAccountId": "acc_admin_demo",
+      "actorRole": "PLATFORM_ADMIN",
+      "actionType": "AUTH_LOGIN",
+      "summary": "SkillBridge Operations Admin (PLATFORM_ADMIN) signed in.",
+      "targetId": "acc_admin_demo",
+      "createdAtEpochMs": 1795439097198
+    },
+    {
+      "id": "act_a4b0861e-3",
+      "actorAccountId": "acc_director_demo",
+      "actorRole": "COMPANY_DIRECTOR",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Dr. Karim Hassan (COMPANY_DIRECTOR) signed in.",
+      "targetId": "acc_director_demo",
+      "createdAtEpochMs": 1795439096784
+    },
+    {
+      "id": "act_946663d7-5",
+      "actorAccountId": "acc_company_demo",
+      "actorRole": "COMPANY",
+      "actionType": "AUTH_LOGIN",
+      "summary": "NileGrid Technologies (COMPANY) signed in.",
+      "targetId": "acc_company_demo",
+      "createdAtEpochMs": 1795439096369
+    },
+    {
+      "id": "act_e46a7297-e",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439095962
+    },
+    {
+      "id": "act_798f936f-6",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439095551
+    },
+    {
+      "id": "act_fe9945c8-4",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439095142
+    },
+    {
+      "id": "act_fc82f273-e",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439094732
+    },
+    {
+      "id": "act_2bc0208e-4",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439094325
+    },
+    {
+      "id": "act_4888af41-5",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439093915
+    },
+    {
+      "id": "act_88f392d8-4",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439093507
+    },
+    {
+      "id": "act_b58df03f-1",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439093088
+    },
+    {
+      "id": "act_a2d1b6c4-d",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439092668
+    },
+    {
+      "id": "act_11d7e859-8",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439092258
+    },
+    {
+      "id": "act_0fc8dc3c-1",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439091840
+    },
+    {
+      "id": "act_928e9294-f",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439073920
+    },
+    {
+      "id": "act_2af5296e-3",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795439070197
+    },
+    {
+      "id": "act_49a377c0-1",
+      "actorAccountId": "acc_admin_demo",
+      "actorRole": "PLATFORM_ADMIN",
+      "actionType": "AUTH_LOGIN",
+      "summary": "SkillBridge Operations Admin (PLATFORM_ADMIN) signed in.",
+      "targetId": "acc_admin_demo",
+      "createdAtEpochMs": 1795438915218
+    },
+    {
+      "id": "act_63e9367f-8",
+      "actorAccountId": "acc_director_demo",
+      "actorRole": "COMPANY_DIRECTOR",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Dr. Karim Hassan (COMPANY_DIRECTOR) signed in.",
+      "targetId": "acc_director_demo",
+      "createdAtEpochMs": 1795438915140
+    },
+    {
+      "id": "act_9efc3f25-c",
+      "actorAccountId": "acc_company_demo",
+      "actorRole": "COMPANY",
+      "actionType": "AUTH_LOGIN",
+      "summary": "NileGrid Technologies (COMPANY) signed in.",
+      "targetId": "acc_company_demo",
+      "createdAtEpochMs": 1795438915064
+    },
+    {
+      "id": "act_d626bbfe-c",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795438914998
+    },
+    {
+      "id": "act_9acbf855-f",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795438584407
+    },
+    {
       "id": "act_7bcaff12-9",
       "actorAccountId": "acc_student_demo",
       "actorRole": "STUDENT",
@@ -669,5 +1326,15 @@
       "createdAtEpochMs": 1795086999712
     }
   ],
-  "deviceSessions": []
+  "deviceSessions": [
+    {
+      "id": "dev_dbtsaxze4d",
+      "accountId": "acc_student_demo",
+      "deviceType": "DESKTOP_LAPTOP",
+      "deviceLabel": "Google Chrome · Windows",
+      "windowWidthDp": 1280,
+      "lastActiveEpochMs": 1795438584581,
+      "revoked": false
+    }
+  ]
 }

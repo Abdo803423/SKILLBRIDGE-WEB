@@ -25,8 +25,8 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
     return { hasError: true, errorMessage: friendly };
   }
 
-  componentDidCatch(error: unknown) {
-    console.error('SkillBridge ErrorBoundary caught:', error);
+  componentDidCatch(error: unknown, errorInfo: React.ErrorInfo) {
+    console.error('SkillBridge ErrorBoundary caught:', error, errorInfo.componentStack);
   }
 
   render() {
