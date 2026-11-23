@@ -8,13 +8,23 @@ import {
   type Firestore,
   type FirestoreSettings,
 } from 'firebase/firestore';
-import firebaseConfig from '../../firebase-applet-config.json';
+import bundledFirebaseConfig from '../../firebase-applet-config.json';
+
+const firebaseConfig = {
+  ...bundledFirebaseConfig,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || bundledFirebaseConfig.apiKey,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || bundledFirebaseConfig.authDomain,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || bundledFirebaseConfig.projectId,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || bundledFirebaseConfig.appId,
+  firestoreDatabaseId:
+    import.meta.env.VITE_FIREBASE_DATABASE_ID || bundledFirebaseConfig.firestoreDatabaseId,
+};
 
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 // CRITICAL: Pass the named firestoreDatabaseId from firebase-applet-config.json
 // Use XHR long-polling (useFetchStreams: false + experimentalForceLongPolling: true) so
-// WebChannel requests never hang for 10s on Fetch ReadableStreams inside Cloud Run / iframe proxies.
+// WebChannel requests stay responsive across proxies and strict browser environments.
 export const db: Firestore = (() => {
   try {
     const settings: FirestoreSettings & { useFetchStreams?: boolean } = {

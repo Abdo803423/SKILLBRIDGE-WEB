@@ -35,23 +35,10 @@ export interface PublicCatalogSummary {
   publishedBriefs: ProjectBriefEntity[];
 }
 
-export interface DownloadArtifactMetadata {
-  id: 'android' | 'windows';
-  available: boolean;
-  filename: string;
-  sizeBytes: number;
-  sha256: string;
-  updatedAtIso: string;
-  downloadUrl: string;
-}
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
-export interface DownloadsStatusResponse {
-  android: DownloadArtifactMetadata;
-  windows: DownloadArtifactMetadata;
-}
-
-export async function fetchDownloadsStatusApi() {
-  return apiJson<DownloadsStatusResponse>('/api/ecosystem/downloads/status');
+export function resolveApiUrl(path: string): string {
+  return `${API_BASE}${path}`;
 }
 
 async function apiJson<T>(url: string, options: RequestInit = {}, token?: string | null): Promise<T> {
@@ -62,7 +49,7 @@ async function apiJson<T>(url: string, options: RequestInit = {}, token?: string
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(resolveApiUrl(url), { ...options, headers });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     throw new Error(data.error || `Request failed (${response.status})`);
@@ -98,6 +85,10 @@ export async function resolveGoogleSessionApi(params: {
     method: 'POST',
     body: JSON.stringify(params),
   });
+}
+
+export async function verifyBearerSessionApi(token: string) {
+  return apiJson<{ principal: SessionPrincipal }>('/api/auth/me', { method: 'GET' }, token);
 }
 
 export async function fetchPublicCatalogApi() {
@@ -351,7 +342,7 @@ export function connectEcosystemEventStream(
 
   (async () => {
     try {
-      const response = await fetch('/api/events', {
+      const response = await fetch(resolveApiUrl('/api/events'), {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
         signal: controller.signal,

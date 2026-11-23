@@ -13,7 +13,13 @@ import {
   SEED_TEAMS,
 } from '../data/ecosystemData';
 import { auth, signInWithGooglePopup, signOutFirebase, testConnection } from '../lib/firebase';
-import { useOnlineStatus, detectDevicePlatform } from '../hooks/usePWAInstall';
+import {
+  type ActiveRoute,
+  isBrowseableRoute,
+  routeToUrl,
+  urlToRoute,
+} from '../lib/routing';
+import { detectBrowserEnvironment, useOnlineStatus } from '../hooks/useNetworkStatus';
 import { getStrings, type AppStrings } from '../i18n/localization';
 import {
   applyToBriefApi,
@@ -40,6 +46,7 @@ import {
   submitProjectWorkApi,
   updateStudentProfileApi,
   updateStudentTaskStatusApi,
+  verifyBearerSessionApi,
   verifyCompanyApi,
   type CentralEcosystemSnapshot,
 } from '../services/ecosystemApi';
@@ -89,43 +96,7 @@ import type {
   UserProfile,
 } from '../types/skillbridge';
 
-export type ActiveRoute =
-  | 'welcome'
-  | 'downloads'
-  | 'home'
-  | 'discover'
-  | 'challengeDetail'
-  | 'contests'
-  | 'reverseEng'
-  | 'community'
-  | 'postDetail'
-  | 'teams'
-  | 'teamWorkspace'
-  | 'passport'
-  | 'analysis'
-  | 'badges'
-  | 'wallet'
-  | 'leaderboard'
-  | 'briefs'
-  | 'coach'
-  | 'search'
-  | 'notifications'
-  | 'blueprint'
-  | 'settings'
-  | 'adminHome'
-  | 'adminQueues'
-  | 'adminUsers'
-  | 'adminLogs'
-  | 'companyHome'
-  | 'companyBriefs'
-  | 'companyApplicants'
-  | 'companyTalent'
-  | 'companyAnalytics'
-  | 'directorHome'
-  | 'directorStudents'
-  | 'directorReviews'
-  | 'directorHistory'
-  | 'directorProjects';
+export type { ActiveRoute };
 
 interface SkillBridgeContextValue {
   language: AppLanguage;
@@ -335,20 +306,49 @@ function getOrCreateClientSessionId(): string {
 
 const SkillBridgeContext = createContext<SkillBridgeContextValue | null>(null);
 
+const AUTH_STORAGE_KEY = 'sb_auth_token';
+
+function readStoredToken(): string | null {
+  try {
+    return typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(AUTH_STORAGE_KEY) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredToken(token: string | null) {
+  try {
+    if (typeof sessionStorage === 'undefined') return;
+    if (token) {
+      sessionStorage.setItem(AUTH_STORAGE_KEY, token);
+    } else {
+      sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+  } catch {
+    // ignore storage restriction
+  }
+}
+
 export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isOnline = useOnlineStatus();
   const [language, setLanguage] = useState<AppLanguage>('EN');
   const [darkTheme, setDarkTheme] = useState<boolean>(false);
-  const [route, setRoute] = useState<ActiveRoute>('welcome');
+  const initialUrlRoute = useMemo<ActiveRoute>(() => {
+    if (typeof window === 'undefined') return 'welcome';
+    return urlToRoute(window.location.pathname);
+  }, []);
+  const [route, setRouteState] = useState<ActiveRoute>(initialUrlRoute);
   const [selectedChallengeId, setSelectedChallengeId] = useState<string>(CHALLENGES_CATALOG[0].id);
   const [selectedPostId, setSelectedPostId] = useState<string>(SEED_COMMUNITY_POSTS[0].id);
   const [selectedTeamId, setSelectedTeamId] = useState<string>(SEED_TEAMS[0].id);
 
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [authReady, setAuthReady] = useState(false);
-  const [isGuestPreview, setIsGuestPreview] = useState(false);
+  const [isGuestPreview, setIsGuestPreview] = useState<boolean>(
+    () => !readStoredToken() && isBrowseableRoute(initialUrlRoute),
+  );
   const [session, setSession] = useState<SessionPrincipal | null>(null);
-  const [bearerToken, setBearerToken] = useState<string | null>(null);
+  const [bearerToken, setBearerToken] = useState<string | null>(() => readStoredToken());
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
@@ -425,6 +425,53 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     refreshPublicCatalog();
   }, [refreshPublicCatalog]);
 
+  const setRoute = useCallback(
+    (updater: ActiveRoute | ((prev: ActiveRoute) => ActiveRoute)) => {
+      setRouteState((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        if (typeof window !== 'undefined') {
+          const targetUrl = routeToUrl(next);
+          if (window.location.pathname !== targetUrl) {
+            window.history.pushState({ route: next }, '', targetUrl);
+          }
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+        return next;
+      });
+    },
+    [],
+  );
+
+  // Sync browser Back/Forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const next = urlToRoute(window.location.pathname);
+      setRouteState(next);
+      if (!session && !firebaseUser && isBrowseableRoute(next)) {
+        setIsGuestPreview(true);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [session, firebaseUser]);
+
+  // Restore stored credential session on page refresh
+  useEffect(() => {
+    const stored = readStoredToken();
+    if (!stored) return;
+    verifyBearerSessionApi(stored)
+      .then((res) => {
+        setBearerToken(stored);
+        setSession(res.principal);
+        setIsGuestPreview(false);
+      })
+      .catch(() => {
+        writeStoredToken(null);
+        setBearerToken(null);
+        setSession(null);
+      });
+  }, []);
+
   // Refresh Central Snapshot when authenticated
   const refreshSnapshot = useCallback(async () => {
     if (!bearerToken) return;
@@ -434,6 +481,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setLastSyncedMs(Date.now());
       setSyncError(null);
       if (next.deviceSessions.some((d) => d.id === currentDeviceSessionId && d.revoked)) {
+        writeStoredToken(null);
         setBearerToken(null);
         setSession(null);
         setSnapshot(null);
@@ -444,9 +492,9 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const msg = err instanceof Error ? err.message : 'Sync failed';
       setSyncError(msg);
     }
-  }, [bearerToken, currentDeviceSessionId, language, showToast]);
+  }, [bearerToken, currentDeviceSessionId, language, setRoute, showToast]);
 
-  // Real-time SSE Synchronization across Web, Mobile PWA & Desktop PWA
+  // Real-time SSE Synchronization across active browser sessions
   useEffect(() => {
     if (!bearerToken || !isOnline) {
       setSseConnected(false);
@@ -457,19 +505,12 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     let reconnectTimer: number | null = null;
     let stopStream: (() => void) | null = null;
 
-    const platform = detectDevicePlatform();
-    const isElectronDesktop =
-      typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().includes('electron');
-    const isStandalone =
-      typeof window !== 'undefined' && window.matchMedia('(display-mode: standalone)').matches;
-    const resolvedLabel = isElectronDesktop
-      ? `${platform.osLabel} · Native Desktop App`
-      : `${platform.osLabel} · ${isStandalone ? 'Installed App' : 'Web Browser'}`;
+    const env = detectBrowserEnvironment();
     registerDeviceSessionApi(bearerToken, {
       sessionId: currentDeviceSessionId,
-      deviceType: platform.recommendedTarget === 'MOBILE' && !isElectronDesktop ? 'MOBILE' : 'DESKTOP_LAPTOP',
-      deviceLabel: resolvedLabel,
-      windowWidthDp: platform.windowWidth,
+      deviceType: env.viewportProfile === 'MOBILE' ? 'MOBILE' : 'DESKTOP_LAPTOP',
+      deviceLabel: env.sessionLabel,
+      windowWidthDp: env.windowWidth,
     })
       .then((res) => {
         if (!cancelled) {
@@ -533,17 +574,18 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
             displayName: user.displayName || 'SkillBridge Learner',
             email: user.email || '',
           });
+          writeStoredToken(res.token);
           setBearerToken(res.token);
           setSession(res.principal);
           setIsGuestPreview(false);
-          setRoute((prev) => (prev === 'welcome' || prev === 'downloads' ? routeHomeForRole(res.principal.role) : prev));
+          setRoute((prev) => (prev === 'welcome' || prev === 'platform' ? routeHomeForRole(res.principal.role) : prev));
         } catch {
           // Keep Firebase state active even if central API temporarily unreachable
         }
       }
     });
     return () => unsub();
-  }, []);
+  }, [setRoute]);
 
   // Firestore real-time subscriptions when Firebase user is authenticated
   useEffect(() => {
@@ -609,6 +651,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setAuthError(null);
     try {
       const res = await loginWithCredentialsApi(loginId, password);
+      writeStoredToken(res.token);
       setBearerToken(res.token);
       setSession(res.principal);
       setIsGuestPreview(false);
@@ -621,7 +664,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     } finally {
       setAuthBusy(false);
     }
-  }, []);
+  }, [setRoute]);
 
   const registerStudent = useCallback(
     async (params: { loginId: string; displayName: string; email: string; password: string }) => {
@@ -629,6 +672,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setAuthError(null);
       try {
         const res = await registerStudentApi(params);
+        writeStoredToken(res.token);
         setBearerToken(res.token);
         setSession(res.principal);
         setIsGuestPreview(false);
@@ -642,7 +686,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setAuthBusy(false);
       }
     },
-    [],
+    [setRoute],
   );
 
   const signInWithGoogle = useCallback(async () => {
@@ -658,11 +702,12 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, []);
 
   const enterGuestPreview = useCallback(() => {
+    writeStoredToken(null);
     setIsGuestPreview(true);
     setSession(null);
     setBearerToken(null);
     setRoute('home');
-  }, []);
+  }, [setRoute]);
 
   const signOutAll = useCallback(async () => {
     setAuthBusy(true);
@@ -671,6 +716,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
         await signOutFirebase();
       }
     } finally {
+      writeStoredToken(null);
       setBearerToken(null);
       setSession(null);
       setSnapshot(null);
@@ -679,7 +725,7 @@ export const SkillBridgeProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setRoute('welcome');
       setAuthBusy(false);
     }
-  }, [firebaseUser]);
+  }, [firebaseUser, setRoute]);
 
   async function runCentralAction(fn: (token: string) => Promise<{ snapshot: CentralEcosystemSnapshot }>, successMsg: string) {
     if (!bearerToken) {

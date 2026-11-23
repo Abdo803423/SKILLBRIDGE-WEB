@@ -6,14 +6,8 @@ export default [
   {
     ignores: [
       'dist/**/*',
-      'dev-dist/**/*',
-      'desktop/**/*',
-      'public/downloads/**/*',
-      '.gradle/**/*',
       'build/**/*',
       'node_modules/**/*',
-      'app/**/*',
-      'gradle/**/*',
       'firestore.test.js',
       'firestore.rules.test.ts',
     ],

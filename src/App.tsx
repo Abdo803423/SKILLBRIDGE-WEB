@@ -35,7 +35,7 @@ import {
   GlobalSearchScreen,
   NotificationsScreen,
 } from './screens/UtilitySettingsScreens';
-import { DownloadCenterScreen, WelcomeScreen } from './screens/WelcomeAndDownloadsScreens';
+import { PlatformOverviewScreen, WelcomeScreen } from './screens/WelcomeAndPlatformScreens';
 
 export const App: React.FC = () => {
   const { route, session, isGuestPreview, authReady } = useSkillBridge();
@@ -56,18 +56,18 @@ export const App: React.FC = () => {
     );
   }
 
-  if (route === 'welcome' || (!session && !isGuestPreview && route !== 'downloads')) {
+  if (route === 'welcome' || (!session && !isGuestPreview && route !== 'platform')) {
     return <WelcomeScreen />;
   }
 
-  if (route === 'downloads' && !session && !isGuestPreview) {
-    return <DownloadCenterScreen />;
+  if (route === 'platform' && !session && !isGuestPreview) {
+    return <PlatformOverviewScreen />;
   }
 
   const role = session?.role ?? 'STUDENT';
 
   const renderRoleView = () => {
-    if (route === 'downloads') return <DownloadCenterScreen />;
+    if (route === 'platform') return <PlatformOverviewScreen />;
     if (route === 'notifications') return <NotificationsScreen />;
     if (route === 'settings') return <AccountAndPrivacySettingsScreen />;
     if (route === 'blueprint') return <ArchitectureBlueprintScreen />;

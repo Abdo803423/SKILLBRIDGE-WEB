@@ -169,7 +169,7 @@ export const AiAgentDrawer: React.FC = () => {
         <div className="px-4 py-3 border-b border-[#1C395E] flex items-center justify-between gap-2 bg-[#0B1F38] text-white">
           <div className="flex items-center gap-2.5 min-w-0">
             <img
-              src="/assets/images/img_coach_orbit_1794605869758.jpg"
+              src={`${import.meta.env.BASE_URL}assets/images/img_coach_orbit_1794605869758.jpg`}
               alt="AI Coach"
               className="w-8 h-8 rounded-lg object-cover border border-[#00B4DB]/50 shrink-0"
             />

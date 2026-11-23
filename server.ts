@@ -1,6 +1,4 @@
 import express from 'express';
-import crypto from 'node:crypto';
-import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GoogleGenAI, Type, ThinkingLevel } from '@google/genai';
@@ -14,75 +12,6 @@ const PORT = isProd ? Number(process.env.PORT || 3000) : 3000;
 const MODEL_NAME = 'gemini-4-hydrogen';
 
 const ecosystemStore = new CentralEcosystemStore(path.join(__dirname, 'data'));
-const DOWNLOADS_DIR = path.resolve(__dirname, 'public', 'downloads');
-
-interface DownloadArtifactSpec {
-  id: 'android' | 'windows';
-  filename: string;
-  mimeType: string;
-  downloadUrl: string;
-}
-
-const DOWNLOAD_SPECS: Record<'android' | 'windows', DownloadArtifactSpec> = {
-  android: {
-    id: 'android',
-    filename: 'SkillBridge-Android.apk',
-    mimeType: 'application/vnd.android.package-archive',
-    downloadUrl: '/api/downloads/android',
-  },
-  windows: {
-    id: 'windows',
-    filename: 'SkillBridge-Windows-Setup.exe',
-    mimeType: 'application/vnd.microsoft.portable-executable',
-    downloadUrl: '/api/downloads/windows',
-  },
-};
-
-const shaCache = new Map<string, { mtimeMs: number; size: number; sha256: string }>();
-
-function resolveConfinedDownloadPath(filename: string): string | null {
-  const candidate = path.resolve(DOWNLOADS_DIR, filename);
-  if (!candidate.startsWith(DOWNLOADS_DIR + path.sep)) return null;
-  if (!fs.existsSync(candidate)) return null;
-  const stat = fs.statSync(candidate);
-  if (!stat.isFile() || stat.size <= 0) return null;
-  return candidate;
-}
-
-function getArtifactMetadata(spec: DownloadArtifactSpec) {
-  const filePath = resolveConfinedDownloadPath(spec.filename);
-  if (!filePath) {
-    return {
-      id: spec.id,
-      available: false,
-      filename: spec.filename,
-      sizeBytes: 0,
-      sha256: '',
-      updatedAtIso: '',
-      downloadUrl: spec.downloadUrl,
-    };
-  }
-  const stat = fs.statSync(filePath);
-  const cached = shaCache.get(filePath);
-  let sha256 = '';
-  if (cached && cached.mtimeMs === stat.mtimeMs && cached.size === stat.size) {
-    sha256 = cached.sha256;
-  } else {
-    const hash = crypto.createHash('sha256');
-    hash.update(fs.readFileSync(filePath));
-    sha256 = hash.digest('hex');
-    shaCache.set(filePath, { mtimeMs: stat.mtimeMs, size: stat.size, sha256 });
-  }
-  return {
-    id: spec.id,
-    available: true,
-    filename: spec.filename,
-    sizeBytes: stat.size,
-    sha256,
-    updatedAtIso: new Date(stat.mtimeMs).toISOString(),
-    downloadUrl: spec.downloadUrl,
-  };
-}
 
 function getAiClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -91,24 +20,19 @@ function getAiClient(): GoogleGenAI {
   }
   return new GoogleGenAI({
     apiKey: apiKey.trim(),
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
-      },
-    },
   });
 }
 
 function formatAiError(error: unknown): { status: number; message: string } {
   const raw = error instanceof Error ? error.message : String(error);
   if (raw.includes('GEMINI_API_KEY')) {
-    return { status: 503, message: 'AI service unavailable: please configure GEMINI_API_KEY in Settings > Secrets.' };
+    return { status: 503, message: 'AI service unavailable: please configure GEMINI_API_KEY in server environment variables.' };
   }
   if (raw.includes('403') || raw.includes('PERMISSION_DENIED') || raw.includes('API_KEY_INVALID')) {
-    return { status: 403, message: 'Gemini API key error (403/400). Please check your API key in Settings > Secrets.' };
+    return { status: 403, message: 'Gemini API key error (403/400). Please check your GEMINI_API_KEY configuration.' };
   }
   if (raw.includes('429') || raw.includes('RESOURCE_EXHAUSTED')) {
-    return { status: 429, message: 'AI rate quota reached (429). Please retry shortly or upgrade your key tier in Settings > Secrets.' };
+    return { status: 429, message: 'AI rate quota reached (429). Please retry shortly or check your API quota.' };
   }
   if (raw.includes('404') || raw.includes('NOT_FOUND')) {
     return { status: 404, message: `Model ${MODEL_NAME} returned NOT_FOUND. Verify model availability.` };
@@ -148,13 +72,20 @@ async function startServer() {
   const app = express();
   app.use(express.json({ limit: '1mb' }));
 
-  // Origin-allowlisted CORS for local Electron / Web preview origins
+  // Origin-allowlisted CORS for web deployments across Vercel, Netlify, GitHub Pages, or custom domains
+  const extraOrigins = (process.env.ALLOWED_ORIGINS || process.env.CORS_ORIGIN || '')
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
   const allowedOrigins = new Set(
     [
       process.env.APP_URL,
       process.env.SHARED_APP_URL,
+      ...extraOrigins,
       'http://localhost:3000',
       'http://127.0.0.1:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
     ].filter((v): v is string => Boolean(v && v.trim())),
   );
   app.use('/api', (req, res, next) => {
@@ -173,41 +104,10 @@ async function startServer() {
   });
 
   app.get('/api/health', (_req, res) => {
-    res.json({ ok: true, service: 'skillbridge', model: MODEL_NAME });
+    res.json({ ok: true, service: 'skillbridge-web', model: MODEL_NAME });
   });
 
-  app.get('/api/ecosystem/downloads/status', (_req, res) => {
-    res.json({
-      android: getArtifactMetadata(DOWNLOAD_SPECS.android),
-      windows: getArtifactMetadata(DOWNLOAD_SPECS.windows),
-    });
-  });
-
-  app.get('/api/downloads/android', (_req, res) => {
-    const filePath = resolveConfinedDownloadPath(DOWNLOAD_SPECS.android.filename);
-    if (!filePath) {
-      res.status(404).json({ error: 'Android APK binary has not been generated yet.' });
-      return;
-    }
-    res.setHeader('Content-Type', DOWNLOAD_SPECS.android.mimeType);
-    res.setHeader('Content-Disposition', `attachment; filename="${DOWNLOAD_SPECS.android.filename}"`);
-    res.setHeader('Cache-Control', 'no-cache');
-    res.sendFile(filePath);
-  });
-
-  app.get('/api/downloads/windows', (_req, res) => {
-    const filePath = resolveConfinedDownloadPath(DOWNLOAD_SPECS.windows.filename);
-    if (!filePath) {
-      res.status(404).json({ error: 'Windows installer binary has not been generated yet.' });
-      return;
-    }
-    res.setHeader('Content-Type', DOWNLOAD_SPECS.windows.mimeType);
-    res.setHeader('Content-Disposition', `attachment; filename="${DOWNLOAD_SPECS.windows.filename}"`);
-    res.setHeader('Cache-Control', 'no-cache');
-    res.sendFile(filePath);
-  });
-
-  // --- Central Ecosystem Auth & Synchronization APIs (Web / Mobile / Desktop) ---
+  // --- Central Ecosystem Auth & Synchronization APIs ---
 
   app.post('/api/auth/login', (req, res) => {
     try {

@@ -162,16 +162,14 @@ export interface AppStrings {
   lockedTitle: string;
   signOut: string;
 
-  // Cross-platform & Download Center
-  downloadCenterTitle: string;
+  // Website Platform & Access
+  platformOverviewTitle: string;
   useOnlineTitle: string;
   useOnlineDesc: string;
-  mobileAppTitle: string;
-  mobileAppDesc: string;
-  desktopAppTitle: string;
-  desktopAppDesc: string;
-  installNowLabel: string;
-  comingSoonLabel: string;
+  mobileWebTitle: string;
+  mobileWebDesc: string;
+  desktopWebTitle: string;
+  desktopWebDesc: string;
   liveSyncConnected: string;
   liveSyncReconnecting: string;
 }
@@ -181,11 +179,11 @@ export const EnStrings: AppStrings = {
   tagline: 'BRIDGE YOUR SKILLS TO GREATER OPPORTUNITIES',
   welcomeTitle: 'Welcome to SkillBridge',
   welcomeSubtitle:
-    'One unified career ecosystem across Web, Mobile, and Desktop — bridge skill gaps to real company briefs, team sprints, ethical reverse engineering, and verified experience.',
-  getStarted: 'Use SkillBridge Online',
+    'A unified browser-based career website — bridge skill gaps to real company briefs, team sprints, ethical reverse engineering, and verified experience from any device.',
+  getStarted: 'Enter SkillBridge Web',
   signInGoogle: 'Continue with Google',
   continueAsGuest: 'Continue as Guest (Preview)',
-  guestBannerTitle: 'Guest Preview Mode — Sign in with Google or your SkillBridge account to save progress & sync across devices.',
+  guestBannerTitle: 'Guest Preview Mode — Sign in with Google or your SkillBridge account to save progress & sync live.',
   guestLockedReason: 'This private action requires signing in so your verified evidence stays synchronized.',
   languageToggleLabel: 'عربي',
 
@@ -340,15 +338,13 @@ export const EnStrings: AppStrings = {
   lockedTitle: 'Milestone Locked',
   signOut: 'Sign Out',
 
-  downloadCenterTitle: 'Download & Platform Access',
-  useOnlineTitle: 'Use SkillBridge Online',
-  useOnlineDesc: 'Instant browser access with full real-time synchronization and zero installation required.',
-  mobileAppTitle: 'Download Mobile App',
-  mobileAppDesc: 'Install SkillBridge on Android or iOS for thumb-friendly navigation and live notifications.',
-  desktopAppTitle: 'Download Desktop App',
-  desktopAppDesc: 'Install SkillBridge on Windows, macOS, or Linux for an expanded sidebar & multi-column workspace.',
-  installNowLabel: 'Install App Now',
-  comingSoonLabel: 'Coming Soon',
+  platformOverviewTitle: 'Web Platform & Architecture',
+  useOnlineTitle: 'Instant Browser Access',
+  useOnlineDesc: 'Open SkillBridge directly in Chrome, Edge, Safari, or Firefox with full real-time synchronization.',
+  mobileWebTitle: 'Responsive Mobile Web',
+  mobileWebDesc: 'Thumb-friendly mobile browser layout with fast navigation and zero installation required.',
+  desktopWebTitle: 'Full Desktop Web Workspace',
+  desktopWebDesc: 'Expanded sidebar rail, analytics charts, and multi-column review workflows in your browser.',
   liveSyncConnected: 'Live Sync Active',
   liveSyncReconnecting: 'Reconnecting Sync...',
 };
@@ -358,11 +354,11 @@ export const ArStrings: AppStrings = {
   tagline: 'اربط مهاراتك بفرص مهنية حقيقية',
   welcomeTitle: 'مرحبًا بك في SkillBridge',
   welcomeSubtitle:
-    'منظومة مهنية موحدة عبر الويب والموبايل وسطح المكتب — انتقل من تحليل الفجوات إلى مشاريع الشركات والتوثيق الفوري للخبرة.',
-  getStarted: 'استخدم SkillBridge أونلاين',
+    'منصة ويب مهنية متكاملة — انتقل من تحليل الفجوات إلى مشاريع الشركات والتوثيق الفوري للخبرة مباشرة من أي متصفح.',
+  getStarted: 'ابدأ على SkillBridge',
   signInGoogle: 'المتابعة عبر Google',
   continueAsGuest: 'معاينة كزائر (بدون حفظ)',
-  guestBannerTitle: 'وضع المعاينة للزائر — سجّل الدخول لحفظ تقدّمك ومزامنته عبر كل الأجهزة.',
+  guestBannerTitle: 'وضع المعاينة للزائر — سجّل الدخول لحفظ تقدّمك ومزامنته مباشرة.',
   guestLockedReason: 'يتطلب هذا الإجراء تسجيل الدخول لحفظ ومزامنة أدلتك الموثّقة.',
   languageToggleLabel: 'EN',
 
@@ -516,15 +512,13 @@ export const ArStrings: AppStrings = {
   lockedTitle: 'مرحلة مقفلة',
   signOut: 'تسجيل الخروج',
 
-  downloadCenterTitle: 'مركز التحميل والوصول عبر المنصات',
-  useOnlineTitle: 'استخدم SkillBridge أونلاين',
-  useOnlineDesc: 'وصول فوري من المتصفح مع مزامنة لحظية كاملة دون الحاجة إلى تثبيت.',
-  mobileAppTitle: 'تطبيق الموبايل',
-  mobileAppDesc: 'ثبّت تطبيق SkillBridge على Android أو iOS لواجهة لمسية وإشعارات فورية.',
-  desktopAppTitle: 'تطبيق سطح المكتب',
-  desktopAppDesc: 'ثبّت SkillBridge على Windows أو macOS أو Linux لشريط جانبي ومساحة عمل متكاملة.',
-  installNowLabel: 'تثبيت التطبيق الآن',
-  comingSoonLabel: 'قريبًا',
+  platformOverviewTitle: 'منصة الويب والمعمارية',
+  useOnlineTitle: 'وصول فوري عبر المتصفح',
+  useOnlineDesc: 'افتح SkillBridge مباشرة في Chrome أو Edge أو Safari مع مزامنة لحظية كاملة بدون تثبيت.',
+  mobileWebTitle: 'تجربة ويب متجاوبة للجوال',
+  mobileWebDesc: 'واجهة متصفح متجاوبة ومريحة للهواتف والأجهزة اللوحية دون الحاجة لتحميل أي تطبيق.',
+  desktopWebTitle: 'مساحة عمل ويب متكاملة لسطح المكتب',
+  desktopWebDesc: 'شريط تنقل جانبي ولوحات مراجعة متعددة الأعمدة ورسوم بيانية تفاعلية في المتصفح.',
   liveSyncConnected: 'مزامنة مباشرة فعّالة',
   liveSyncReconnecting: 'إعادة الاتصال بالمزامنة...',
 };

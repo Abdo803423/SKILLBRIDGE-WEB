@@ -1,6 +1,6 @@
 {
-  "revision": 5,
-  "updatedAtEpochMs": 1795368002934,
+  "revision": 6,
+  "updatedAtEpochMs": 1795438274107,
   "accounts": [
     {
       "id": "acc_admin_demo",
@@ -548,6 +548,15 @@
     }
   ],
   "activities": [
+    {
+      "id": "act_7bcaff12-9",
+      "actorAccountId": "acc_student_demo",
+      "actorRole": "STUDENT",
+      "actionType": "AUTH_LOGIN",
+      "summary": "Lina Mansour (STUDENT) signed in.",
+      "targetId": "acc_student_demo",
+      "createdAtEpochMs": 1795438274107
+    },
     {
       "id": "act_e6211195-e",
       "actorAccountId": "acc_admin_demo",

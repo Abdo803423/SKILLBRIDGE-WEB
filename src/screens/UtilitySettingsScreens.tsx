@@ -234,8 +234,8 @@ export const ArchitectureBlueprintScreen: React.FC = () => {
           title={strings.blueprintTitle}
           subtitle={
             isArabic
-              ? 'منصة واحدة · ثلاث بوابات وصول (ويب، موبايل، سطح مكتب) · خلفية وقاعدة بيانات مركزية مشتركة'
-              : 'One Product · Three Access Clients (Web, Mobile, Desktop) · One Shared Backend & Central Database'
+              ? 'موقع ويب متكامل · تصميم متجاوب لكل الشاشات · خلفية وقاعدة بيانات مركزية حية'
+              : 'Standard Browser Website · Responsive Across Every Screen · Shared API & Cloud Firestore'
           }
         />
 
@@ -243,24 +243,24 @@ export const ArchitectureBlueprintScreen: React.FC = () => {
           {[
             {
               icon: Globe,
-              title: isArabic ? '١. تطبيق الويب (Browser)' : '1. Web Client',
+              title: isArabic ? '١. متصفح سطح المكتب' : '1. Desktop Web Workspace',
               desc: isArabic
-                ? 'وصول فوري من المتصفح بتصميم SkillBridge المتجاوب.'
-                : 'Zero-install responsive browser workspace.',
+                ? 'شريط تنقل جانبي ولوحات مراجعة وتحليلات متعددة الأعمدة في المتصفح.'
+                : 'Fixed navigation rail, multi-column review tables, and analytics charts in Chrome, Edge, Safari, or Firefox.',
             },
             {
               icon: Smartphone,
-              title: isArabic ? '٢. تطبيق الموبايل (APK + PWA)' : '2. Android & Mobile Client',
+              title: isArabic ? '٢. متصفح الموبايل والأجهزة اللوحية' : '2. Responsive Mobile Web',
               desc: isArabic
-                ? 'تنقل سفلي مريح للإبهام وتجربة تطبيق مستقل على الهاتف.'
-                : 'Native Android APK + thumb-zone mobile experience.',
+                ? 'تنقل سفلي مريح للإبهام بدون الحاجة لتثبيت أي تطبيق.'
+                : 'Thumb-friendly bottom bar and responsive layouts on iOS and Android browsers with zero installation.',
             },
             {
               icon: Laptop,
-              title: isArabic ? '٣. تطبيق سطح المكتب (Windows + PWA)' : '3. Windows Desktop Client',
+              title: isArabic ? '٣. ٤ بوابات صلاحيات معزولة' : '3. Four Isolated Role Portals',
               desc: isArabic
-                ? 'شريط جانبي ثابت ولوحات متعددة الأعمدة على Windows.'
-                : 'Fixed sidebar & multi-column Windows desktop app.',
+                ? 'صلاحيات الطالب والشركة ومدير الإشراف والمشرف العام متصلة آنيًا.'
+                : 'Student, Company, Director, and Platform Admin portals synchronized over one live backend.',
             },
           ].map((c, idx) => {
             const Icon = c.icon;
@@ -294,10 +294,10 @@ export const ArchitectureBlueprintScreen: React.FC = () => {
           </div>
           <button
             type="button"
-            onClick={() => setRoute('downloads')}
+            onClick={() => setRoute('platform')}
             className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-4 py-2 text-xs font-bold text-white"
           >
-            {strings.downloadCenterTitle}
+            {strings.platformOverviewTitle}
           </button>
         </div>
       </div>
@@ -364,20 +364,20 @@ export const AccountAndPrivacySettingsScreen: React.FC = () => {
             </button>
             <button
               type="button"
-              onClick={() => setRoute('downloads')}
+              onClick={() => setRoute('platform')}
               className="sb-btn-interactive rounded-xl bg-[#00B4DB] hover:bg-[#008CAE] px-3 py-1.5 text-xs font-bold text-white"
             >
-              {strings.downloadCenterTitle}
+              {strings.platformOverviewTitle}
             </button>
           </div>
         </div>
 
-        {/* Cross-Device Synchronized Sessions */}
+        {/* Synchronized Browser Sessions */}
         {session && (
           <div className="rounded-2xl border border-[#D5E0EC] dark:border-[#1C395E] bg-white dark:bg-[#0D1E36] p-5 space-y-3">
             <SectionHeader
-              title={isArabic ? 'الأجهزة والجلسات المتصلة لحظيًا' : 'Connected Cross-Platform Device Sessions'}
-              subtitle={isArabic ? 'يمكنك إبطال أي جلسة عن بُعد عبر جميع المنصات' : 'Monitor & remotely revoke active Web, Mobile, and Desktop sessions'}
+              title={isArabic ? 'جلسات المتصفح المتصلة لحظيًا' : 'Connected Browser Sessions'}
+              subtitle={isArabic ? 'يمكنك متابعة أو إبطال أي جلسة متصفح عن بُعد' : 'Monitor & remotely revoke active browser sessions'}
             />
             {deviceSessions.length === 0 ? (
               <p className="text-xs text-[#4C637C] dark:text-[#93ADC8]">{isArabic ? 'الجلسة الحالية نشطة.' : 'Current session active.'}</p>

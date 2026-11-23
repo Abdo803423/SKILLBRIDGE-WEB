@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { registerSW } from 'virtual:pwa-register';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { SkillBridgeProvider } from './context/SkillBridgeContext';
 import './index.css';
 
+// Clean up any legacy service worker from earlier PWA builds so browsers always load fresh website assets.
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-  registerSW({ immediate: true });
+  navigator.serviceWorker
+    .getRegistrations()
+    .then((registrations) => Promise.all(registrations.map((reg) => reg.unregister())))
+    .catch(() => {});
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   ClipboardCheck,
   Compass,
-  Download,
   FolderGit2,
   Globe,
   Home,
@@ -28,7 +27,6 @@ import {
   Wallet,
 } from 'lucide-react';
 import { type ActiveRoute, useSkillBridge } from '../context/SkillBridgeContext';
-import { PWAInstallButton } from './PWAInstallButton';
 import { SkillBridgeLogo, ToastBanner } from './SkillBridgeUi';
 
 interface NavEntry {
@@ -70,7 +68,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         { id: 'adminQueues', label: isArabic ? 'طوابير الاعتماد' : 'Verification Queues', icon: ClipboardCheck },
         { id: 'adminUsers', label: isArabic ? 'الحسابات والفرق' : 'Users & Access', icon: Users },
         { id: 'adminLogs', label: isArabic ? 'السجل والمراقبة' : 'Activity Ledger', icon: Activity },
-        { id: 'downloads', label: isArabic ? 'التحميل والمنصات' : 'Download Center', icon: Download },
+        { id: 'platform', label: strings.platformOverviewTitle, icon: Globe },
         { id: 'settings', label: strings.accountSettingsTitle, icon: Settings },
       ];
     }
@@ -81,7 +79,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         { id: 'companyApplicants', label: isArabic ? 'المتقدمون' : 'Applicants', icon: UserCheck },
         { id: 'companyTalent', label: isArabic ? 'المواهب الموثّقة' : 'Verified Talent', icon: Award },
         { id: 'companyAnalytics', label: isArabic ? 'الأثر والتحليلات' : 'Analytics', icon: Activity },
-        { id: 'downloads', label: isArabic ? 'التحميل والمنصات' : 'Download Center', icon: Download },
+        { id: 'platform', label: strings.platformOverviewTitle, icon: Globe },
         { id: 'settings', label: strings.accountSettingsTitle, icon: Settings },
       ];
     }
@@ -92,7 +90,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
         { id: 'directorStudents', label: isArabic ? 'مهام الطلاب' : 'Student Tasks', icon: Users },
         { id: 'directorReviews', label: isArabic ? 'مراجعة التسليمات' : 'Rubric Reviews', icon: CheckCircle2 },
         { id: 'directorHistory', label: isArabic ? 'سجل التقييمات' : 'Evaluations History', icon: Trophy },
-        { id: 'downloads', label: isArabic ? 'التحميل والمنصات' : 'Download Center', icon: Download },
+        { id: 'platform', label: strings.platformOverviewTitle, icon: Globe },
         { id: 'settings', label: strings.accountSettingsTitle, icon: Settings },
       ];
     }
@@ -108,7 +106,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
       { id: 'wallet', label: strings.walletTitle, icon: Wallet },
       { id: 'leaderboard', label: strings.leaderboardTitle, icon: Activity },
       { id: 'coach', label: isArabic ? 'المدرب الذكي' : 'AI Coach', icon: Bot },
-      { id: 'downloads', label: isArabic ? 'التحميل والمنصات' : 'Download Center', icon: Download },
+      { id: 'platform', label: strings.platformOverviewTitle, icon: Globe },
       { id: 'blueprint', label: strings.blueprintTitle, icon: Globe },
       { id: 'settings', label: strings.accountSettingsTitle, icon: Settings },
     ];
@@ -219,7 +217,6 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
               <LogOut className="w-4 h-4" />
             </button>
           </div>
-          <PWAInstallButton variant="compact" onOpenDownloadCenter={() => setRoute('downloads')} />
         </div>
       </aside>
 

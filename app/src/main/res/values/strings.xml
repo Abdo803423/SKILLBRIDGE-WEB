@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">SkillBridge</string>
-    <string name="default_web_client_id" translatable="false">910432310688-1md419852jnrmgegl6c7mu2plbbb9u83.apps.googleusercontent.com</string>
-    <string name="firebase_project_id" translatable="false">rare-origin-xkpm1</string>
-    <string name="firebase_app_id" translatable="false">1:910432310688:web:19ab1fa6a41ffdc11880c5</string>
-</resources>

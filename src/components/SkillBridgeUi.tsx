@@ -32,7 +32,7 @@ export const SkillBridgeLogo: React.FC<{ size?: 'sm' | 'md' | 'lg'; subtitle?: b
         className={`${dim} overflow-hidden bg-[#0B1F38] border border-[#00B4DB]/40 shadow-[0_6px_18px_-8px_rgba(0,180,219,0.5)] flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105 group-active:scale-95`}
       >
         <img
-          src="/assets/images/skillbridge_app_icon_1794769666078.jpg"
+          src={`${import.meta.env.BASE_URL}assets/images/skillbridge_app_icon_1794769666078.jpg`}
           alt="SkillBridge"
           className="w-full h-full object-cover"
         />
@@ -43,7 +43,7 @@ export const SkillBridgeLogo: React.FC<{ size?: 'sm' | 'md' | 'lg'; subtitle?: b
         </span>
         {subtitle && (
           <span className="block text-[10px] font-semibold tracking-wider uppercase text-[#4C637C] dark:text-[#93ADC8]">
-            Web · Mobile · Desktop
+            Career Web Platform
           </span>
         )}
       </div>

@@ -1,4 +1,5 @@
 import type { AiAgentContextMode, SkillGapAnalysisResult } from '../types/skillbridge';
+import { resolveApiUrl } from './ecosystemApi';
 
 async function streamSseEndpoint(
   url: string,
@@ -6,7 +7,7 @@ async function streamSseEndpoint(
   onChunk: (delta: string) => void,
   signal?: AbortSignal,
 ): Promise<void> {
-  const response = await fetch(url, {
+  const response = await fetch(resolveApiUrl(url), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -65,7 +66,7 @@ export async function analyzeSkillGapApi(params: {
   weeklyHours: number;
   isArabic: boolean;
 }): Promise<SkillGapAnalysisResult> {
-  const response = await fetch('/api/ai/analyze-gap', {
+  const response = await fetch(resolveApiUrl('/api/ai/analyze-gap'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(params),
